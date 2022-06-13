@@ -7,7 +7,7 @@
         </a>
 
         <ul class="dropdown-menu dropdown-menu-notifications" role="menu">
-            <li v-for="notification in notifications">
+            <li v-for="notification in notifications" v-bind:key="notification.url">
                 <a :href="notification.url">
                     <div>
                         <i class="fa fa-exclamation-circle fa-fw"></i> {{ notification.description }}

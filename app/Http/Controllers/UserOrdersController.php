@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 use App\Models\Shop;
 use App\Models\General;
+use App\Models\Order_status;
 use App\Order_detail;
 use App\Product;
 use App\Status;
@@ -47,7 +48,17 @@ class UserOrdersController extends Controller
         $shop = Shop::where('id', $shop_default->value)->first();
         $product_rice = Product::type(1)->where('shop_id', $shop_default->value)->orderBy('created_at')->get();
         $product_option = Product::type(2)->where('shop_id', $shop_default->value)->orderBy('created_at')->get();
-        return view('create', compact('product_rice', 'product_option', 'shop'));
+
+        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
+        ->whereIn('statuses.column_name', ['booked','unpaid'])
+        ->where('order_date', date("Y-m-d"))->first();
+
+        $message_order = '';
+        if ($order_status) {
+            $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
+        }
+
+        return view('create', compact('product_rice', 'product_option', 'shop', 'message_order'));
     }
 
     /**
@@ -58,6 +69,14 @@ class UserOrdersController extends Controller
      */
     public function store(Request $request)
     {
+        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
+        ->whereIn('statuses.column_name', ['booked','unpaid'])
+        ->where('order_date', date("Y-m-d"))->first();
+
+        if ($order_status) {
+            return back()->with('status', 'Đơn hàng đã đặt, không thể Order thêm !');
+        }
+
         $request->validate([
             'product_rice' => 'required',
         ]);
@@ -132,12 +151,13 @@ class UserOrdersController extends Controller
         ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
         ->orderBy('id', 'asc')->get();
 
-        $statuses = Status::whereNotIn('statuses.column_name', ['paid','cancel'])->get();
-
         $value_shop = General::where('key', 'shop_default')->first();
         $shop_info = Shop::where('id', $value_shop->value)->first();
 
-        return view('today_order', compact('user', 'orders', 'statuses', 'shop_info'));
+        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
+        ->where('order_date', date("Y-m-d"))->first();
+
+        return view('today_order', compact('user', 'orders', 'shop_info', 'order_status'));
     }
 
 

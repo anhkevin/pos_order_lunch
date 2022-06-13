@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+window.Vue = require('vue').default;
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,16 +15,21 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('order-progress', require('./components/OrderProgress.vue').default);
-Vue.component('order-alert', require('./components/OrderAlert.vue').default);
-Vue.component('order-notifications', require('./components/OrderNotifications.vue').default);
+// Vue.component('order-progress', require('./components/OrderProgress.vue').default);
+// Vue.component('order-alert', require('./components/OrderAlert.vue').default);
+// Vue.component('order-notifications', require('./components/OrderNotifications.vue').default);
+Vue.component('transaction-history-component', require('./components/TransactionHistory.vue').default);
+Vue.component('show-wallet-component', require('./components/ListWallet.vue').default);
 
+// const app = new Vue({
+//     el: '#app',
+//     mounted() {
+//       window.Echo.channel('order_lunch_huyteam')
+//       .listen('OrderStatusChanged', (e) => {
+//         console.log('omgggg realtime bro')
+//       });
+//     }
+// });
 const app = new Vue({
-    el: '#app',
-    mounted() {
-      window.Echo.channel('order_lunch_huyteam')
-      .listen('OrderStatusChanged', (e) => {
-        console.log('omgggg realtime bro')
-      });
-    }
+    el: '#app'
 });

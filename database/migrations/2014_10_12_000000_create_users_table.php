@@ -20,6 +20,9 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('is_admin')->unsigned()->default(0);
+            $table->decimal('total_money', 10, 0)->unsigned()->default(0);
+            $table->decimal('total_deposit', 10, 0)->unsigned()->default(0);
+            $table->decimal('total_paid', 10, 0)->unsigned()->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

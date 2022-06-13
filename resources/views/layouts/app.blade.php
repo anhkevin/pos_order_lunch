@@ -11,43 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <style>
-        /* @group Blink */
-        @-webkit-keyframes my {
-        0% { background:#d1a3a3; }
-        50% { background: #fff; }
-        100% { background:#d1a3a3; }
-        }
-        @-moz-keyframes my {
-        0% { background:#d1a3a3; }
-        50% { background: #fff; }
-        100% { background:#d1a3a3; }
-        }
-        @-o-keyframes my {
-        0% { background:#d1a3a3; }
-        50% { background: #fff; }
-        100% { background:#d1a3a3; }
-        }
-        @keyframes my {
-        0% { background:#d1a3a3; }
-        50% { background: #fff; }
-        100% { background:#d1a3a3; }
-        }
-        .blink, .blink td, .blink th, .blink td a, .blink th a{
-        /* background:#3d3d3d;
-        font-size:24px;
-        font-weight:bold; */
-        -webkit-animation: my 700ms infinite;
-        -moz-animation: my 700ms infinite;
-        -o-animation: my 700ms infinite;
-        animation: my 700ms infinite;
-        }
-
-   /* @end */
-    </style>
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -84,6 +48,7 @@
                                     <li><a href="{{ route('user.orders.today') }}">Orders hôm nay</a></li>
                                     <li><a href="{{ route('user.orders.product') }}">Món đặt hôm nay</a></li>
                                     <li><a href="{{ route('user.orders.debt') }}">Công nợ</a></li>
+                                    <li><a href="{{ route('wallet.show') }}">Danh sách Wallet</a></li>
                                 </ul>
                             </li>
 
@@ -103,6 +68,7 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
 
+                            <li><a href="{{ route('wallet.index') }}"><strong>My Wallet</strong></a></li>
                             @include('partials.notifications-dropdown')
 
                             <li class="dropdown">
@@ -133,7 +99,7 @@
         @yield('content')
     </div>
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 
     @yield('extra-js')
 </body>

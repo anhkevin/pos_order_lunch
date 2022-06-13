@@ -11,13 +11,6 @@
                 </div>
 
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    <order-alert user_id="{{ auth()->user()->id }}"></order-alert>
 
                     <div class="row">
                         <div class="col-lg-12">
@@ -56,8 +49,18 @@
 
                                 <div class="hr-line-dashed"></div>
                                 <div class="form-group">
-                                    <div class="col-sm-4 col-sm-offset-2">
-                                        <button class="btn btn-success" type="submit">Đặt cơm</button>
+                                @if (session('status'))
+                                    <div class="alert alert-danger">
+                                        {{ session('status') }}
+                                    </div>
+                                @endif
+                                    <div class="col-sm-6 col-sm-offset-2">
+                                        @if (!empty($message_order))
+                                            <button class="btn btn-success" disabled type="submit">Đặt cơm</button> 
+                                            <span class="alert alert-danger">( {{ $message_order }} )</span>
+                                        @else
+                                            <button class="btn btn-success" type="submit">Đặt cơm</button> 
+                                        @endif
                                     </div>
                                 </div>
                             </form>
