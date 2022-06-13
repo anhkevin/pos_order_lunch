@@ -43,6 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/momo/redirect_url', 'App\Http\Controllers\MomoController@redirect_url')->name('user.momo.redirect_url');
     Route::get('/momo/ipn_url', 'App\Http\Controllers\MomoController@ipn_url')->name('user.momo.ipn_url');
     Route::get('/momo/create/{order}', 'App\Http\Controllers\MomoController@create')->name('user.momo.create');
+
+    Route::get('/my-wallet', 'App\Http\Controllers\WalletController@index')->name('wallet.index');
+    Route::post('/my-wallet/load-history', 'App\Http\Controllers\WalletController@history')->name('wallet.history');
+    Route::get('/my-wallet/show', 'App\Http\Controllers\WalletController@show')->name('wallet.show');
+    Route::post('/my-wallet/load-wallet', 'App\Http\Controllers\WalletController@load_wallet')->name('wallet.load_wallet');
+    Route::get('/my-wallet/{user}', 'App\Http\Controllers\WalletController@index')->name('wallet.index_user');
 });
 
 // Admin Routes - Make sure you implement an auth layer here
