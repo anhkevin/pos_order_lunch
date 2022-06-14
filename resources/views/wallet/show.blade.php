@@ -13,7 +13,7 @@
                         <div class="col-xl-9 col-xxl-12">
                         <div class="row">
                             <div class="col-xl-12">
-                                <show-wallet-component></show-wallet-component>
+                                <show-wallet-component is_admin="{{auth()->user()->is_admin}}"></show-wallet-component>
                             </div>
                         </div>
                         </div>

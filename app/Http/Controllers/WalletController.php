@@ -94,7 +94,7 @@ class WalletController extends Controller
             $rowperpage = 1;
         }
 
-        $list_wallet = User::where('total_money','>', 0)
+        $list_wallet = User::where('total_money','>=', 0)
         ->offset($row)
         ->limit($rowperpage)
         ->orderBy('total_money', 'desc')
@@ -114,5 +114,55 @@ class WalletController extends Controller
         }
 
         return json_encode($response_arr);
+    }
+
+    public function deposit(Request $request, User $user) {
+        $user_login = auth()->user();
+        if($user_login->is_admin != 1) {
+            return back()->with('message', 'Access Denied!');
+        }
+
+        $request->validate([
+            'money_deposit' => 'required',
+        ]);
+
+        if(!empty($request->money_deposit) && $request->money_deposit > 0) {
+            History_payment::create([
+                'user_id' => $user->id,
+                'order_id' => 0,
+                'amount' => $request->money_deposit,
+                'note' => 'Transfer money',
+                'disabled' => 0,
+            ]);
+        }
+
+        return back()->with('message', 'Deposit successfully!');
+    }
+
+    public function withdrawal(Request $request, User $user) {
+        $user_login = auth()->user();
+        if($user_login->is_admin != 1) {
+            return back()->with('message', 'Access Denied!');
+        }
+
+        $request->validate([
+            'money_paid' => 'required',
+        ]);
+
+        if ($user->total_money < $request->money_paid) {
+            return back()->with('message', 'Số tiền không đủ!');
+        }
+
+        if(!empty($request->money_paid) && $request->money_paid > 0) {
+            History_payment::create([
+                'user_id' => $user->id,
+                'order_id' => 0,
+                'amount' => '-'.($request->money_paid),
+                'note' => (!empty($request->note)) ? $request->note : 'Withdrawal',
+                'disabled' => 0,
+            ]);
+        }
+
+        return back()->with('message', 'Withdrawal successfully!');
     }
 }

@@ -31,7 +31,9 @@
                                     <th>Món thêm</th>
                                     <th>Tổng tiền</th>
                                     <th>Status</th>
-                                    <!-- <th>Thanh toán</th> -->
+                                    @if (auth()->user()->is_admin)
+                                        <th>Option</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,11 +62,16 @@
                                             <td>
                                         @endif
                                         {{ $order->status->name }}</td>
-                                        <!-- <td>
-                                            @if ($order->user_id == auth()->user()->id)
-                                                <a class="btn btn-primary" href="#" disabled="disabled">QR Momo <br>(common soon)</a>
-                                            @endif
-                                        </td> -->
+                                        @if (auth()->user()->is_admin)
+                                        <td>
+                                            <form class="form-horizontal" id="form-order-{{$order->id}}" method="post" action="{{ route('admin.orders.update', $order) }}">
+                                                {{ csrf_field() }}
+                                                {!! method_field('patch') !!}
+                                                <input type="hidden" name="status_id" value="4">
+                                                <button type="submit" id="update-order-{{$order->id}}" class="btn btn-danger">Thanh Toán</button>
+                                            </form>
+                                        </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -76,7 +83,9 @@
                                     <td>Tổng tiền</td>
                                     <td>{{ number_format($total_amount, 0, ".", ",") . "đ" }}</td>
                                     <td></td>
-                                    <!-- <td></td> -->
+                                    @if (auth()->user()->is_admin)
+                                    <td></td>
+                                    @endif
                                 </tr>
                             </tfood>
 

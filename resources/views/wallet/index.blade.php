@@ -40,6 +40,34 @@
                             </div>
                             
                             </div>
+                            @if (auth()->user()->is_admin)
+                            <div class="col-xl-12">
+                            @if (session('message'))
+                                <div class="alert alert-success">
+                                    {{ session('message') }}
+                                </div>
+                            @endif
+                                <div class="card" style="padding:15px;">
+                                    <div style="display: inline-block;">
+                                        <h3 style="display: inline-block;">Nạp tiền:</h3>
+                                        <form class="form-horizontal" method="post" action="{{ route('wallet.deposit', $user) }}" style="display: inline-block;">
+                                            {{ csrf_field() }}
+                                            <input type="text" name="money_deposit" value="0">
+                                            <button type="submit" class="btn btn-danger">Nạp tiền</button>
+                                        </form>
+                                    </div>
+                                    <div style="display: inline-block;">
+                                        <h3 style="display: inline-block;">Trừ tiền:</h3>
+                                        <form class="form-horizontal" method="post" action="{{ route('wallet.withdrawal', $user) }}" style="display: inline-block;">
+                                            {{ csrf_field() }}
+                                            <input type="text" name="money_paid" value="0">
+                                            <input type="text" name="note" placeholder="ghi chú">
+                                            <button type="submit" class="btn btn-danger">Trừ tiền</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                             <div class="col-xl-12">
                                 <transaction-history-component user_id="{{ $user->id }}"></transaction-history-component>
                             </div>
