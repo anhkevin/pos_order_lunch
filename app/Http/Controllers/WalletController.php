@@ -98,6 +98,8 @@ class WalletController extends Controller
         ->offset($row)
         ->limit($rowperpage)
         ->orderBy('total_money', 'desc')
+        ->orderBy('total_deposit', 'desc')
+        ->orderBy('total_paid', 'desc')
         ->get();
 
         $response_arr = array();

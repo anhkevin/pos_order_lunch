@@ -41,7 +41,7 @@
             return {
                 isFinished: false,
                 row: 0, // Record selction position
-                rowperpage: 20, // Number of records fetch at a time
+                rowperpage: 15, // Number of records fetch at a time
                 buttonText: 'Load More',
                 posts: ''
             }
