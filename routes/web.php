@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/my-wallet/load-history', 'App\Http\Controllers\WalletController@history')->name('wallet.history');
     Route::get('/my-wallet/show', 'App\Http\Controllers\WalletController@show')->name('wallet.show');
     Route::post('/my-wallet/load-wallet', 'App\Http\Controllers\WalletController@load_wallet')->name('wallet.load_wallet');
+    Route::post('/my-wallet/deposit/{user}', 'App\Http\Controllers\WalletController@deposit')->name('wallet.deposit');
+    Route::post('/my-wallet/withdrawal/{user}', 'App\Http\Controllers\WalletController@withdrawal')->name('wallet.withdrawal');
     Route::get('/my-wallet/{user}', 'App\Http\Controllers\WalletController@index')->name('wallet.index_user');
 });
 

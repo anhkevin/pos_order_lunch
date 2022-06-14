@@ -14,7 +14,8 @@
                     </thead>
                     <tbody>
                         <tr class="post" v-for="history in posts" v-bind:key="history.id">
-                            <td>{{ history.user }}</td>
+                            <td v-if="is_admin"><a :href="'/my-wallet/' + history.id" target="_blank">{{ history.user }}</a></td>
+                            <td v-else>{{ history.user }}</td>
                             <td>{{ history.total_money }}</td>
                             <td>{{ history.total_deposit }}</td>
                             <td>{{ history.total_paid }}</td>
@@ -33,6 +34,9 @@
 
 <script>
     export default {
+
+        props: ['is_admin'],
+
         data() {
             return {
                 isFinished: false,
