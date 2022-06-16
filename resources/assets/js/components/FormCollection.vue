@@ -1,16 +1,19 @@
 <template>
     <div class="container">
-        <form action="" method="get" class="form-inline" @submit.prevent="get_dish">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Link</label>
-                <input type="text" class="form-control" v-model="url_shopeefood" placeholder="Enter link">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <div style="display: flex; gap: 5px;">
+            <form action="" method="get" class="form-inline" @submit.prevent="get_dish">
+                <div class="form-group">
+                    <input type="text" class="form-control" v-model="url_shopeefood" placeholder="Enter link">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <button class="btn btn-warning">Import DB</button>
+        </div>
+
         <br/>
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <div>
                     <div class="dishes_result">
                         <p v-if="loading">Loading...</p>
@@ -27,11 +30,11 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <h4><strong>{{ sub_dish.name }}</strong></h4>
                                         <p>{{ sub_dish.description }}</p>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         {{ sub_dish.price.text }}
                                     </div>
                                 </div>
@@ -40,20 +43,18 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-5">
-                <div style="background-color: white;">
-                    <div v-if="shop_infor != null">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <img :src="shop_infor.photos[1].value" style="width: 100%;" alt="" />
-                            </div>
-                            <div class="col-md-9">
-                                <h3>{{ shop_infor.name }}</h3>
-                                <p>{{ shop_infor.address }}</p>
-                                <p>{{ shop_infor.phones[0] }}</p>
-                                <p>{{ shop_infor.rating.avg }} ({{ shop_infor.rating.total_review }})</p>
-                            </div>
-                        </div>                       
+            <div class="col-md-4">
+                <div style="background-color: white;" class="panel panel-default" v-if="shop_infor != null">
+                    <div>
+                        <img :src="shop_infor.res_photos[0].photos[10].value" style="width: 100%;" alt="" />   
+                        <div style="padding: 10px;">
+                            <h3>{{ shop_infor.name }}</h3>
+                            <p>{{ shop_infor.address }}</p>
+                            <p>Ship: {{ shop_infor.delivery.shipping_fee.minimum_fee }}</p>
+                            <p>Phone: {{ shop_infor.phones[0] }}</p>
+                            <p>Voucher: Null</p>
+                            <p>{{ shop_infor.rating.avg }} ({{ shop_infor.rating.total_review }})</p>
+                        </div>                
                     </div>
                 </div>
             </div>
@@ -84,6 +85,7 @@ import axios from 'axios'
                     this.loading = false;
                     this.result_dish = response.data.dishes.reply.menu_infos;
                 }
+
                 if(response.data.detail.result == 'success') {
                     this.loading = false;
                     this.shop_infor = response.data.detail.reply.delivery_detail;

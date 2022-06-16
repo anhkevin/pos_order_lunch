@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-
+use App\Http\Models\Product;
 
 class CollectionController extends Controller
 {
     protected $headers_shoppe_food = [];
+    
     protected $client;
 
     public function __construct() {
@@ -91,7 +92,7 @@ class CollectionController extends Controller
 
     public function get_detail($delivery_id) {
 
-        $url = 'https://gappapi.deliverynow.vn/api/delivery/get_detail?id_type=2&request_id=159952';
+        $url = 'https://gappapi.deliverynow.vn/api/delivery/get_detail?id_type=2&request_id=' . $delivery_id;
 
         $response = $this->client->request('GET', $url)->getBody(); 
 

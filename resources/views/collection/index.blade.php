@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <form-component></form-component>
+        <form-collection></form-collection>
     </div>
 </div>
 @endsection

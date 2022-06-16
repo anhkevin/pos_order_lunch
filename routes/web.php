@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/my-wallet/deposit/{user}', 'App\Http\Controllers\WalletController@deposit')->name('wallet.deposit');
     Route::post('/my-wallet/withdrawal/{user}', 'App\Http\Controllers\WalletController@withdrawal')->name('wallet.withdrawal');
     Route::get('/my-wallet/{user}', 'App\Http\Controllers\WalletController@index')->name('wallet.index_user');
+
+    Route::get('/collection', 'App\Http\Controllers\CollectionController@index')->name('collect.index');
 });
 
 // Admin Routes - Make sure you implement an auth layer here
