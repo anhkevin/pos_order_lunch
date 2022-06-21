@@ -34,10 +34,14 @@
                                         <h4><strong>{{ sub_dish.name }}</strong></h4>
                                         <p>{{ sub_dish.description }}</p>
                                     </div>
-                                    <div class="col-md-3" style="display: flex; gap: 10px; align-items: center;">
-                                        <div v-if="sub_dish.discount_price" style="color: red; font-size: 20px;">{{ sub_dish.discount_price_text }}</div>
-                                        <div v-if="sub_dish.price && !sub_dish.discount_price" style="color: red; font-size: 20px;">{{ dish.price_text }}</div>
-                                        <del v-else style="opacity: .7; font-size: 15px;">{{ sub_dish.price_text }}</del>
+                                    <div class="col-md-3" style="display: flex; gap: 10px; align-items: center;">                                        
+                                        <div v-if="sub_dish.discount_price">
+                                            <span style="color: red; font-size: 20px;">{{ sub_dish.discount_price_text }}</span>
+                                            <del style="opacity: .7; font-size: 15px;">{{ sub_dish.price_text }}</del>
+                                        </div>
+                                        <div v-else style="color: red; font-size: 20px;">
+                                            {{ sub_dish.price_text }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +162,6 @@ import axios from 'axios'
 
             chunk_dish_by_name(data) {
                 let dishes = [];
-                console.log(typeof dishes)
 
                 let current_name = data[0].dish_type_name
                 let pos = 0
