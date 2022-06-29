@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use App\Http\Models\Product;
+use App\Models\Product;
+use App\Models\Shop;
 
 class CollectionController extends Controller
 {
@@ -97,5 +98,111 @@ class CollectionController extends Controller
         $response = $this->client->request('GET', $url)->getBody(); 
 
         return $response;
+    }
+
+    public function check_exist_by_key($data, $rq, $keys) {
+        
+        $data_change = [];
+
+        foreach($keys as $value) {
+
+            if($data[$value] != $rq[$value]) {
+                
+                $data_change[$value] = $rq[$value];
+
+            }
+
+        }
+        
+        return $data_change;
+    }
+
+    public function create_or_update_shop(Request $request) {
+
+        $data_shop = $request->shop_infor;
+        // $data_dishes = $request->dishes;
+
+        $shop_infor = Shop::where('delivery_id', '=', $data_shop['delivery_id'])->first();
+
+        $shop = [];
+
+        if(empty($shop_infor)) {
+
+            $shop = Shop::create([
+                'name' => $data_shop['name'],
+                'address'   => $data_shop['address'],
+                'ship'      => $data_shop['ship'],
+                'voucher'   => $data_shop['voucher'],
+                'delivery_id'  => $data_shop['delivery_id']
+            ]);
+
+        } else {
+
+            $keys = ['name', 'address', 'ship', 'voucher', 'delivery_id'];
+
+            $data_change = $this->check_exist_by_key($shop_infor->toArray(), $data_shop, $keys);
+
+            if(!empty($data_change)) {
+
+                $shop = $shop_infor->update($data_change);
+
+            }
+
+        }
+
+        return response()->json([
+            'status'    => 1,
+            'result'    => $shop_infor ? $shop_infor : $shop
+        ]);
+    }
+
+    public function create_dish(Request $request) {
+
+        // $shop = Shop::find($shop_id);
+        $data = $request->dishes;
+        
+        $delivery_id = $request->delivery_id;
+
+        $shop = Shop::where('delivery_id', '=', $delivery_id)->first();
+
+        $shop_id = $shop['id'];
+
+        $products = Product::where('shop_id', '=', $shop_id)->get();
+
+        $ids = [];
+        
+        foreach($products as $product) {
+            array_push($ids, $product['id']);
+        }
+
+        Product::destroy($ids);
+
+        foreach($data as $key => &$item) {
+
+            $item['price'] = $item['discount_price'] == 0 ? $item['price'] : $item['discount_price'];
+            $item['type'] = 1;
+            $item['shop_id'] = $shop['id'];
+
+            unset($item['price_text']);
+            unset($item['discount_price']);
+            unset($item['discount_price_text']);
+            unset($item['description']);
+
+        }
+
+        $product_infor = Product::insert($data);
+
+        if($product_infor) {
+            return response()->json([
+                'status'    => 1,
+                'result'    => $product_infor
+            ]);
+        }
+
+        return response()->json([
+            'status'    => 0,
+            'result'    => []
+        ]);
+
     }
 }

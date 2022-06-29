@@ -7,7 +7,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            <button class="btn btn-warning">Import DB</button>
+            <button class="btn btn-warning" @click="save_collection" :disabled="saved">
+                <span v-if="!saved">Save DB</span>
+                <span v-else>Saved</span>
+            </button>
         </div>
 
         <br/>
@@ -20,10 +23,10 @@
                     </div>
 
                     <ul class="list-group">
-                        <li v-for="(dish, index) in result_dish" :key="index" class="list-group-item">
+                        <li v-for="(dish, index) in filter_dish_by_menu" :key="index" class="list-group-item">
                             <h4>{{ dish.dish_type_name }}</h4>
                             <div v-for="(sub_dish, index) in dish.dishes" :key="index">
-                                <div class="row">
+                                <div class="row" style="margin-bottom: 10px;">
                                     <div class="col-md-2">
                                         <div style="width: 70px;">
                                             <img :src="sub_dish.dish_photo" alt="" style="width: 100%; border-radius: 5px;">
@@ -36,10 +39,10 @@
                                     </div>
                                     <div class="col-md-3" style="display: flex; gap: 10px; align-items: center;">                                        
                                         <div v-if="sub_dish.discount_price">
-                                            <span style="color: red; font-size: 20px;">{{ sub_dish.discount_price_text }}</span>
+                                            <span style="color: red; font-size: 18px;">{{ sub_dish.discount_price_text }}</span>
                                             <del style="opacity: .7; font-size: 15px;">{{ sub_dish.price_text }}</del>
                                         </div>
-                                        <div v-else style="color: red; font-size: 20px;">
+                                        <div v-else style="color: red; font-size: 18px;">
                                             {{ sub_dish.price_text }}
                                         </div>
                                     </div>
@@ -79,23 +82,32 @@ import axios from 'axios'
             return {
                 loading: false,
                 url_shopeefood: '',
+
+                saved: false,
+
                 result_dish: [],
+                filter_dish_by_menu: [],
+
                 shop_infor: {},
+                
             }
         },
 
         methods: {
             async get_dish() {
-
-                this.loading = true;
+                
+                this.saved = false
+                this.loading = true
 
                 const response = await axios.post('http://localhost:88/api/get_url', {url: this.url_shopeefood})
 
                 if(response.data.dishes.result == 'success') {
 
                     this.loading = false;
-                    let filter_data_dishes = this.filter_dishes(response.data.dishes.reply.menu_infos);
-                    this.result_dish = this.chunk_dish_by_name(filter_data_dishes)
+
+                    this.result_dish = this.filter_dishes(response.data.dishes.reply.menu_infos);
+
+                    this.filter_dish_by_menu = this.chunk_dish_by_name(this.result_dish)
                     
                 }
 
@@ -106,7 +118,7 @@ import axios from 'axios'
                     let delivery_detail = response.data.detail.reply.delivery_detail;
                     
 
-                    let fields = ['name', 'address', 'delivery', 'res_photos', 'is_open'];
+                    let fields = ['name', 'address', 'delivery', 'res_photos', 'is_open', 'delivery_id'];
 
                     this.shop_infor = this.filter_infor_shop(delivery_detail, fields)
                 }
@@ -120,17 +132,26 @@ import axios from 'axios'
                 let arr_save = {};
 
                 arr.forEach((item, index) => {
-                    if(fields.includes(item[0])) {
-                        if(item[0] == 'delivery') {
-                            arr_save['ship'] = item[1].shipping_fee.minimum_fee
-                            arr_save['is_open'] = item[1].is_open
 
-                        } else if(item[0] == 'res_photos') {
-                            arr_save['photo'] = item[1][0].photos[10].value
-                        } else {
-                            arr_save[item[0]] = item[1]
-                        }
+                    if(fields.includes(item[0])) {
+                        switch(item[0]) {
+                            case 'delivery':
+                                arr_save['ship'] = item[1].shipping_fee.value
+                                arr_save['is_open'] = item[1].is_open
+                                break;
+                            case 'res_photos':
+                                arr_save['photo'] = item[1][0].photos[10].value
+                                break;
+                            case 'delivery_id':
+                                arr_save['delivery_id'] = item[1]
+                                break;
+                            default:
+                                arr_save[item[0]] = item[1]
+                                arr_save['voucher'] = 0
+                                break;
+                        }                        
                     }
+
                 })
 
                 return arr_save
@@ -152,7 +173,6 @@ import axios from 'axios'
                             'discount_price_text': dish.discount_price ? dish.discount_price.text : 0,
                             'dish_photo': dish.photos[1].value,
                             'description': dish.description,
-                            'shop_id': '1'
                         })
                     })
                 })
@@ -188,6 +208,28 @@ import axios from 'axios'
                 })
 
                 return dishes
+            },
+
+            async save_collection() {
+
+                let post_data_shop = {
+                    'shop_infor': this.shop_infor,
+                    'dishes': this.result_dish
+                }
+
+                const response_shop = await axios.post('http://localhost:88/api/create_shop', post_data_shop)
+
+                let post_data_dish = {
+                    'dishes': this.result_dish,
+                    'delivery_id': response_shop.data.result.delivery_id,
+                };
+
+                const response_dish = await axios.post('http://localhost:88/api/create_dishes', post_data_dish)
+
+
+                if(response_shop.data.status == 1 && response_dish.data.status == 1) {
+                    this.saved = true;
+                } 
             }
         },
     }

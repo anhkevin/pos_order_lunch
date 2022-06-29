@@ -18,7 +18,9 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->decimal('price', 10, 0);
             $table->integer('type')->unsigned()->default(0);
-            $table->integer('shop_id')->unsigned();
+            $table->integer('shop_id')->unsigned()->default(0);
+            $table->string('dish_type_name')->nullable();
+            $table->string('dish_photo')->nullable();
             $table->integer('disabled')->unsigned()->default(0);
             $table->timestamps();
         });
