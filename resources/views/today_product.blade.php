@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                @if ($products_rice->count() == 0)
+                @if (count($products_rice) == 0)
                     <p>No orders yet.</p>
                     <a class="btn btn-success" href="{{ route('user.orders.create') }}">Add Order</a>
 
@@ -32,12 +32,13 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach ($products_rice as $key_product => $products)
                                 <tr style="color:red;font-weight:bold">
-                                    <td>Cơm</td>
+                                    <td>{{ $key_product }}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                @foreach ($products_rice as $product)
+                                @foreach ($products as $product)
                                     @php($total_amount+=($product->count_product * $product->price))
                                     <tr style="color: black;font-weight: 600;">
                                         <td>{{ $product->name }}</td>
@@ -45,19 +46,7 @@
                                         <td>{{ number_format($product->count_product * $product->price, 0, ".", ",") . "đ" }}</td>
                                     </tr>
                                 @endforeach
-                                <tr style="color:red;font-weight:bold">
-                                    <td>Món Thêm</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                @foreach ($products_option as $product)
-                                    @php($total_amount+=($product->count_product * $product->price))
-                                    <tr style="color: black;font-weight: 600;">
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ $product->count_product }}</td>
-                                        <td>{{ number_format($product->count_product * $product->price, 0, ".", ",") . "đ" }}</td>
-                                    </tr>
-                                @endforeach
+                            @endforeach
                                 
                             </tbody>
                             <tfoot>

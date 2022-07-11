@@ -46,8 +46,16 @@ class UserOrdersController extends Controller
     {
         $shop_default = General::where('key', 'shop_default')->first();
         $shop = Shop::where('id', $shop_default->value)->first();
-        $product_rice = Product::type(1)->where('shop_id', $shop_default->value)->orderBy('created_at')->get();
-        $product_option = Product::type(2)->where('shop_id', $shop_default->value)->orderBy('created_at')->get();
+
+        $product_rice = array();
+        $product_all = Product::where('shop_id', $shop_default->value)->orderBy('id')->get();
+        if ($product_all) {
+            foreach ($product_all as $key => $value) {
+                $product_rice[$value->dish_type_name][] = $value;
+            }
+        }
+
+        $product_first = Product::where('shop_id', $shop_default->value)->orderBy('id')->first();
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereIn('statuses.column_name', ['booked','unpaid'])
@@ -58,7 +66,7 @@ class UserOrdersController extends Controller
             $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
         }
 
-        return view('create', compact('product_rice', 'product_option', 'shop', 'message_order'));
+        return view('create', compact('product_rice', 'product_first', 'shop', 'message_order'));
     }
 
     /**
@@ -77,9 +85,13 @@ class UserOrdersController extends Controller
             return back()->with('status', 'Đơn hàng đã đặt, không thể Order thêm !');
         }
 
-        $request->validate([
-            'product_rice' => 'required',
-        ]);
+        if (empty($request->product_rice) && empty($request->toppings)) {
+            return back()->with('status', 'Vui lòng chọn món !');
+        }
+
+        // $request->validate([
+        //     'product_rice' => 'required',
+        // ]);
 
         $product_id_array = array();
         $product_rice_name = "";
@@ -169,31 +181,38 @@ class UserOrdersController extends Controller
     public function product()
     {
         $user = auth()->user();
-        $products_rice = Order_detail::select('products.id','products.name','products.price', DB::raw('count(*) AS count_product'))
+        $product_all = Order_detail::select('products.id','products.name','products.price','products.dish_type_name', DB::raw('count(*) AS count_product'))
         ->join('products', 'products.id', '=', 'order_details.product_id')
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->whereNotIn('statuses.column_name', ['cancel'])
         ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
-        ->where('products.type', 1)
+        // ->where('products.type', 1)
         ->where('order_details.disabled', 0)
         ->orderBy('products.id', 'asc')
-        ->groupBy('products.id','products.name','products.price')
+        ->groupBy('products.id','products.name','products.price','products.dish_type_name')
         ->get();
 
-        $products_option = Order_detail::select('products.id','products.name','products.price', DB::raw('count(*) AS count_product'))
-        ->join('products', 'products.id', '=', 'order_details.product_id')
-        ->join('orders', 'orders.id', '=', 'order_details.order_id')
-        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
-        ->whereNotIn('statuses.column_name', ['cancel'])
-        ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
-        ->where('products.type', 2)
-        ->where('order_details.disabled', 0)
-        ->orderBy('products.id', 'asc')
-        ->groupBy('products.id','products.name','products.price')
-        ->get();
+        $products_rice = array();
+        if ($product_all) {
+            foreach ($product_all as $key => $value) {
+                $products_rice[$value->dish_type_name][] = $value;
+            }
+        }
 
-        return view('today_product', compact('user', 'products_rice', 'products_option'));
+        // $products_option = Order_detail::select('products.id','products.name','products.price', DB::raw('count(*) AS count_product'))
+        // ->join('products', 'products.id', '=', 'order_details.product_id')
+        // ->join('orders', 'orders.id', '=', 'order_details.order_id')
+        // ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        // ->whereNotIn('statuses.column_name', ['cancel'])
+        // ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
+        // ->where('products.type', 2)
+        // ->where('order_details.disabled', 0)
+        // ->orderBy('products.id', 'asc')
+        // ->groupBy('products.id','products.name','products.price')
+        // ->get();
+
+        return view('today_product', compact('user', 'products_rice'));
     }
 
     /**

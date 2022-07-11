@@ -19,6 +19,7 @@ class CreateShopsTable extends Migration
             $table->text('address');
             $table->decimal('ship', 10, 0);
             $table->decimal('voucher', 10, 0);
+            $table->integer('delivery_id')->unsigned();
             $table->timestamps();
         });
     }

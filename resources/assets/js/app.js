@@ -20,6 +20,7 @@ window.Vue = require('vue').default;
 // Vue.component('order-notifications', require('./components/OrderNotifications.vue').default);
 Vue.component('transaction-history-component', require('./components/TransactionHistory.vue').default);
 Vue.component('show-wallet-component', require('./components/ListWallet.vue').default);
+Vue.component('form-collection', require('./components/FormCollection.vue').default);
 
 // const app = new Vue({
 //     el: '#app',
