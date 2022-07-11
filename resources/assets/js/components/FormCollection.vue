@@ -99,7 +99,7 @@ import axios from 'axios'
                 this.saved = false
                 this.loading = true
 
-                const response = await axios.post('http://localhost:88/api/get_url', {url: this.url_shopeefood})
+                const response = await axios.post('/api/get_url', {url: this.url_shopeefood})
 
                 if(response.data.dishes.result == 'success') {
 
@@ -217,14 +217,14 @@ import axios from 'axios'
                     'dishes': this.result_dish
                 }
 
-                const response_shop = await axios.post('http://localhost:88/api/create_shop', post_data_shop)
+                const response_shop = await axios.post('/api/create_shop', post_data_shop)
 
                 let post_data_dish = {
                     'dishes': this.result_dish,
                     'delivery_id': response_shop.data.result.delivery_id,
                 };
 
-                const response_dish = await axios.post('http://localhost:88/api/create_dishes', post_data_dish)
+                const response_dish = await axios.post('/api/create_dishes', post_data_dish)
 
 
                 if(response_shop.data.status == 1 && response_dish.data.status == 1) {
