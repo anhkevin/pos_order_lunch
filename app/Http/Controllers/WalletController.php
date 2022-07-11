@@ -93,8 +93,13 @@ class WalletController extends Controller
         if ($rowperpage >= 100) {
             $rowperpage = 1;
         }
+        
+        $compare = '>';
+        if (auth()->user()->is_admin) {
+        	$compare = '>=';
+        }
 
-        $list_wallet = User::where('total_money','>=', 0)
+        $list_wallet = User::where('total_money',$compare, 0)
         ->offset($row)
         ->limit($rowperpage)
         ->orderBy('total_money', 'desc')

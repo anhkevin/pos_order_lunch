@@ -86,6 +86,7 @@
                     <div class="links">
                         @auth
                             <a href="{{ url('/orders') }}">Home</a>
+                            <a href="{{ route('user.orders.today') }}">Order hôm nay</a>
                         @else
                             <a href="{{ route('login') }}">Login</a>
                             <a href="{{ route('register') }}">Register</a>

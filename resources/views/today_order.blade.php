@@ -57,7 +57,7 @@
                                     <th>No.</th>
                                     <th>User</th>
                                     <th>Cơm</th>
-                                    <th>Món thêm</th>
+                                    <th style="width: 200px;">Món thêm</th>
                                     <th>Tổng tiền</th>
                                     <th>Ghi chú</th>
                                     <th>Status</th>
@@ -82,7 +82,7 @@
                                         <td>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></td>
                                         <td>{{ $order->customer->name }}</td>
                                         <td>{{ $order->size }}</td>
-                                        <td>{{ Str::words($order->toppings, 3) }}</td>
+                                        <td>{{ $order->toppings }}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>

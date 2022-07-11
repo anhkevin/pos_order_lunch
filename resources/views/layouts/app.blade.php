@@ -68,7 +68,7 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
 
-                            <li><a href="{{ route('wallet.index') }}"><strong>My Wallet</strong></a></li>
+                            <li><a href="{{ route('wallet.index') }}"><strong>My Wallet</strong><small style="display: block;line-height: 1;text-align: center;color: red;">{{ "( ".number_format(Auth::user()->total_money, 0, ".", ",") . "đ )" }}</small></a></li>
                             @include('partials.notifications-dropdown')
 
                             <li class="dropdown">

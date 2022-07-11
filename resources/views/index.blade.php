@@ -28,7 +28,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Cơm</th>
-                                    <th>Món thêm</th>
+                                    <th style="width: 200px;">Món thêm</th>
                                     <th>Tổng tiền</th>
                                     <th>Ghi chú</th>
                                     <th>Status</th>
@@ -47,7 +47,7 @@
                                     @endif
                                         <td><a href="{{ route('user.orders.show', $order) }}">{{ date_format($order->created_at ,"Y/m/d") }}</a></td>
                                         <td>{{ $order->size }}</td>
-                                        <td>{{ Str::words($order->toppings, 3) }}</td>
+                                        <td>{{ $order->toppings }}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
