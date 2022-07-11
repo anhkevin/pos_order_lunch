@@ -11,7 +11,7 @@ class Product extends Model
      *
      * @var array
      */
-    protected $fillable = ['id','name','price','type','disabled'];
+    protected $fillable = ['id','name','price','type','shop_id','disabled'];
 
     public function scopeType($query, $type)
     {

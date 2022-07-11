@@ -19,6 +19,7 @@ class SeedProductsTable extends Migration
             'name' => 'Sườn Nướng',
             'price' => 25000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -26,6 +27,7 @@ class SeedProductsTable extends Migration
             'name' => 'Ốp La',
             'price' => 25000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -33,6 +35,7 @@ class SeedProductsTable extends Migration
             'name' => 'Bì - Chả',
             'price' => 25000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -40,6 +43,7 @@ class SeedProductsTable extends Migration
             'name' => 'Chả - Ốp La',
             'price' => 25000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -47,6 +51,7 @@ class SeedProductsTable extends Migration
             'name' => 'Ốp La - Bì',
             'price' => 25000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -54,6 +59,7 @@ class SeedProductsTable extends Migration
             'name' => 'Bì - Chả - Ốp La',
             'price' => 30000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -61,6 +67,7 @@ class SeedProductsTable extends Migration
             'name' => 'Đùi Gà Nướng Tỏi',
             'price' => 27000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -68,6 +75,7 @@ class SeedProductsTable extends Migration
             'name' => 'Cá Thác Lác Thì Là',
             'price' => 30000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -75,6 +83,7 @@ class SeedProductsTable extends Migration
             'name' => 'Ba Rọi Muối Ớt',
             'price' => 30000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -82,6 +91,7 @@ class SeedProductsTable extends Migration
             'name' => 'Sườn Que (sườn non)',
             'price' => 35000,
             'type' => 1,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -89,6 +99,7 @@ class SeedProductsTable extends Migration
             'name' => 'Canh',
             'price' => 9000,
             'type' => 2,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -96,6 +107,7 @@ class SeedProductsTable extends Migration
             'name' => 'Bì',
             'price' => 8000,
             'type' => 2,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -103,6 +115,7 @@ class SeedProductsTable extends Migration
             'name' => 'Chả',
             'price' => 8000,
             'type' => 2,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -110,6 +123,7 @@ class SeedProductsTable extends Migration
             'name' => 'Ốp La',
             'price' => 8000,
             'type' => 2,
+            'shop_id' => 1,
         ]);
 
         Product::create([
@@ -117,6 +131,7 @@ class SeedProductsTable extends Migration
             'name' => 'Cơm Thêm',
             'price' => 2000,
             'type' => 2,
+            'shop_id' => 1,
         ]);
     }
 
