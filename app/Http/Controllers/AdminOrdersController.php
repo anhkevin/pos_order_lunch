@@ -115,7 +115,7 @@ class AdminOrdersController extends Controller
                         'user_id' => $request->order->user_id,
                         'order_id' => $request->order->id,
                         'amount' => '-'.($request->order->amount - $request->order->discount),
-                        'note' => 'Order ID: ' . $request->order->id,
+                        'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
                         'disabled' => 0,
                     ]);
                 } else {
@@ -134,7 +134,7 @@ class AdminOrdersController extends Controller
                 'user_id' => $request->order->user_id,
                 'order_id' => $request->order->id,
                 'amount' => '-'.($request->order->amount - $request->order->discount),
-                'note' => 'Order ID: ' . $request->order->id,
+                'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
                 'disabled' => 0,
             ]);
         }
@@ -217,7 +217,7 @@ class AdminOrdersController extends Controller
                             'user_id' => $value->user_id,
                             'order_id' => $value->id,
                             'amount' => '-'.($value->amount - $value->discount),
-                            'note' => 'Order ID: ' . $value->id,
+                            'note' => 'Order ID: ' . $value->id . ', Order Date:' . date_format($value->created_at ,"Y/m/d"),
                             'disabled' => 0,
                         ]);
 
