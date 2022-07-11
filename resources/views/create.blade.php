@@ -43,9 +43,11 @@
                                 <div class="hr-line-dashed"></div>
                                 <br>
 
+                                <div class="col-sm-6">
                                 <ul class="list-group">
                                     @foreach ($product_rice as $key_product => $product)
-                                    <li class="list-group-item" style="width: 50%;display: inline-block;float: left;">
+                                    @if ($product_first->dish_type_name == $key_product)
+                                    <li class="list-group-item">
                                         <h4>{{ $key_product }}</h4>
                                         @foreach ($product as $value)
                                         <div>
@@ -72,8 +74,45 @@
                                         </div>
                                         @endforeach
                                     </li>
+                                    @endif
                                     @endforeach
                                 </ul>
+                                </div>
+                                <div class="col-sm-6">
+                                <ul class="list-group">
+                                    @foreach ($product_rice as $key_product => $product)
+                                    @if ($product_first->dish_type_name != $key_product)
+                                    <li class="list-group-item">
+                                        <h4>{{ $key_product }}</h4>
+                                        @foreach ($product as $value)
+                                        <div>
+                                            <label class="row" style="display: block;margin-bottom: 10px;display: flex;align-items: center;border: 1px solid #bbb;" for="product_{{ $value->id }}">
+                                                <div class="col-md-1">
+                                                    @if ($product_first->dish_type_name == $value->dish_type_name)
+                                                        <input type="radio" value="{{ $value->id }}" id="product_{{ $value->id }}" name="product_rice">
+                                                    @else
+                                                        <input type="checkbox" name="toppings[]" value="{{ $value->id }}" id="product_{{ $value->id }}">
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div style="width: 70px;"><img src="{{ $value->dish_photo }}" alt="" style="width: 100%; border-radius: 5px;"></div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <h4><strong>{{ $value->name }}</strong></h4>
+                                                    <p>
+                                                        <span style="color: red; font-size: 18px;">
+                                                            ({{ number_format($value->price, 0, ".", ",") . "đ" }})
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        @endforeach
+                                    </li>
+                                    @endif
+                                    @endforeach
+                                </ul>
+                                </div>
                             </form>
                         </div>
 

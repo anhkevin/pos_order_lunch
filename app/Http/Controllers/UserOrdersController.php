@@ -55,7 +55,7 @@ class UserOrdersController extends Controller
             }
         }
 
-        $product_first = Product::where('shop_id', $shop_default->value)->orderBy('id')->first();
+        $product_first = Product::where('shop_id', $shop_default->value)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereIn('statuses.column_name', ['booked','unpaid'])
