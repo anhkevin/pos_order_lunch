@@ -66,7 +66,7 @@ class UserOrdersController extends Controller
             $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
         }
 
-        return view('create', compact('product_rice', 'product_first', 'shop', 'message_order'));
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'message_order'));
     }
 
     /**
