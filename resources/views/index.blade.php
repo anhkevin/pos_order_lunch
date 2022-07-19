@@ -26,13 +26,12 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Cơm</th>
-                                    <th style="width: 200px;">Món thêm</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Ghi chú</th>
-                                    <th>Status</th>
-                                    <th>Option</th>
+                                    <th style="width:80px">Date</th>
+                                    <th>Món đã đặt</th>
+                                    <th style="width:80px">Tổng tiền</th>
+                                    <th style="width:150px">Ghi chú</th>
+                                    <th style="width:120px">Status</th>
+                                    <th style="width:150px">Option</th>
                                     <!-- <th>Thanh toán</th> -->
                                 </tr>
                             </thead>
@@ -46,8 +45,7 @@
                                     <tr>
                                     @endif
                                         <td><a href="{{ route('user.orders.show', $order) }}">{{ date_format($order->created_at ,"Y/m/d") }}</a></td>
-                                        <td>{{ $order->size }}</td>
-                                        <td>{{ $order->toppings }}</td>
+                                        <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
@@ -56,7 +54,7 @@
                                                 {{ number_format($order->amount, 0, ".", ",") . "đ" }}
                                             @endif
                                         </td>
-                                        <td>{{ Str::words($order->instructions, 4) }}</td>
+                                        <td>{{ Str::words($order->instructions, 50) }}</td>
                                         @if ($order->status->column_name != 'paid')
                                             <td style="color: rgb(150 62 62);font-weight: bold;">
                                         @else
@@ -65,7 +63,7 @@
                                         {{ $order->status->name }}</td>
                                         <td>
                                             @if ($order->status->column_name == 'order')
-                                                <a class="btn btn-success" href="{{ route('user.orders.edit', $order) }}">Edit</a>
+                                                <a class="btn btn-success" style="display:none" href="{{ route('user.orders.edit', $order) }}">Edit</a>
                                                 <form class="form-horizontal" method="post" action="{{ route('user.orders.cancel', $order) }}" style="display: inline-block;">
                                                     {{ csrf_field() }}
                                                     {!! method_field('patch') !!}

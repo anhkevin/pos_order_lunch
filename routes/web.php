@@ -53,6 +53,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-wallet/{user}', 'App\Http\Controllers\WalletController@index')->name('wallet.index_user');
 
     Route::get('/collection', 'App\Http\Controllers\CollectionController@index')->name('collect.index');
+
+    Route::prefix('api')->group(function () {
+        Route::post('/order/add', 'App\Http\Controllers\Api\OrdersController@api_add_order');
+    });
 });
 
 // Admin Routes - Make sure you implement an auth layer here

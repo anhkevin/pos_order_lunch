@@ -11,5 +11,5 @@ class Order_detail extends Model
      *
      * @var array
      */
-    protected $fillable = ['product_id', 'order_id', 'price'];
+    protected $fillable = ['product_id','product_name', 'order_id','number', 'price', 'dish_type_name'];
 }

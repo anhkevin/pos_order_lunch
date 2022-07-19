@@ -16,10 +16,13 @@ class CreateOrderDetailTable extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id')->unsigned();
+            $table->string('product_name')->nullable();
             $table->integer('order_id')->unsigned();
             $table->foreign('order_id')->references('id')->on('orders');
+            $table->integer('number')->unsigned()->default(0);
             $table->string('price')->nullable();
             $table->integer('disabled')->unsigned()->default(0);
+            $table->string('dish_type_name')->nullable();
             $table->timestamps();
         });
     }

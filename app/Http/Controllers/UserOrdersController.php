@@ -66,7 +66,7 @@ class UserOrdersController extends Controller
             $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
         }
 
-        return view('create', compact('product_rice', 'product_first', 'shop', 'message_order'));
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'message_order'));
     }
 
     /**
@@ -181,16 +181,16 @@ class UserOrdersController extends Controller
     public function product()
     {
         $user = auth()->user();
-        $product_all = Order_detail::select('products.id','products.name','products.price','products.dish_type_name', DB::raw('count(*) AS count_product'))
-        ->join('products', 'products.id', '=', 'order_details.product_id')
+        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('count(*) AS count_product'))
+        // ->join('products', 'products.id', '=', 'order_details.product_id')
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->whereNotIn('statuses.column_name', ['cancel'])
         ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
         // ->where('products.type', 1)
         ->where('order_details.disabled', 0)
-        ->orderBy('products.id', 'asc')
-        ->groupBy('products.id','products.name','products.price','products.dish_type_name')
+        ->orderBy('order_details.product_id', 'asc')
+        ->groupBy('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name')
         ->get();
 
         $products_rice = array();

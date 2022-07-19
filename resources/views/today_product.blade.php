@@ -41,7 +41,7 @@
                                 @foreach ($products as $product)
                                     @php($total_amount+=($product->count_product * $product->price))
                                     <tr style="color: black;font-weight: 600;">
-                                        <td>{{ $product->name }}</td>
+                                        <td>{{ $product->product_name }}</td>
                                         <td>{{ $product->count_product }}</td>
                                         <td>{{ number_format($product->count_product * $product->price, 0, ".", ",") . "đ" }}</td>
                                     </tr>

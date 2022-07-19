@@ -126,6 +126,10 @@ class CollectionController extends Controller
 
         $shop = [];
 
+        if(!empty($data_shop) && !empty($request->url_shopeefood)) {
+            $data_shop['address'] = $request->url_shopeefood;
+        }
+
         if(empty($shop_infor)) {
 
             $shop = Shop::create([
