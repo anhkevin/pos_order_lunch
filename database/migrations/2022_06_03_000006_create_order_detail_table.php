@@ -22,6 +22,7 @@ class CreateOrderDetailTable extends Migration
             $table->integer('number')->unsigned()->default(0);
             $table->string('price')->nullable();
             $table->integer('disabled')->unsigned()->default(0);
+            $table->string('dish_type_name')->nullable();
             $table->timestamps();
         });
     }

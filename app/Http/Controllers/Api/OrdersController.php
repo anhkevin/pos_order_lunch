@@ -51,7 +51,7 @@ class OrdersController extends Controller
         $amount = 0;
         foreach ($request->products as $key => $value) {
             $value = (object)$value;
-            $product_rice_name .= $value->name . '\n';
+            $product_rice_name .= $value->number . ' x ' . $value->name . '\r\n';
 
             $price_product = $value->number * $value->price;
             if(!empty($value->discount_price)) {
@@ -63,7 +63,7 @@ class OrdersController extends Controller
         $order = Order::create([
             'user_id' => auth()->user()->id,
             'address' => auth()->user()->name,
-            'size' => $product_rice_name,
+            'size' => rtrim($product_rice_name, '\r\n'),
             'toppings' => '',
             'instructions' => $request->comment,
             'amount' => $amount,
@@ -82,6 +82,7 @@ class OrdersController extends Controller
                 'order_id' => $order->id,
                 'price' => $price_product,
                 'number' => $value->number,
+                'dish_type_name' => $value->dish_type_name
             ]);
         }
 

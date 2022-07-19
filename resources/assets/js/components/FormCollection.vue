@@ -214,6 +214,7 @@ import axios from 'axios'
 
                 let post_data_shop = {
                     'shop_infor': this.shop_infor,
+                    'url_shopeefood':this.url_shopeefood,
                     'dishes': this.result_dish
                 }
 

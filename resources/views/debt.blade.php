@@ -25,12 +25,11 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>User</th>
+                                    <th style="width:80px">Date</th>
+                                    <th style="width:100px">User</th>
                                     <th>Cơm</th>
-                                    <th>Món thêm</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Status</th>
+                                    <th style="width:80px">Tổng tiền</th>
+                                    <th style="width:120px">Status</th>
                                     @if (auth()->user()->is_admin)
                                         <th>Option</th>
                                     @endif
@@ -46,8 +45,7 @@
                                     @endif
                                         <td>{{ date_format($order->created_at ,"Y/m/d") }}</td>
                                         <td>{{ $order->customer->name }}</td>
-                                        <td>{{ $order->size }}</td>
-                                        <td>{{ Str::words($order->toppings, 3) }}</td>
+                                        <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
@@ -77,7 +75,6 @@
                             </tbody>
                             <tfoot>
                                 <tr style="color:red;font-weight:bold">
-                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td>Tổng tiền</td>

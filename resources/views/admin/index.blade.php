@@ -24,13 +24,12 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>User</th>
+                                    <th style="width:40px">ID</th>
+                                    <th style="width:120px">User</th>
                                     <th>Cơm</th>
-                                    <th style="width: 100px;">Món thêm</th>
-                                    <th>Tổng tiền</th>
+                                    <th style="width:120px">Tổng tiền</th>
                                     <th style="width: 150px;">Ghi chú</th>
-                                    <th>Status</th>
+                                    <th style="width:80px">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,8 +43,7 @@
                                     @endif
                                         <td>{{ $order->id }}</td>
                                         <td>{{ $order->customer->name }}</td>
-                                        <td>{{ $order->size }}</td>
-                                        <td>{{ $order->toppings }}</td>
+                                        <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
@@ -54,7 +52,7 @@
                                                 {{ number_format($order->amount, 0, ".", ",") . "đ" }}
                                             @endif
                                         </td>
-                                        <td>{{ $order->instructions }}</td>
+                                        <td>{{ Str::words($order->instructions, 50) }}</td>
                                         <td><a href="{{ route('admin.orders.edit', $order) }}">{{ $order->status->name }}</a></td>
                                     </tr>
                                 @endforeach

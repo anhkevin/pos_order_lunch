@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <div class="alert" v-if="alert" style="background-color: #f44336;color: white;transition: opacity 0.6s;">{{ this.alert }}</div>
+        <div class="alert alert-danger" v-if="alert" style="color: #842029;background-color: #f8d7da;border-color: #f5c2c7;">{{ this.alert }}</div>
+        <div class="alert alert-success" v-if="alert_success" style="color: #0f5132;background-color: #d1e7dd;border-color: #badbcc;">{{ this.alert_success }}</div>
         <h1 style="margin: 0;">{{ this.title }}</h1>
         <div class="row">
             <div class="col-md-8">
@@ -33,7 +34,7 @@
                                             {{ sub_dish.price_text }}
                                         </div>
                                         <div>
-                                            <div class="btn-adding" v-on:click="add_product_cart(sub_dish.id,sub_dish.name,sub_dish.price,sub_dish.discount_price), scrollToTop()" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: #ee4d2d;text-align: center;color: #fff;display: inline-block;border-radius: 4px;">
+                                            <div class="btn-adding" v-on:click="add_product_cart(sub_dish.id,sub_dish.name,sub_dish.price,sub_dish.discount_price,sub_dish.dish_type_name), scrollToTop()" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: #ee4d2d;text-align: center;color: #fff;display: inline-block;border-radius: 4px;">
                                                 +
                                             </div>
                                         </div>
@@ -101,6 +102,8 @@ import axios from 'axios'
         props: ['url_shopeefood','ship_fee','voucher','title','alert'],
 
         data () {
+            var today = new Date();
+
             return {
                 loading: false,
                 saved: false,
@@ -108,15 +111,19 @@ import axios from 'axios'
                 result_dish: [],
                 filter_dish_by_menu: [],
                 shop_infor: {},
-                productItems: []
+                productItems: [],
+                date_today: today.getFullYear()+"_"+(today.getMonth()+1)+"_"+today.getDate(),
+                alert_success: ''
             }
         },
 
         created() {
             this.get_dish();
+            this.remove_old_localStorage()
 
             if (localStorage.length > 0) {
-                let items_card = JSON.parse(localStorage.getItem("stored_card_pos"));
+
+                let items_card = JSON.parse(localStorage.getItem("stored_card_pos"+this.date_today));
 
                 if (items_card === null) {
                     items_card = [];
@@ -138,14 +145,14 @@ import axios from 'axios'
 
                 if (response.data.status) {
                     this.productItems = [];
-                    localStorage.removeItem('stored_card_pos');
-                }
+                    localStorage.removeItem('stored_card_pos'+this.date_today);
 
-                if (response.data.message) {
+                    this.alert_success = response.data.message;
+                } else {
                     this.alert = response.data.message;
                 }
             },
-            add_product_cart: function (id, name, price, discount_price) {
+            add_product_cart: function (id, name, price, discount_price, dish_type_name) {
                 
                 let number_product = 1;
                 const indexOfObject = this.productItems.findIndex(element => {
@@ -164,12 +171,13 @@ import axios from 'axios'
                         name: name,
                         price: price,
                         discount_price: discount_price,
-                        number:number_product
+                        number:number_product,
+                        dish_type_name:dish_type_name
                     };
                     this.productItems.push(item_product);
                 }
 
-                localStorage.setItem('stored_card_pos', JSON.stringify(this.productItems));
+                localStorage.setItem('stored_card_pos'+this.date_today, JSON.stringify(this.productItems));
             },
             remove_product_cart: function (indexOfObject) {
                 let number_product = parseFloat(this.productItems[indexOfObject].number) - 1;
@@ -180,7 +188,7 @@ import axios from 'axios'
                     this.productItems.splice(indexOfObject, 1);
                 }
 
-                localStorage.setItem('stored_card_pos', JSON.stringify(this.productItems));
+                localStorage.setItem('stored_card_pos'+this.date_today, JSON.stringify(this.productItems));
             },
             async get_dish() {
                 
@@ -323,6 +331,23 @@ import axios from 'axios'
 
             scrollToTop() {
                 window.scrollTo(0,0);
+            },
+
+            remove_old_localStorage() {
+                var arr = []; // Array to hold the keys
+                // Iterate over localStorage and insert the keys that meet the condition into arr
+                for (var i = 0; i < localStorage.length; i++){
+                    let key_today = "stored_card_pos"+this.date_today;
+                    if (localStorage.key(i) != key_today && 
+                        localStorage.key(i).substring(0,15) == 'stored_card_pos') {
+                        arr.push(localStorage.key(i));
+                    }
+                }
+
+                // Iterate over arr and remove the items by key
+                for (var i = 0; i < arr.length; i++) {
+                    localStorage.removeItem(arr[i]);
+                }
             }
         }
     }

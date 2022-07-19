@@ -54,13 +54,12 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>User</th>
-                                    <th>Cơm</th>
-                                    <th style="width: 200px;">Món thêm</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Ghi chú</th>
-                                    <th>Status</th>
+                                    <th style="width:40px">No.</th>
+                                    <th style="width:100px">User</th>
+                                    <th>Món đã đặt</th>
+                                    <th style="width:80px">Tổng tiền</th>
+                                    <th style="width:150px">Ghi chú</th>
+                                    <th style="width:120px">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,8 +80,7 @@
                                     @endif
                                         <td>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></td>
                                         <td>{{ $order->customer->name }}</td>
-                                        <td>{{ $order->size }}</td>
-                                        <td>{{ $order->toppings }}</td>
+                                        <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
@@ -91,7 +89,7 @@
                                                 {{ number_format($order->amount, 0, ".", ",") . "đ" }}
                                             @endif
                                         </td>
-                                        <td>{{ Str::words($order->instructions, 4) }}</td>
+                                        <td>{{ Str::words($order->instructions, 50) }}</td>
                                         @if ($order->status->column_name != 'paid')
                                             <td style="color: rgb(150 62 62);font-weight: bold;">
                                         @else
@@ -105,10 +103,13 @@
                                 <tr style="color:red;font-weight:bold">
                                     <td></td>
                                     <td></td>
-                                    <td></td>
                                     <td>Tổng tiền</td>
                                     <td>{{ number_format($total_amount_discount, 0, ".", ",") . "đ" }}</td>
-                                    <td><input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}"></td>
+                                    <td>
+                                        @if ($total_amount > 0)
+                                        <input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}">
+                                        @endif
+                                    </td>
                                     <td></td>
                                 </tr>
                             </tfood>
