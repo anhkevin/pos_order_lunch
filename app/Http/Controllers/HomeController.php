@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Order;
+use App\Models\Shop;
+use App\Models\General;
+use DB;
 
 class HomeController extends Controller
 {
@@ -13,7 +17,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -23,6 +27,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $orders = Order::with('status')
+        ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
+        ->orderBy('id', 'asc')->get();
+
+        $value_shop = General::where('key', 'shop_default')->first();
+        $shop_info = Shop::where('id', $value_shop->value)->first();
+
+        return view('dashboard', compact('orders', 'shop_info'));
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="">
         <div class="alert alert-danger" v-if="alert" style="color: #842029;background-color: #f8d7da;border-color: #f5c2c7;">{{ this.alert }}</div>
         <div class="alert alert-success" v-if="alert_success" style="color: #0f5132;background-color: #d1e7dd;border-color: #badbcc;">{{ this.alert_success }}</div>
         <h1 style="margin: 0;">{{ this.title }}</h1>

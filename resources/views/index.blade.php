@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row">
+<div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">My Orders</div>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">My Orders</h4>
+                </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     @if (session('message'))
                         <div class="alert alert-success">
                             {{ session('message') }}
@@ -23,15 +24,15 @@
                     <order-alert user_id="{{ auth()->user()->id }}"></order-alert>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-responsive-md">
                             <thead>
                                 <tr>
-                                    <th style="width:80px">Date</th>
+                                    <th class="width80">Date</th>
                                     <th>Món đã đặt</th>
-                                    <th style="width:80px">Tổng tiền</th>
-                                    <th style="width:150px">Ghi chú</th>
-                                    <th style="width:120px">Status</th>
-                                    <th style="width:150px">Option</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Ghi chú</th>
+                                    <th>Status</th>
+                                    <th>Option</th>
                                     <!-- <th>Thanh toán</th> -->
                                 </tr>
                             </thead>
@@ -55,12 +56,13 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        @if ($order->status->column_name != 'paid')
-                                            <td style="color: rgb(150 62 62);font-weight: bold;">
-                                        @else
-                                            <td>
-                                        @endif
-                                        {{ $order->status->name }}</td>
+                                            @if ($order->status->column_name != 'paid')
+                                                <td style="color: rgb(150 62 62);font-weight: bold;">
+                                            @else
+                                                <td>
+                                            @endif
+                                            <span class="badge light badge-success">{{ $order->status->name }}</td></span>
+                                        </td>
                                         <td>
                                             @if ($order->status->column_name == 'order')
                                                 <a class="btn btn-success" style="display:none" href="{{ route('user.orders.edit', $order) }}">Edit</a>
@@ -90,5 +92,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
