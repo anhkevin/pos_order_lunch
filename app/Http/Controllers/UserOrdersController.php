@@ -6,6 +6,7 @@ use App\Order;
 use App\Models\Shop;
 use App\Models\General;
 use App\Models\Order_status;
+use App\Models\Order_type;
 use App\Order_detail;
 use App\Product;
 use App\Status;
@@ -42,20 +43,47 @@ class UserOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $shop_default = General::where('key', 'shop_default')->first();
-        $shop = Shop::where('id', $shop_default->value)->first();
+        $shop_id = $shop_default->value;
+        $title = 'Cơm trưa ngày: ' . date("Y-m-d");
+        if(!empty($request->order_type)) {
+            $order_type = base64_decode($request->order_type);
+            if ($shop_type = Order_type::where('id', $order_type)->first()) {
+                $shop_id = $shop_type->shop_id;
+                $title = $shop_type->order_name;
+            }
+        } else {
+            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                $shop_id = $shop_type->shop_id;
+                $title = $shop_type->order_name;
+            } else {
+                $shop_type = Order_type::create([
+                    'order_date' => date("Y-m-d"),
+                    'order_name' => $title,
+                    'shop_id' => $shop_id,
+                    'status_id' => 1,
+                    'pay_type' => 0,
+                    'is_default' => 1,
+                ]);
+            }
+        }
+        if (!empty($shop_type)) {
+            $shop_id = $shop_type->shop_id;
+            $title = $shop_type->order_name;
+        }
+        $shop = Shop::where('id', $shop_id)->first();
 
         $product_rice = array();
-        $product_all = Product::where('shop_id', $shop_default->value)->orderBy('id')->get();
+        $product_all = Product::where('shop_id', $shop_id)->orderBy('id')->get();
         if ($product_all) {
             foreach ($product_all as $key => $value) {
                 $product_rice[$value->dish_type_name][] = $value;
             }
         }
 
-        $product_first = Product::where('shop_id', $shop_default->value)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
+        $product_first = Product::where('shop_id', $shop_id)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereIn('statuses.column_name', ['booked','unpaid'])
@@ -66,7 +94,7 @@ class UserOrdersController extends Controller
             $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
         }
 
-        return view('order.create', compact('product_rice', 'product_first', 'shop', 'message_order'));
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'message_order', 'title'));
     }
 
     /**
