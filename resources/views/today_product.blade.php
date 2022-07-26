@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">Danh sách món đã order ngày <span style="color:red">{{ date("Y/m/d") }}</span></div>
+            <div class="card">
+                <div class="card-header">Danh sách món đã order ngày <span style="color:red">{{ date("Y/m/d") }}</span></div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     @if (session('message'))
                         <div class="alert alert-success">
                             {{ session('message') }}
