@@ -23,7 +23,6 @@
                     <img class="logo-abbr" src="{{URL::asset('images/logo.png')}}" alt="">
                     <img class="logo-compact" src="{{URL::asset('images/logo-text.png')}}" alt="">
                     <img class="brand-title" src="{{URL::asset('images/logo-text.png')}}" alt="">
-                    
                 </a>
 
                 <div class="nav-control">
@@ -52,14 +51,14 @@
                                 </div>
                             </div>
                             <ul class="navbar-nav header-right">
+                                @auth
                                 <li class="nav-item">
                                     <div class="d-flex weather-detail">
-                                        <span><i class="las la-cloud"></i>21</span>
-                                        Ho Chi Minh City
+                                        <span><i class="las la-wallet"></i>{{ number_format(Auth::user()->total_money, 0, ".", ",") . "đ" }}</span>
                                     </div>
                                 </li>
 
-                                @auth
+                                
                                 <li class="nav-item dropdown notification_dropdown">
                                     <a class="nav-link  ai-icon" href="javascript:void(0)" role="button" data-toggle="dropdown">
                                         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +72,7 @@
                                                 <li>
                                                     <div class="timeline-panel">
                                                         <div class="media mr-2">
-                                                            <img alt="image" width="50" src="https://mophy.dexignzone.com/laravel/demo/images/avatar/1.jpg">
+                                                            <img alt="image" width="50" src="{{URL::asset('images/avatar/1.jpg')}}">
                                                         </div>
                                                         <div class="media-body">
                                                             <h6 class="mb-1">Dr sultads Send you Photo</h6>
@@ -106,7 +105,7 @@
                                                 <li>
                                                     <div class="timeline-panel">
                                                         <div class="media mr-2">
-                                                            <img alt="image" width="50" src="https://mophy.dexignzone.com/laravel/demo/images/avatar/1.jpg">
+                                                            <img alt="image" width="50" src="{{URL::asset('images/avatar/1.jpg')}}">
                                                         </div>
                                                         <div class="media-body">
                                                             <h6 class="mb-1">Dr sultads Send you Photo</h6>
@@ -145,15 +144,11 @@
                                     <a class="nav-link" href="javascript:void(0)" role="button" data-toggle="dropdown">
                                         <div class="header-info">
                                             <span class="text-black">Hello,<strong> {{ Auth::user()->name }}</strong></span>
-                                            @if (Auth::user()->is_admin == 1)<p class="fs-12 mb-0">Super Admin</p>@endif
+                                            @if (Auth::user()->is_admin == 1)<p class="fs-12 mb-0">Super Admin</p>@else<p class="fs-12 mb-0">Member</p>@endif
                                         </div>
-                                        <img src="https://mophy.dexignzone.com/laravel/demo/images/profile/17.jpg" width="20" alt="">
+                                        <img src="{{URL::asset('images/profile/17.jpg')}}" width="20" alt="">
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <!-- <a href="https://mophy.dexignzone.com/laravel/demo/page-login" class="dropdown-item ai-icon">
-                                            <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                            <span class="ml-2">Logout </span>
-                                        </a> -->
                                         <a href="{{ route('logout') }}"
                                             class="dropdown-item ai-icon"
                                             onclick="event.preventDefault();
@@ -222,14 +217,14 @@
 
                         <li class="{{ url()->current() == route('user.orders') ? 'mm-active' : ''}}">
                             <a class="ai-icon" href="{{ route('user.orders') }}" aria-expanded="false">
-                                <i class="flaticon-381-networking"></i>
+                                <i class="flaticon-381-network"></i>
                                 <span class="nav-text">My Orders</span>
                             </a>
                         </li>
 
                         <li class="{{ url()->current() == route('user.orders.create') ? 'mm-active' : ''}}">
                             <a class="ai-icon" href="{{ route('user.orders.create') }}" aria-expanded="false">
-                                <i class="flaticon-381-networking"></i>
+                                <i class="flaticon-381-notepad"></i>
                                 <span class="nav-text">Đặt món</span>
                             </a>
                         </li>
@@ -249,14 +244,14 @@
 
                         <li class="{{ url()->current() == route('wallet.index') ? 'mm-active' : ''}}">
                             <a class="ai-icon" href="{{ route('wallet.index') }}" aria-expanded="false">
-                            <i class="flaticon-381-networking"></i>
+                            <i class="flaticon-381-controls-2"></i>
                             <span class="nav-text">My wallet</span>
                             </a>
                         </li>
 
                         <li>
-                            <a class="ai-icon" href="https://docs.google.com/spreadsheets/d/1yocaM5PcOeIsuqR-ivARvHBfzI3XhN0Sog0KILt6F8U" aria-expanded="false">
-                                <i class="flaticon-381-television"></i>
+                            <a class="ai-icon" target="_blank" href="https://docs.google.com/spreadsheets/d/1yocaM5PcOeIsuqR-ivARvHBfzI3XhN0Sog0KILt6F8U" aria-expanded="false">
+                                <i class="flaticon-381-note"></i>
                                 <span class="nav-text">Góp ý</span>
                             </a>
                         </li>
@@ -264,7 +259,7 @@
                         @if (Auth::user()->is_admin == 1)
                         <li class="{{ url()->current() == route('admin.orders') ? 'mm-active' : ''}}">
                             <a class="ai-icon" href="{{ route('admin.orders') }}" aria-expanded="false">
-                                <i class="flaticon-381-television"></i>
+                                <i class="flaticon-381-user"></i>
                                 <span class="nav-text">Admin</span>
                             </a>
                         </li>

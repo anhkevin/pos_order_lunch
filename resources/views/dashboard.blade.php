@@ -21,21 +21,21 @@
                                 </svg>
                                 <div class="mr-auto">
                                     <h5 class="fs-20 text-black font-w600">Tổng tiền còn lại</h5>
-                                    <span class="text-num text-black font-w600">37,500đ</span>
+                                    <span class="text-num text-black font-w600">{{ number_format(Auth::user()->total_money, 0, ".", ",") . "đ" }}</span>
                                 </div>
                             </div>
 
                             <div class="mr-3 mb-3">
                                 <p class="fs-14 mb-1">Tổng tiền đã nạp</p>
-                                <span class="text-black">740,500đ</span>
+                                <span class="text-black">{{ number_format(Auth::user()->total_deposit, 0, ".", ",") . "đ" }}</span>
                             </div>
                             <div class="mr-3 mb-3">
                                 <p class="fs-14 mb-1">Tổng tiền sử dụng Order</p>
-                                <span class="text-black">740,500đ</span>
+                                <span class="text-black">{{ number_format(Auth::user()->total_paid, 0, ".", ",") . "đ" }}</span>
                             </div>
                             <div>
                                 <button type="button" class="btn btn-lg btn-primary" disabled>
-                                    <a class="text-white" href="#">Xem thêm</a>  
+                                    <a class="text-white" href="{{ route('wallet.index') }}">Xem thêm</a>  
                                 </button>
                             </div>
                             
@@ -147,7 +147,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="d-flex align-items-center width150">
-                                                            <img src="https://mophy.dexignzone.com/laravel/demo/images/avatar/10.png" alt="" width="40" class="rounded-circle mr-2">
+                                                            <img src="{{URL::asset('images/avatar/1.jpg')}}" alt="" width="40" class="rounded-circle mr-2">
                                                             {{ $order->customer->name }}
                                                         </div>
                                                     </td>
