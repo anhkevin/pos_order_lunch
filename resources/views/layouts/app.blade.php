@@ -11,36 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <!-- <link href="{{ mix('css/app.css') }}" rel="stylesheet"> -->
-    <link href="https://mophy.dexignzone.com/laravel/demo/css/style.css" rel="stylesheet">
-    <style>
-        .icon-sidebar {
-            with: 27px;
-            height: 27px;
-            opacity: .7;
-            margin-right: 7px;
-        }
-
-        .icon-sidebar-sm {
-            with: 15px;
-            height: 15px;
-            opacity: .7;
-            margin-right: 7px;
-        }
-
-        .between_element {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .bg-gradient-active {
-            background: #00416A;  /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #E4E5E6, #1b99e8);  /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #E4E5E6, #1b99e8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            border-top-right-radius: 25px;
-            border-bottom-right-radius: 25px;
-        }
-    </style>
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -48,11 +19,10 @@
         @if(url()->current() != route('login') && url()->current() != route('register'))
         <div id="main-wrapper" class="show">
             <div class="nav-header">
-                <a href="https://mophy.dexignzone.com/laravel/demo/index" class="brand-logo">
-                    <img class="logo-abbr" src="https://mophy.dexignzone.com/laravel/demo/images/logo.png" alt="">
-                    <img class="logo-compact" src="https://mophy.dexignzone.com/laravel/demo/images/logo-text.png" alt="">
-                    <img class="brand-title" src="https://mophy.dexignzone.com/laravel/demo/images/logo-text.png" alt="">
-                    <!-- <img class="w-full logo-abbr" src="{{URL::asset('/img/logo_huyteam.jpeg')}}"/> -->
+                <a href="/" class="brand-logo">
+                    <img class="logo-abbr" src="{{URL::asset('images/logo.png')}}" alt="">
+                    <img class="logo-compact" src="{{URL::asset('images/logo-text.png')}}" alt="">
+                    <img class="brand-title" src="{{URL::asset('images/logo-text.png')}}" alt="">
                     
                 </a>
 
@@ -232,12 +202,11 @@
             
             <div class="deznav">
                 <div class="deznav-scroll ps between_element">
-                    <ul class="metismenu" id="menu" style="gap: 25px;">
+                    <ul class="metismenu" id="menu">
                         @if(url()->current() != route('login') && url()->current() != route('register'))              
-                        <li>
-                            <a class="ai-icon {{ url()->current() == route('dashboard') ? 'bg-gradient-active' : ''}}" href="{{ route('dashboard') }}" aria-expanded="false">
-                            <!-- <i class="flaticon-381-networking"></i> -->
-                                <img src="{{URL::asset('/img/dashboard.png')}}" alt="" class="w-full icon-sidebar">
+                        <li class="{{ url()->current() == route('dashboard') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('dashboard') }}" aria-expanded="false">
+                                <i class="flaticon-381-networking"></i>
                                 <span class="nav-text">Dashboard</span>
                             </a>
                         </li>
@@ -251,57 +220,51 @@
                             </a>
                         </li> -->
 
-                        <li>
-                            <a class="ai-icon {{ url()->current() == route('user.orders') ? 'bg-gradient-active' : ''}}" href="{{ route('user.orders') }}" aria-expanded="false">
-                            <!-- <i class="flaticon-381-networking"></i> -->
-                            <img src="{{URL::asset('/img/order.png')}}" alt="" class="w-full icon-sidebar">
-                            <span class="nav-text">My Orders</span>
+                        <li class="{{ url()->current() == route('user.orders') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('user.orders') }}" aria-expanded="false">
+                                <i class="flaticon-381-networking"></i>
+                                <span class="nav-text">My Orders</span>
                             </a>
                         </li>
 
-                        <li>
-                            <a class="ai-icon {{ url()->current() == route('user.orders.create') ? 'bg-gradient-active' : ''}}" href="{{ route('user.orders.create') }}" aria-expanded="false">
-                            <!-- <i class="flaticon-381-networking"></i> -->
-                            <img src="{{URL::asset('/img/add.png')}}" alt="" class="w-full icon-sidebar">
-                            <span class="nav-text">Đặt món</span>
+                        <li class="{{ url()->current() == route('user.orders.create') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('user.orders.create') }}" aria-expanded="false">
+                                <i class="flaticon-381-networking"></i>
+                                <span class="nav-text">Đặt món</span>
                             </a>
                         </li>
 
                         <li>
                             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                                <!-- <i class="flaticon-381-television"></i> -->
-                                <img src="{{URL::asset('/img/data-management.png')}}" alt="" class="w-full icon-sidebar">
+                                <i class="flaticon-381-television"></i>
                                 <span class="nav-text">Thống kê</span>
                             </a>
                             <ul aria-expanded="false" class="mm-collapse">
-                                <li><a href="{{ route('user.orders.today') }}" class="{{ url()->current() == route('user.orders.today') ? 'bg-gradient-active' : ''}}">Orders hôm nay</a></li>
-                                <li><a href="{{ route('user.orders.product') }}" class="{{ url()->current() == route('user.orders.product') ? 'bg-gradient-active' : ''}}">Món đặt hôm nay</a></li>
-                                <li><a href="{{ route('user.orders.debt') }}" class="{{ url()->current() == route('user.orders.debt') ? 'bg-gradient-active' : ''}}">Công nợ</a></li>
-                                <li><a href="{{ route('wallet.show') }}" class="{{ url()->current() == route('wallet.show') ? 'bg-gradient-active' : ''}}">Danh sách Wallet</a></li>                
+                                <li class="{{ url()->current() == route('user.orders.today') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.today') }}">Orders hôm nay</a></li>
+                                <li class="{{ url()->current() == route('user.orders.product') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.product') }}">Món đặt hôm nay</a></li>
+                                <li class="{{ url()->current() == route('user.orders.debt') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.debt') }}">Công nợ</a></li>
+                                <li class="{{ url()->current() == route('wallet.show') ? 'mm-active' : ''}}"><a href="{{ route('wallet.show') }}">Danh sách Wallet</a></li>                
                             </ul>
                         </li>
 
-                        <li>
-                            <a class="ai-icon {{ url()->current() == route('wallet.index') ? 'bg-gradient-active' : ''}}" href="{{ route('wallet.index') }}" aria-expanded="false">
-                            <!-- <i class="flaticon-381-networking"></i> -->
-                            <img src="{{URL::asset('/img/wallet.png')}}" alt="" class="w-full icon-sidebar">
+                        <li class="{{ url()->current() == route('wallet.index') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('wallet.index') }}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
                             <span class="nav-text">My wallet</span>
                             </a>
                         </li>
 
                         <li>
                             <a class="ai-icon" href="https://docs.google.com/spreadsheets/d/1yocaM5PcOeIsuqR-ivARvHBfzI3XhN0Sog0KILt6F8U" aria-expanded="false">
-                                <!-- <i class="flaticon-381-television"></i> -->
-                                <img src="{{URL::asset('/img/feedback.png')}}" alt="" class="w-full icon-sidebar">
+                                <i class="flaticon-381-television"></i>
                                 <span class="nav-text">Góp ý</span>
                             </a>
                         </li>
                         
                         @if (Auth::user()->is_admin == 1)
-                        <li>
-                            <a class="ai-icon {{ url()->current() == route('admin.orders') ? 'bg-gradient-active' : ''}}" href="{{ route('admin.orders') }}" aria-expanded="false">
-                                <!-- <i class="flaticon-381-television"></i> -->
-                                <img src="{{URL::asset('/img/feedback.png')}}" alt="" class="w-full icon-sidebar">
+                        <li class="{{ url()->current() == route('admin.orders') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('admin.orders') }}" aria-expanded="false">
+                                <i class="flaticon-381-television"></i>
                                 <span class="nav-text">Admin</span>
                             </a>
                         </li>
@@ -312,41 +275,26 @@
 
                     @if(url()->current() != route('login') && url()->current() != route('register'))
                     <div class="copyright">
-                        <p><strong>Mophy Payment Admin Dashboard</strong> © 2021 All Rights Reserved</p>
-                        <p>Made with <span class="heart"></span> by TONIDEV & TIANDEV</p>
+                        <p>© 2022 All Rights Reserved</p>
+                        <p>Made with <span class="heart"></span> by </p><p>TONIDEV & TIANDEV</p>
                     </div>
                     @endif
                     
                 </div>
             </div>
-    <!--**********************************
-    Sidebar end
-    ***********************************-->        <!--**********************************
-        Sidebar end
-    ***********************************-->
-            
-    <!--**********************************
-        Content body start
-    ***********************************-->
+
+
             <div class="content-body" style="min-height: 1140px;">
                 <div class="container-fluid">
                     @yield('content')
                 </div>
             </div>
         </div>
-
-
         
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://mophy.dexignzone.com/laravel/demo/vendor/global/global.min.js" type="text/javascript"></script>
-    <script src="https://mophy.dexignzone.com/laravel/demo/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="https://mophy.dexignzone.com/laravel/demo/js/custom.js" type="text/javascript"></script>
-    <script src="https://mophy.dexignzone.com/laravel/demo/js/deznav-init.js" type="text/javascript"></script>
-    <!-- <script id="DZScript" src="https://dzassets.s3.amazonaws.com/w3-global.js?btn_dir=right"></script> -->
-
     <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ mix('js/vendor.js') }}"></script>
 
     @yield('extra-js')
 </body>
