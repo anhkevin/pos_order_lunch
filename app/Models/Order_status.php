@@ -11,5 +11,5 @@ class Order_status extends Model
      *
      * @var array
      */
-    protected $fillable = ['order_date','status_id'];
+    protected $fillable = ['order_date','status_id', 'order_type'];
 }

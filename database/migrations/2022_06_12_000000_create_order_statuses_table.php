@@ -17,6 +17,7 @@ class CreateOrderStatusesTable extends Migration
             $table->increments('id');
             $table->date('order_date');
             $table->integer('status_id')->unsigned();
+            $table->integer('order_type')->unsigned();
             $table->timestamps();
         });
     }

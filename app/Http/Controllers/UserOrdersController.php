@@ -6,6 +6,7 @@ use App\Order;
 use App\Models\Shop;
 use App\Models\General;
 use App\Models\Order_status;
+use App\Models\Order_type;
 use App\Order_detail;
 use App\Product;
 use App\Status;
@@ -42,31 +43,64 @@ class UserOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $shop_default = General::where('key', 'shop_default')->first();
-        $shop = Shop::where('id', $shop_default->value)->first();
+        $shop_id = $shop_default->value;
+        $title = 'Cơm trưa ngày: ' . date("Y-m-d");
+        if(!empty($request->order_type)) {
+            $order_type = base64_decode($request->order_type);
+            if ($shop_type = Order_type::where('id', $order_type)->first()) {
+                $shop_id = $shop_type->shop_id;
+                $title = $shop_type->order_name;
+            }
+        } else {
+            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                $shop_id = $shop_type->shop_id;
+                $title = $shop_type->order_name;
+            } else {
+                $shop_type = Order_type::create([
+                    'order_date' => date("Y-m-d"),
+                    'order_name' => $title,
+                    'shop_id' => $shop_id,
+                    'status_id' => 1,
+                    'pay_type' => 0,
+                    'is_default' => 1,
+                ]);
+            }
+        }
+        if (!empty($shop_type)) {
+            $shop_id = $shop_type->shop_id;
+            $title = $shop_type->order_name;
+            $shop_type_id = $shop_type->id;
+        }
+        $shop = Shop::where('id', $shop_id)->first();
 
         $product_rice = array();
-        $product_all = Product::where('shop_id', $shop_default->value)->orderBy('id')->get();
+        $product_all = Product::where('shop_id', $shop_id)->orderBy('id')->get();
         if ($product_all) {
             foreach ($product_all as $key => $value) {
                 $product_rice[$value->dish_type_name][] = $value;
             }
         }
 
-        $product_first = Product::where('shop_id', $shop_default->value)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
+        $product_first = Product::where('shop_id', $shop_id)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
 
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->whereIn('statuses.column_name', ['booked','unpaid'])
-        ->where('order_date', date("Y-m-d"))->first();
+        if (!empty($shop_type_id)) {
+            $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
+            ->whereIn('statuses.column_name', ['booked','unpaid'])
+            ->where('order_type', $shop_type_id)
+            ->where('order_date', date("Y-m-d"))->first();
 
-        $message_order = '';
-        if ($order_status) {
-            $message_order = 'Đơn hàng đã đặt, không thể Order thêm !';
+            $message_order = '';
+            if ($order_status) {
+                $message_order = 'đã đặt, không thể Order thêm !';
+            }
         }
 
-        return view('order.create', compact('product_rice', 'product_first', 'shop', 'message_order'));
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order'));
     }
 
     /**
@@ -119,6 +153,7 @@ class UserOrdersController extends Controller
             'size' => $product_rice_name,
             'toppings' => !empty($toppings) ? implode(', ', $toppings) : '',
             'instructions' => $request->instructions,
+            'order_type' => $request->shop_type_id,
             'amount' => $amount,
         ]);
 
@@ -156,20 +191,42 @@ class UserOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function today()
+    public function today(Request $request)
     {
         $user = auth()->user();
+        $value_shop = General::where('key', 'shop_default')->first();
+        $shop_id = $value_shop->value;
+        $shop_type_id = 0;
+        $title = '';
+        if(!empty($request->order_type)) {
+            $order_type = base64_decode($request->order_type);
+            if ($shop_type = Order_type::where('id', $order_type)->first()) {
+                $shop_id = $shop_type->shop_id;
+            }
+        } else {
+            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                $shop_id = $shop_type->shop_id;
+            }
+        }
+        if(!empty($shop_type)) {
+            $shop_type_id = $shop_type->id;
+            $title = $shop_type->order_name;
+        }
+
         $orders = Order::with('status')
         ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
+        ->where('order_type', $shop_type_id)
         ->orderBy('id', 'asc')->get();
 
-        $value_shop = General::where('key', 'shop_default')->first();
-        $shop_info = Shop::where('id', $value_shop->value)->first();
+        $shop_info = Shop::where('id', $shop_id)->first();
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
+        ->where('order_type', $shop_type_id)
         ->where('order_date', date("Y-m-d"))->first();
 
-        return view('today_order', compact('user', 'orders', 'shop_info', 'order_status'));
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+
+        return view('today_order', compact('user', 'orders', 'shop_info', 'order_status', 'list_order_type', 'title'));
     }
 
 
@@ -178,16 +235,30 @@ class UserOrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function product()
+    public function product(Request $request)
     {
         $user = auth()->user();
+
+        $shop_type_id = 0;
+        $title = '';
+        if(!empty($request->order_type)) {
+            $order_type = base64_decode($request->order_type);
+            $shop_type = Order_type::where('id', $order_type)->first();
+        } else {
+            $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+        }
+        if(!empty($shop_type)) {
+            $shop_type_id = $shop_type->id;
+            $title = $shop_type->order_name;
+        }
+
         $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('count(*) AS count_product'))
         // ->join('products', 'products.id', '=', 'order_details.product_id')
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->whereNotIn('statuses.column_name', ['cancel'])
         ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
-        // ->where('products.type', 1)
+        ->where('orders.order_type', $shop_type_id)
         ->where('order_details.disabled', 0)
         ->orderBy('order_details.product_id', 'asc')
         ->groupBy('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name')
@@ -212,7 +283,9 @@ class UserOrdersController extends Controller
         // ->groupBy('products.id','products.name','products.price')
         // ->get();
 
-        return view('today_product', compact('user', 'products_rice'));
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+
+        return view('today_product', compact('user', 'products_rice', 'list_order_type', 'title'));
     }
 
     /**

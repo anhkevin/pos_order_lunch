@@ -14,9 +14,9 @@ use App\Events\OrderStatusChanged;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('dashboard');
+// });
 
 Route::get('/fire', function () {
     event(new OrderStatusChanged);
@@ -26,10 +26,12 @@ Route::get('/fire', function () {
 
 Auth::routes();
 
+Route::get('/', 'App\Http\Controllers\HomeController@index')->name('dashboard');
+
 // User Routes
 Route::middleware('auth')->group(function () {
     Route::get('/orders', 'App\Http\Controllers\UserOrdersController@index')->name('user.orders');
-    Route::get('/home', 'App\Http\Controllers\UserOrdersController@index')->name('user.home');
+    // Route::get('/home', 'App\Http\Controllers\UserOrdersController@index')->name('user.home');
     Route::get('/orders/create', 'App\Http\Controllers\UserOrdersController@create')->name('user.orders.create');
     Route::get('/orders/today', 'App\Http\Controllers\UserOrdersController@today')->name('user.orders.today');
     Route::get('/orders/product', 'App\Http\Controllers\UserOrdersController@product')->name('user.orders.product');

@@ -1,7 +1,19 @@
 <template>
-    <div class="container">
-        <div class="alert alert-danger" v-if="alert" style="color: #842029;background-color: #f8d7da;border-color: #f5c2c7;">{{ this.alert }}</div>
-        <div class="alert alert-success" v-if="alert_success" style="color: #0f5132;background-color: #d1e7dd;border-color: #badbcc;">{{ this.alert_success }}</div>
+    <div class="">
+        <div class="modal-backdrop fade show" v-if="alert || alert_success"></div>
+        <div class="modal fade show" v-if="alert || alert_success" tabindex="-1" role="dialog" style="display: block; padding-right: 17px;" aria-modal="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" v-on:click="close_modal()"><span>×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" v-if="alert" style="border: 0;background-color: rgb(255 255 255);text-align: center;font-weight: bold;font-size: 120%;">{{ this.alert }}</div>
+                        <div class="alert alert-success" v-if="alert_success" style="border: 0;background-color: rgb(255 255 255);text-align: center;font-weight: bold;font-size: 120%;">{{ this.alert_success }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h1 style="margin: 0;">{{ this.title }}</h1>
         <div class="row">
             <div class="col-md-8">
@@ -99,7 +111,7 @@ import axios from 'axios'
 
     export default {
 
-        props: ['url_shopeefood','ship_fee','voucher','title','alert'],
+        props: ['url_shopeefood','ship_fee','voucher','title','alert','shop_type_id'],
 
         data () {
             var today = new Date();
@@ -113,17 +125,19 @@ import axios from 'axios'
                 shop_infor: {},
                 productItems: [],
                 date_today: today.getFullYear()+"_"+(today.getMonth()+1)+"_"+today.getDate(),
-                alert_success: ''
+                alert_success: '',
+                key_storage: this.shop_type_id
             }
         },
 
         created() {
             this.get_dish();
             this.remove_old_localStorage()
+            console.log(this.key_storage)
 
-            if (localStorage.length > 0) {
+            if (sessionStorage.length > 0) {
 
-                let items_card = JSON.parse(localStorage.getItem("stored_card_pos"+this.date_today));
+                let items_card = JSON.parse(sessionStorage.getItem("stored_card_pos"+this.key_storage));
 
                 if (items_card === null) {
                     items_card = [];
@@ -135,9 +149,14 @@ import axios from 'axios'
         },
 
         methods: {
+            close_modal() {
+                this.alert = '';
+                this.alert_success = '';
+            },
             async add_order() {
                 let post_data = {
                     'products': this.productItems,
+                    'shop_type_id':this.shop_type_id,
                     'comment': this.comment
                 }
 
@@ -145,7 +164,7 @@ import axios from 'axios'
 
                 if (response.data.status) {
                     this.productItems = [];
-                    localStorage.removeItem('stored_card_pos'+this.date_today);
+                    sessionStorage.removeItem('stored_card_pos'+this.key_storage);
 
                     this.alert_success = response.data.message;
                 } else {
@@ -177,7 +196,7 @@ import axios from 'axios'
                     this.productItems.push(item_product);
                 }
 
-                localStorage.setItem('stored_card_pos'+this.date_today, JSON.stringify(this.productItems));
+                sessionStorage.setItem('stored_card_pos'+this.key_storage, JSON.stringify(this.productItems));
             },
             remove_product_cart: function (indexOfObject) {
                 let number_product = parseFloat(this.productItems[indexOfObject].number) - 1;
@@ -188,7 +207,7 @@ import axios from 'axios'
                     this.productItems.splice(indexOfObject, 1);
                 }
 
-                localStorage.setItem('stored_card_pos'+this.date_today, JSON.stringify(this.productItems));
+                sessionStorage.setItem('stored_card_pos'+this.key_storage, JSON.stringify(this.productItems));
             },
             async get_dish() {
                 
@@ -336,17 +355,17 @@ import axios from 'axios'
             remove_old_localStorage() {
                 var arr = []; // Array to hold the keys
                 // Iterate over localStorage and insert the keys that meet the condition into arr
-                for (var i = 0; i < localStorage.length; i++){
-                    let key_today = "stored_card_pos"+this.date_today;
-                    if (localStorage.key(i) != key_today && 
-                        localStorage.key(i).substring(0,15) == 'stored_card_pos') {
-                        arr.push(localStorage.key(i));
+                for (var i = 0; i < sessionStorage.length; i++){
+                    let key_today = "stored_card_pos"+this.key_storage;
+                    if (sessionStorage.key(i) != key_today && 
+                        sessionStorage.key(i).substring(0,15) == 'stored_card_pos') {
+                        arr.push(sessionStorage.key(i));
                     }
                 }
 
                 // Iterate over arr and remove the items by key
                 for (var i = 0; i < arr.length; i++) {
-                    localStorage.removeItem(arr[i]);
+                    sessionStorage.removeItem(arr[i]);
                 }
             }
         }
