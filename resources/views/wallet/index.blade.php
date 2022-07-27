@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h2 class="text-black font-w600 mb-0">My Wallet ({{$user->name}})</h2>

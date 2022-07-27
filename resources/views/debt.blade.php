@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">Danh sách Order <span style="color:red">chưa thanh toán</span></div>
 
@@ -53,12 +53,19 @@
                                             {{ number_format($order->amount, 0, ".", ",") . "đ" }}
                                         @endif
                                     </td>
-                                    @if ($order->status->column_name != 'paid')
-                                        <td style="color: rgb(150 62 62);font-weight: bold;">
-                                    @else
-                                        <td>
-                                    @endif
-                                    {{ $order->status->name }}</td>
+                                    <td>
+                                        @if ($order->status->column_name == 'order')
+                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'cancel')
+                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'unpaid')
+                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'paid')
+                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                        @else
+                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                        @endif
+                                    </td>
                                     @if (auth()->user()->is_admin)
                                     <td>
                                         <form class="form-horizontal" id="form-order-{{$order->id}}" method="post" action="{{ route('admin.orders.update', $order) }}">

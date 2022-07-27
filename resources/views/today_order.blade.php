@@ -3,9 +3,23 @@
 @section('content')
 <div class="">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Danh sách Order ngày <span style="color:red">{{ date("Y/m/d") }}</span></div>
+                <div class="card-header">
+                <h2 class="text-black font-w600 mb-0">Danh sách món Order @if ($title)<small>({{ $title }})</small>@endif</h2></div>
+                
+                <div class="card-body bootstrap-badge" style="padding-top: 0;">
+                    @if ($list_order_type->count() > 1)
+                        @foreach ($list_order_type as $order_type)
+                            @if ((empty($_GET['order_type']) && $order_type->is_default == 1) || (!empty($_GET['order_type']) && $_GET['order_type'] == base64_encode($order_type->id)))
+                                <a href="{{ route('user.orders.today') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-primary">{{ $order_type->order_name }}</a>
+                            @else
+                                <a href="{{ route('user.orders.today') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-dark">{{ $order_type->order_name }}</a>
+                            @endif
+                        @endforeach
+                    @endif
+                </div>
+
                 <div class="card-body">
 
                     @if ($orders->count() > 0)
@@ -28,6 +42,10 @@
                         @else
                             <button type="submit" name="status_unpaid" value="1" class="btn btn-info btn-status-order btn-xs">Thanh toán</button>
                         @endif
+
+                        @if (isset($_GET['order_type']))
+                        <input type="hidden" name="order_type" value="{{ $_GET['order_type'] }}">
+                        @endif
                     </form>
                     <br>
                     @endif
@@ -49,8 +67,11 @@
                     <form class="form-horizontal" id="update-voucher" method="post" action="{{ route('admin.orders.update_voucher') }}">
                         {{ csrf_field() }}
                         {!! method_field('patch') !!}
-                    <p><strong style="width: 100px;display: inline-block;">Phí ship:</strong> {{ number_format($shop_info->ship, 0, ".", ",") . "đ" }}</p>
-                    <p><strong style="width: 100px;display: inline-block;">Voucher:</strong> {{ number_format($shop_info->voucher, 0, ".", ",") . "đ" }}  <button type="submit" id="update-discount-today" class="btn btn-success" style="padding: 2px 10px;margin-left:20px;">Áp dụng Voucher + phí Ship</button></p>
+                        @if (isset($_GET['order_type']))
+                        <input type="hidden" name="order_type" value="{{ $_GET['order_type'] }}">
+                        @endif
+                    <p><strong style="width: 100px;display: inline-block;">Phí ship:</strong> {{ number_format($shop_info->ship, 0, ".", ",") . "đ" }}
+                    <strong style="width: 100px;display: inline-block;margin-left:50px">Voucher:</strong> {{ number_format($shop_info->voucher, 0, ".", ",") . "đ" }}  <button type="submit" id="update-discount-today" class="btn btn-success" style="padding: 2px 10px;margin-left:20px;">Áp dụng Voucher + phí Ship</button></p>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -81,7 +102,7 @@
                                     @endif
                                         <td>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></td>
                                         <td>{{ $order->customer->name }}</td>
-                                        <td>{{ $order->size }}</td>
+                                        <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)
                                                 <span style="text-decoration-line: line-through;">{{ number_format($order->amount, 0, ".", ",") . "đ" }}</span><br>
@@ -91,12 +112,19 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        @if ($order->status->column_name != 'paid')
-                                            <td style="color: rgb(150 62 62);font-weight: bold;">
+                                        <td>
+                                        @if ($order->status->column_name == 'order')
+                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'cancel')
+                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'unpaid')
+                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                        @elseif ($order->status->column_name == 'paid')
+                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
                                         @else
-                                            <td>
+                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
                                         @endif
-                                        {{ $order->status->name }}</td>
+                                    </td>
                                     </tr>
                                 @endforeach
                             </tbody>

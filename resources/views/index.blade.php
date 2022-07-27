@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">My Orders</h4>
@@ -56,12 +56,18 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                            @if ($order->status->column_name != 'paid')
-                                                <td style="color: rgb(150 62 62);font-weight: bold;">
+                                            <td>
+                                            @if ($order->status->column_name == 'order')
+                                            <span class="badge light badge-warning">{{ $order->status->name }}</span>
+                                            @elseif ($order->status->column_name == 'cancel')
+                                            <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                            @elseif ($order->status->column_name == 'unpaid')
+                                            <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                            @elseif ($order->status->column_name == 'paid')
+                                            <span class="badge light badge-success">{{ $order->status->name }}</span>
                                             @else
-                                                <td>
+                                            <span class="badge light badge-success">{{ $order->status->name }}</span>
                                             @endif
-                                            <span class="badge light badge-success">{{ $order->status->name }}</td></span>
                                         </td>
                                         <td>
                                             @if ($order->status->column_name == 'order')

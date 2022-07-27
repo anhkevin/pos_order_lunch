@@ -2,12 +2,6 @@
 
 @section('content')
 <div class="">
-    @auth
-    <div class="form-head mb-4">
-        <h2 class="text-black font-w600 mb-0">Ví của tôi</h2>
-    </div>
-    @endauth
-
     <div class="row">
         <div class="col-xl-9 col-xxl-12">
             <div class="row">
@@ -101,95 +95,7 @@
                     </div>
                 </div>
                 @endauth
-                <div class="col-xl-12">
-                    <div class="card">
-                        <div class="card-header d-block d-sm-flex border-0">
-                            <div>
-                                <h4 class="fs-20 text-black">Món đặt hôm nay</h4>
-                                <p class="mb-0 fs-13">Lorem ipsum dolor sit amet, consectetur</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            @if (count($orders) > 0)
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th ><strong>#</strong></th>
-                                            <th><strong>User</strong></th>
-                                            <th><strong>Món đã đặt</strong></th>
-                                            <th width="100"><strong>Tổng tiền</strong></th>
-                                            <th><strong>Ghi chú</strong></th>
-                                            <th><strong>Status</strong></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php($total_amount=0)
-                                        @php($total_amount_discount=0)
-                                        @php($count_order=0)
-                                                @foreach ($orders as $order)
-                                                @if ($order->status->column_name == 'cancel')
-                                                    <tr style="display:none">
-                                                    @elseif ($order->status->column_name == 'unpaid')
-                                                    <tr class="list-group-item-danger">
-                                                    @else
-                                                    <tr>
-                                                    @endif
-
-                                                    @if ($order->status->column_name != 'cancel')
-                                                        @php($total_amount+=$order->amount)
-                                                        @php($total_amount_discount+=$order->amount-$order->discount)
-                                                        @php($count_order++)
-                                                    @endif
-                                                    <td width="50px">
-                                                        <strong>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></strong>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center width150">
-                                                            <img src="{{URL::asset('images/avatar/1.jpg')}}" alt="" width="40" class="rounded-circle mr-2">
-                                                            {{ $order->customer->name }}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div style="min-width: 200px;">{{ $order->size }}</div>
-                                                    </td>
-                                                    <td>               
-                                                        @if ($order->discount > 0)
-                                                            <span class="text-danger">{{ number_format($order->amount-$order->discount, 0, ".", ",") . "đ" }}</span><br>
-                                                            <del>{{ number_format($order->amount, 0, ".", ",") . "đ" }}</del>
-                                                        @else
-                                                            {{ number_format($order->amount, 0, ".", ",") . "đ" }}
-                                                        @endif                            
-                                                    </td>
-                                                    <td width="150"><span>{{ Str::words($order->instructions, 50) }}</span></td>
-                                                    <td>
-                                                        @if ($order->status->column_name == 'order')
-                                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'cancel')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'unpaid')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'paid')
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @else
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @else
-                            <p>No order.</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-xxl-12">
+                <div class="col-xl-3 col-xxl-12">
             <div class="row">
                 <div class="col-xl-12 col-xxl-6 col-sm-6">
                     <div class="card bg-primary">
@@ -247,6 +153,105 @@
             
             </div>
         </div>
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header d-block d-sm-flex border-0">
+                            <div>
+                                <h4 class="fs-20 text-black">Món đặt hôm nay @if ($title)<small>({{ $title }})</small>@endif</h4>
+                                <p class="mb-0 fs-13">
+                                @if ($list_order_type->count() > 1)
+                                    @foreach ($list_order_type as $order_type)
+                                        @if ((empty($_GET['order_type']) && $order_type->is_default == 1) || (!empty($_GET['order_type']) && $_GET['order_type'] == base64_encode($order_type->id)))
+                                            <a href="{{ route('dashboard') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-primary">{{ $order_type->order_name }}</a>
+                                        @else
+                                            <a href="{{ route('dashboard') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-dark">{{ $order_type->order_name }}</a>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if (count($orders) > 0)
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th ><strong>#</strong></th>
+                                            <th><strong>User</strong></th>
+                                            <th><strong>Món đã đặt</strong></th>
+                                            <th width="100"><strong>Tổng tiền</strong></th>
+                                            <th><strong>Ghi chú</strong></th>
+                                            <th><strong>Status</strong></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php($total_amount=0)
+                                        @php($total_amount_discount=0)
+                                        @php($count_order=0)
+                                                @foreach ($orders as $order)
+                                                @if ($order->status->column_name == 'cancel')
+                                                    <tr style="display:none">
+                                                    @elseif ($order->status->column_name == 'unpaid')
+                                                    <tr class="list-group-item-danger">
+                                                    @else
+                                                    <tr>
+                                                    @endif
+
+                                                    @if ($order->status->column_name != 'cancel')
+                                                        @php($total_amount+=$order->amount)
+                                                        @php($total_amount_discount+=$order->amount-$order->discount)
+                                                        @php($count_order++)
+                                                    @endif
+                                                    <td width="50px">
+                                                        <strong>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></strong>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center width150">
+                                                            <img src="{{URL::asset('images/avatar/1.jpg')}}" alt="" width="40" class="rounded-circle mr-2">
+                                                            {{ $order->customer->name }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div style="min-width: 200px;">{!! nl2br2(e($order->size)) !!}</div>
+                                                    </td>
+                                                    <td>               
+                                                        @if ($order->discount > 0)
+                                                            <span class="text-danger">{{ number_format($order->amount-$order->discount, 0, ".", ",") . "đ" }}</span><br>
+                                                            <del>{{ number_format($order->amount, 0, ".", ",") . "đ" }}</del>
+                                                        @else
+                                                            {{ number_format($order->amount, 0, ".", ",") . "đ" }}
+                                                        @endif                            
+                                                    </td>
+                                                    <td width="150"><span>{{ Str::words($order->instructions, 50) }}</span></td>
+                                                    <td>
+                                                        @if ($order->status->column_name == 'order')
+                                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'cancel')
+                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'unpaid')
+                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'paid')
+                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                                        @else
+                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @else
+                            <p>No order.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </div>
 @endsection

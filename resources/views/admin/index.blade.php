@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">Admin Dashboard</div>
 
@@ -53,7 +53,19 @@
                                     </td>
                                     <td>{{ Str::words($order->instructions, 50) }}</td>
                                     <td></td>
-                                    <td><a href="{{ route('admin.orders.edit', $order) }}">{{ $order->status->name }}</a></td>
+                                    <td><a href="{{ route('admin.orders.edit', $order) }}">
+                                    @if ($order->status->column_name == 'order')
+                                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'cancel')
+                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'unpaid')
+                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
+                                                        @elseif ($order->status->column_name == 'paid')
+                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                                        @else
+                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
+                                                        @endif
+                                    </a></td>
                                 </tr>
                             @endforeach
                         </tbody>

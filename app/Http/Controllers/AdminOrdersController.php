@@ -6,6 +6,7 @@ use App\Order;
 use App\Status;
 use App\Models\History_payment;
 use App\Models\Order_status;
+use App\Models\Order_type;
 use Illuminate\Http\Request;
 use App\Events\OrderStatusChanged;
 use DB;
@@ -172,15 +173,30 @@ class AdminOrdersController extends Controller
         }
         $status_paid = Status::where('column_name', 'paid')->first();
 
+        $shop_type_id = 0;
+        if(!empty($request->order_type)) {
+            $order_type = base64_decode($request->order_type);
+            $shop_type = Order_type::where('id', $order_type)->first();
+        } else {
+            $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+        }
+        if (!empty($shop_type)) {
+            $shop_type_id = $shop_type->id;
+        }
+
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->where('order_date', date("Y-m-d"))->first();
+        ->where('order_date', date("Y-m-d"))
+        ->where('order_type', $shop_type_id)
+        ->first();
         if($order_status) {
             Order_status::where('order_date', date("Y-m-d"))
+            ->where('order_type', $shop_type_id)
             ->update(['status_id' => $status->id]);
         } else {
             Order_status::create([
                 'order_date' => date("Y-m-d"),
                 'status_id' => $status->id,
+                'order_type' => $shop_type_id,
             ]);
         }
 
@@ -189,6 +205,7 @@ class AdminOrdersController extends Controller
             $orders = Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
             ->whereNotIn('statuses.column_name', ['paid','cancel'])
             ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
+            ->where('order_type', $shop_type_id)
             ->update(['orders.status_id' => $status->id]);
         }
 
@@ -201,6 +218,7 @@ class AdminOrdersController extends Controller
                 ->whereNotIn('statuses.column_name', ['paid','cancel'])
                 ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
                 ->where('users.total_money','>', 0)
+                ->where('order_type', $shop_type_id)
                 ->get();
             if($list_orders) {
                 foreach ($list_orders as $key => $value) {
@@ -209,6 +227,7 @@ class AdminOrdersController extends Controller
                     ->whereNotIn('statuses.column_name', ['paid','cancel'])
                     ->where('orders.user_id', $value->user_id)
                     ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
+                    ->where('order_type', $shop_type_id)
                     ->groupBy('orders.user_id')
                     ->first();
 
@@ -224,6 +243,7 @@ class AdminOrdersController extends Controller
                         Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
                         ->whereNotIn('statuses.column_name', ['paid','cancel'])
                         ->where('orders.id', $value->id)
+                        ->where('order_type', $shop_type_id)
                         ->update(['orders.status_id' => $status_paid->id]);
                     }
                 }

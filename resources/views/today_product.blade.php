@@ -3,9 +3,22 @@
 @section('content')
 <div class="">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-8 offset-md-2">
             <div class="card">
-                <div class="card-header">Danh sách món đã order ngày <span style="color:red">{{ date("Y/m/d") }}</span></div>
+                <div class="card-header">
+                <h2 class="text-black font-w600 mb-0">Danh sách món đã Order @if ($title)<small>({{ $title }})</small>@endif</h2></div>
+                
+                <div class="card-body bootstrap-badge" style="padding-top: 0;">
+                    @if ($list_order_type->count() > 1)
+                        @foreach ($list_order_type as $order_type)
+                            @if ((empty($_GET['order_type']) && $order_type->is_default == 1) || (!empty($_GET['order_type']) && $_GET['order_type'] == base64_encode($order_type->id)))
+                                <a href="{{ route('user.orders.product') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-primary">{{ $order_type->order_name }}</a>
+                            @else
+                                <a href="{{ route('user.orders.product') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-dark">{{ $order_type->order_name }}</a>
+                            @endif
+                        @endforeach
+                    @endif
+                </div>
 
                 <div class="card-body">
                     @if (session('message'))

@@ -30,6 +30,7 @@ class OrdersController extends Controller
         // die(Var_dump($request->token));
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereIn('statuses.column_name', ['booked','unpaid'])
+        ->where('order_type', $request->shop_type_id)
         ->where('order_date', date("Y-m-d"))->first();
 
         if ($order_status) {
@@ -67,6 +68,7 @@ class OrdersController extends Controller
             'toppings' => '',
             'instructions' => $request->comment,
             'amount' => $amount,
+            'order_type' => $request->shop_type_id,
         ]);
 
         foreach ($request->products as $key => $value) {
