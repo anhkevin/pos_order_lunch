@@ -3,10 +3,10 @@
 @section('content')
 <div class="">
     <div class="row">
-        <div class="col-xl-9 col-xxl-12">
+        <div class="col-xl-12 col-xxl-12">
             <div class="row">
                 @auth
-                <div class="col-xl-12">
+                <div class="col-xl-9 col-xxl-12">
                     <div class="card stacked-2">
                         <div class="card-header flex-wrap border-0 align-items-center">
                             <div class="d-flex align-items-center mb-3 mr-3">

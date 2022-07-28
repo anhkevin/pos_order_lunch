@@ -105,39 +105,43 @@ class AdminOrdersController extends Controller
             $order->status_id = $order_status_id;
         }
 
-        if($status_order->column_name != 'paid'
-            && ($status->column_name == 'unpaid' || $status->column_name == 'paid') 
-            && $user->total_money > 0) {
-                if ($user->total_money >= ($request->order->amount - $request->order->discount)) {
-                    $status_paid = Status::where('column_name', 'paid')->first();
-                    $order->status_id = $status_paid->id;
+        $shop_type = Order_type::where('id', $order->order_type)->first();
 
-                    History_payment::create([
-                        'user_id' => $request->order->user_id,
-                        'order_id' => $request->order->id,
-                        'amount' => '-'.($request->order->amount - $request->order->discount),
-                        'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
-                        'disabled' => 0,
-                    ]);
-                } else {
-                    return back()->with('message', 'Số tiền còn lại trên Ví không đủ!');
-                }
-        }
-        if($status_order->column_name != 'paid' && $status->column_name == 'paid' && $user->total_money <= 0) {
-            History_payment::create([
-                'user_id' => $request->order->user_id,
-                'order_id' => $request->order->id,
-                'amount' => ($request->order->amount - $request->order->discount),
-                'note' => 'Transfer money',
-                'disabled' => 0,
-            ]);
-            History_payment::create([
-                'user_id' => $request->order->user_id,
-                'order_id' => $request->order->id,
-                'amount' => '-'.($request->order->amount - $request->order->discount),
-                'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
-                'disabled' => 0,
-            ]);
+        if (empty($shop_type) || empty($shop_type->pay_type)) {
+            if($status_order->column_name != 'paid'
+                && ($status->column_name == 'unpaid' || $status->column_name == 'paid') 
+                && $user->total_money > 0) {
+                    if ($user->total_money >= ($request->order->amount - $request->order->discount)) {
+                        $status_paid = Status::where('column_name', 'paid')->first();
+                        $order->status_id = $status_paid->id;
+
+                        History_payment::create([
+                            'user_id' => $request->order->user_id,
+                            'order_id' => $request->order->id,
+                            'amount' => '-'.($request->order->amount - $request->order->discount),
+                            'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
+                            'disabled' => 0,
+                        ]);
+                    } else {
+                        return back()->with('message', 'Số tiền còn lại trên Ví không đủ!');
+                    }
+            }
+            if($status_order->column_name != 'paid' && $status->column_name == 'paid' && $user->total_money <= 0) {
+                History_payment::create([
+                    'user_id' => $request->order->user_id,
+                    'order_id' => $request->order->id,
+                    'amount' => ($request->order->amount - $request->order->discount),
+                    'note' => 'Transfer money',
+                    'disabled' => 0,
+                ]);
+                History_payment::create([
+                    'user_id' => $request->order->user_id,
+                    'order_id' => $request->order->id,
+                    'amount' => '-'.($request->order->amount - $request->order->discount),
+                    'note' => 'Order ID: ' . $request->order->id . ', Order Date:' . date_format($request->order->created_at ,"Y/m/d"),
+                    'disabled' => 0,
+                ]);
+            }
         }
         $order->save();
 
@@ -222,29 +226,39 @@ class AdminOrdersController extends Controller
                 ->get();
             if($list_orders) {
                 foreach ($list_orders as $key => $value) {
-                    $order_user = Order::select(DB::raw('SUM(orders.amount) AS total_amount'),DB::raw('SUM(orders.discount) AS total_discount'))
+                    $order_user = Order::select(DB::raw('SUM(orders.amount) AS total_amount'),DB::raw('SUM(orders.discount) AS total_discount'),'order_types.pay_type')
                     ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+                    ->leftJoin('order_types', 'order_types.id', '=', 'orders.order_type')
                     ->whereNotIn('statuses.column_name', ['paid','cancel'])
                     ->where('orders.user_id', $value->user_id)
                     ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
                     ->where('order_type', $shop_type_id)
-                    ->groupBy('orders.user_id')
+                    ->groupBy('orders.user_id','order_types.pay_type')
                     ->first();
 
-                    if ($order_user && $value->total_money >= ($order_user->total_amount - $order_user->total_discount)) {
-                        History_payment::create([
-                            'user_id' => $value->user_id,
-                            'order_id' => $value->id,
-                            'amount' => '-'.($value->amount - $value->discount),
-                            'note' => 'Order ID: ' . $value->id . ', Order Date:' . date_format($value->created_at ,"Y/m/d"),
-                            'disabled' => 0,
-                        ]);
-
+                    if(!empty($order_user->pay_type)) {
                         Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
                         ->whereNotIn('statuses.column_name', ['paid','cancel'])
                         ->where('orders.id', $value->id)
                         ->where('order_type', $shop_type_id)
                         ->update(['orders.status_id' => $status_paid->id]);
+                    } else {
+                        if ($order_user && $value->total_money >= ($order_user->total_amount - $order_user->total_discount)) {
+                        
+                            History_payment::create([
+                                'user_id' => $value->user_id,
+                                'order_id' => $value->id,
+                                'amount' => '-'.($value->amount - $value->discount),
+                                'note' => 'Order ID: ' . $value->id . ', Order Date:' . date_format($value->created_at ,"Y/m/d"),
+                                'disabled' => 0,
+                            ]);
+    
+                            Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
+                            ->whereNotIn('statuses.column_name', ['paid','cancel'])
+                            ->where('orders.id', $value->id)
+                            ->where('order_type', $shop_type_id)
+                            ->update(['orders.status_id' => $status_paid->id]);
+                        }
                     }
                 }
             }
