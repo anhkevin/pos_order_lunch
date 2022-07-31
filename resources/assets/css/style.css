@@ -10159,8 +10159,8 @@ svg.pulse-svg {
     .header-right .header-profile .dropdown-menu a:hover, .header-right .header-profile .dropdown-menu a:focus, .header-right .header-profile .dropdown-menu a.active {
       color: #1EAAE7; }
   .header-right .header-profile img {
-    width: 57px;
-    height: 57px;
+    /* width: 57px;
+    height: 57px; */
     border-radius: 100%; }
     @media only screen and (max-width: 1400px) {
       .header-right .header-profile img {

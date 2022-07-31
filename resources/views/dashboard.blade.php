@@ -3,10 +3,10 @@
 @section('content')
 <div class="">
     <div class="row">
-        <div class="col-xl-9 col-xxl-12">
+        <div class="col-xl-12 col-xxl-12">
             <div class="row">
                 @auth
-                <div class="col-xl-12">
+                <div class="col-xl-9 col-xxl-12">
                     <div class="card stacked-2">
                         <div class="card-header flex-wrap border-0 align-items-center">
                             <div class="d-flex align-items-center mb-3 mr-3">
@@ -208,8 +208,8 @@
                                                         <strong>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></strong>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex align-items-center width150">
-                                                            <img src="{{URL::asset('images/avatar/1.jpg')}}" alt="" width="40" class="rounded-circle mr-2">
+                                                        <div class="d-flex align-items-center width150" style="gap: 5px;">
+                                                            <avatar-component size="sm" userid="{{ $order->customer->id }}" class="mr10"></avatar-component>
                                                             {{ $order->customer->name }}
                                                         </div>
                                                     </td>
