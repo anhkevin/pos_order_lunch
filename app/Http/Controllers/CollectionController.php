@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Models\Product;
 use App\Models\Shop;
+use App\Models\Order_type;
 
 class CollectionController extends Controller
 {
@@ -44,23 +45,102 @@ class CollectionController extends Controller
     
     public function get_api_shoppe(Request $request)
     {
-        $url_shoppe_food = $request->url;
+        if ($url_shoppe_food = $request->url) {
 
-        $param_domain = str_replace('https://shopeefood.vn/', '', $url_shoppe_food);
+            $param_domain = str_replace('https://shopeefood.vn/', '', $url_shoppe_food);
 
-        $sub_url = 'delivery/get_from_url?url=' . $param_domain;
+            $sub_url = 'delivery/get_from_url?url=' . $param_domain;
+            
+            $response_get_from_url = $this->get_from_url($sub_url);
+        
+            if(!empty($response_get_from_url)) {
+                $response_dishes = $this->get_api_delivery_dishes($response_get_from_url['delivery_id']);
+            }
 
-        $response_get_from_url = $this->get_from_url($sub_url);
-    
-        if(!empty($response_get_from_url)) {
-            $response_dishes = $this->get_api_delivery_dishes($response_get_from_url['delivery_id']);
+            $response_detail = $this->get_detail($response_get_from_url['delivery_id']);
+
+            return [
+                'detail' => json_decode($response_detail, true),
+                'dishes' => json_decode($response_dishes, true)
+            ];
+        } elseif ($shop_type_id = $request->shop_type_id) {
+            return $this->get_shop_by_order_type($shop_type_id);
         }
 
-        $response_detail = $this->get_detail($response_get_from_url['delivery_id']);
+        return ['error' => 'Not Found!'];
+    }
+
+    private function get_shop_by_order_type($shop_type_id) {
+        $response_detail = [
+            'result' => 'success',
+            'reply'  => [
+                'delivery_detail' => [
+                    'name' => '', 
+                    'address' => '', 
+                    'delivery' => [
+                        'shipping_fee' => [
+                            'value' => 0,
+                        ],
+                        'is_open' => true
+                    ], 
+                    'res_photos' => [], 
+                    'delivery_id' => 0, 
+                ]
+            ]
+        ];
+        $response_dishes = [
+            'result' => 'success',
+            'reply'  => [
+                'menu_infos' => []
+            ]
+        ];
+
+        $shop_type = Order_type::join('shops', 'shops.id', '=', 'order_types.shop_id')
+        ->where('order_types.id', $shop_type_id)
+        ->where('order_types.order_date', date("Y-m-d"))
+        ->first();
+        if ($shop_type) {
+            $response_detail['reply']['delivery_detail']['name'] = $shop_type->name;
+            $response_detail['reply']['delivery_detail']['res_photos'][0]['photos']['10']['value'] = '/images/shop/'.$shop_type->shop_id.'.jpg';
+        }
+
+        if ($shop_type) {
+            $list_products = Product::where('shop_id', $shop_type->shop_id)
+            ->where('disabled', 0)
+            ->get();
+
+            if ($list_products) {
+                $list_dish_type = [];
+                foreach ($list_products as $key => $value) {
+                    $list_dish_type[$value->dish_type_name][] = [
+                        'id' => $value->id,
+                        'name' => $value->name,
+                        'price' => [
+                            'value' => $value->price,
+                            'text' => number_format($value->price, 0, ".", ",") . "đ",
+                            'unit' => 'đ',
+                        ],
+                        'photos' => [
+                            ['value' => $value->dish_photo],
+                            ['value' => $value->dish_photo],
+                        ],
+                        'description' => ''
+                    ];
+                }
+
+                foreach ($list_dish_type as $key => $value) {
+                    $response_dishes['reply']['menu_infos'][] = [
+                        'dish_type_id' => 0,
+                        'dish_type_name' => $key,
+                        'dishes' => $value,
+                    ];
+                }
+            }
+        }
 
         return [
-            'detail' => json_decode($response_detail, true),
-            'dishes' => json_decode($response_dishes, true)
+            'detail' => $response_detail,
+            'dishes' => $response_dishes,
         ];
     }
 

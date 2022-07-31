@@ -72,6 +72,16 @@
                         @endif
                     <p><strong style="width: 100px;display: inline-block;">Phí ship:</strong> {{ number_format($shop_info->ship, 0, ".", ",") . "đ" }}
                     <strong style="width: 100px;display: inline-block;margin-left:50px">Voucher:</strong> {{ number_format($shop_info->voucher, 0, ".", ",") . "đ" }}  <button type="submit" id="update-discount-today" class="btn btn-success" style="padding: 2px 10px;margin-left:20px;">Áp dụng Voucher + phí Ship</button></p>
+                    @foreach ($orders as $order)
+                        @if ($order->status->column_name != 'cancel')
+                            @php($total_amount+=$order->amount)
+                        @endif
+                        <input type="hidden" name="order_id[]" value="{{ $order->id }}">
+                        @if ($total_amount > 0)
+                            <input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}">
+                        @endif
+                    @endforeach
+                    </form>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -82,6 +92,9 @@
                                     <th style="width:80px">Tổng tiền</th>
                                     <th style="width:150px">Ghi chú</th>
                                     <th style="width:120px">Status</th>
+                                    @if ($user->is_admin)
+                                        <th>Option</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,11 +109,10 @@
                                     @endif
 
                                     @if ($order->status->column_name != 'cancel')
-                                        @php($total_amount+=$order->amount)
                                         @php($total_amount_discount+=$order->amount-$order->discount)
                                         @php($count_order++)
                                     @endif
-                                        <td>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></td>
+                                        <td>{{ $count_order }}</td>
                                         <td>
                                             <div class="d-flex align-items-center width150" style="gap: 5px;">
                                                 <avatar-component size="sm" userid="{{ $order->customer->id }}" class="mr10"></avatar-component>
@@ -130,6 +142,18 @@
                                         <span class="badge light badge-success">{{ $order->status->name }}</span>
                                         @endif
                                     </td>
+                                    @if ($user->is_admin)
+                                    <td>
+                                        @if ($order->status->column_name != 'paid')
+                                        <form class="form-horizontal" id="form-order-{{$order->id}}" method="post" action="{{ route('admin.orders.update', $order) }}">
+                                            {{ csrf_field() }}
+                                            {!! method_field('patch') !!}
+                                            <input type="hidden" name="status_id" value="4">
+                                            <button type="submit" id="update-order-{{$order->id}}" class="btn btn-danger">Thanh Toán</button>
+                                        </form>
+                                        @endif
+                                    </td>
+                                    @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -139,12 +163,11 @@
                                     <td></td>
                                     <td>Tổng tiền</td>
                                     <td>{{ number_format($total_amount_discount, 0, ".", ",") . "đ" }}</td>
-                                    <td>
-                                        @if ($total_amount > 0)
-                                        <input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}">
-                                        @endif
-                                    </td>
                                     <td></td>
+                                    <td></td>
+                                    @if ($user->is_admin)
+                                        <td></td>
+                                    @endif
                                 </tr>
                             </tfood>
 

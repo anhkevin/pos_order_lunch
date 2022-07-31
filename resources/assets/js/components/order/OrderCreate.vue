@@ -16,7 +16,7 @@
         </div>
         <h1 style="margin: 0;">{{ this.title }}</h1>
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div>
                     <div class="dishes_result">
                         <p v-if="loading">Loading...</p>
@@ -26,7 +26,7 @@
                         <li v-for="(dish, index) in filter_dish_by_menu" :key="index" class="list-group-item">
                             <h4>{{ dish.dish_type_name }}</h4>
                             <div v-for="(sub_dish, index) in dish.dishes" :key="index">
-                                <div class="row" style="margin-bottom: 10px;">
+                                <div class="row" style="margin-bottom: 10px;border: 1px solid #ccc;justify-content: center;align-items: center;">
                                     <div class="col-md-2">
                                         <div style="width: 70px;">
                                             <img :src="sub_dish.dish_photo" alt="" style="width: 100%; border-radius: 5px;">
@@ -57,11 +57,11 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div v-if="shop_infor.name">
                     <div class="card" v-if="shop_infor.name">
-                        <div class="card-img-top">
-                            <img :src="shop_infor.photo" style="width: 100%;" alt="" />   
+                        <div class="card-img-top" style="text-align: center;">
+                            <img :src="shop_infor.photo" style="width: auto;max-height: 200px;" alt="" />   
                                        
                         </div>
                          <div class="card-body">
@@ -71,7 +71,7 @@
                                 <div v-if="shop_infor.is_open" style="color: green">Opening</div>
                                 <div v-else style="color: red;">Close</div>
                             </div>
-                            <div>{{ shop_infor.address }}</div>
+                            <div v-if="shop_infor.address">{{ shop_infor.address }}</div>
                             <!-- <div><b>Ship:</b> {{ this.ship_fee }}</div>
                             <div><b>Voucher:</b> {{ this.voucher }}</div> -->
                         </div>    
@@ -219,7 +219,7 @@ import axios from 'axios'
                 this.saved = false
                 this.loading = true
 
-                const response = await axios.post('/api/get_url', {url: this.url_shopeefood})
+                const response = await axios.post('/api/get_url', {url: this.url_shopeefood,shop_type_id:this.shop_type_id})
 
                 if(response.data.dishes.result == 'success') {
 

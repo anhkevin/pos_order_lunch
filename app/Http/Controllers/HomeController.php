@@ -32,7 +32,7 @@ class HomeController extends Controller
         $title = '';
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
-            if ($shop_type = Order_type::where('id', $order_type)->first()) {
+            if ($shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
                 $shop_id = $shop_type->shop_id;
             }
         } else {
