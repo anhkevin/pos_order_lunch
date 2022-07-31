@@ -208,8 +208,8 @@
                                                         <strong>{{ $count_order }}<input type="hidden" name="order_id[]" value="{{ $order->id }}"></strong>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex align-items-center width150">
-                                                            <img src="{{URL::asset('images/avatar/1.jpg')}}" alt="" width="40" class="rounded-circle mr-2">
+                                                        <div class="d-flex align-items-center width150" style="gap: 5px;">
+                                                            <avatar-component size="sm" userid="{{ $order->customer->id }}" class="mr10"></avatar-component>
                                                             {{ $order->customer->name }}
                                                         </div>
                                                     </td>
