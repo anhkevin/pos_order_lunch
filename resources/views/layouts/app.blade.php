@@ -146,7 +146,7 @@
                                             <span class="text-black">Hello,<strong> {{ Auth::user()->name }}</strong></span>
                                             @if (Auth::user()->is_admin == 1)<p class="fs-12 mb-0">Super Admin</p>@else<p class="fs-12 mb-0">Member</p>@endif
                                         </div>
-                                        <img src="{{URL::asset('images/profile/17.jpg')}}" width="20" alt="">
+                                        <avatar-component size="md"  userid="{{Auth::user()->id}}" :isauth="true"></avatar-component>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a href="{{ route('logout') }}"

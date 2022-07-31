@@ -22,6 +22,7 @@ Vue.component('transaction-history-component', require('./components/Transaction
 Vue.component('show-wallet-component', require('./components/ListWallet.vue').default);
 Vue.component('form-collection', require('./components/FormCollection.vue').default);
 Vue.component('order-create-component', require('./components/order/OrderCreate.vue').default);
+Vue.component('avatar-component', require('./components/avatarAuto.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

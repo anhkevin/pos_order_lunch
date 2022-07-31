@@ -16,7 +16,7 @@
         </div>
         <h1 style="margin: 0;">{{ this.title }}</h1>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div>
                     <div class="dishes_result">
                         <p v-if="loading">Loading...</p>
@@ -57,46 +57,51 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div style="background-color: #c7ccca;padding: 10px;" v-if="shop_infor.name">
-                    <div style="background-color: #f1d3d3;padding: 5px;" v-if="shop_infor.name">
-                        <div>
-                            <img :src="shop_infor.photo" style="width: 100%;display: none;" alt="" />   
-                            <div>
-                                <h3 style="margin: 0;"><a :href="this.url_shopeefood" target="_blank">{{ shop_infor.name }}</a></h3>
-
-                                <div style="display: none;">
-                                    <div v-if="shop_infor.is_open" style="color: green">Opening</div>
-                                    <div v-else style="color: red;">Close</div>
-                                </div>
-                                <div>{{ shop_infor.address }}</div>
-                                <div><b>Ship:</b> {{ this.ship_fee }}</div>
-                                <div><b>Voucher:</b> {{ this.voucher }}</div>
-                            </div>                
+            <div class="col-md-3">
+                <div v-if="shop_infor.name">
+                    <div class="card" v-if="shop_infor.name">
+                        <div class="card-img-top">
+                            <img :src="shop_infor.photo" style="width: 100%;" alt="" />   
+                                       
                         </div>
+                         <div class="card-body">
+                            <h3 class="card-title"><a :href="this.url_shopeefood" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
+
+                            <div style="display: none;">
+                                <div v-if="shop_infor.is_open" style="color: green">Opening</div>
+                                <div v-else style="color: red;">Close</div>
+                            </div>
+                            <div>{{ shop_infor.address }}</div>
+                            <!-- <div><b>Ship:</b> {{ this.ship_fee }}</div>
+                            <div><b>Voucher:</b> {{ this.voucher }}</div> -->
+                        </div>    
                     </div>
                     <div>  
-                        <div>
-                            <h3>Danh sách món đã chọn</h3>
+                        <div class="card">
+                            <h3 class="card-header">
+                                <span class="card-title">Danh sách món đã chọn</span>
+                            </h3>
 
                             <!--<ul>-->
-                            <ul style="padding: 0 0 0 20px;margin: 0;">
-                                <li v-for="(item, index) in productItems" :key="item.id" class="shodow">
-                                    {{ item.name }}
-                                    <div style="border-bottom: 1px solid #aaa;padding-bottom: 5px;margin-bottom: 10px;">
-                                        <span style="font-weight: bold;min-width: 80px;display: inline-block;">Số lượng: {{ item.number }}</span> - 
-                                        <span v-if="item.discount_price" style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.discount_price)) }}</span>
-                                        <span v-else style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.price)) }}</span>
-                                        <div class="btn-subtract" v-on:click="remove_product_cart(index)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: rgb(238, 77, 45);text-align: center;color: rgb(255, 255, 255);display: inline-block;border-radius: 4px;margin-left: 15px;">
-                                            -
+                            <div class="card-body">
+                                <ul style="margin: 0;">
+                                    <li v-for="(item, index) in productItems" :key="item.id" class="shodow list-group-item">
+                                        {{ item.name }}
+                                        <div >
+                                            <span style="font-weight: bold;min-width: 80px;display: inline-block;">Số lượng: {{ item.number }}</span> - 
+                                            <span v-if="item.discount_price" style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.discount_price)) }}</span>
+                                            <span v-else style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.price)) }}</span>
+                                            <div class="btn-subtract" v-on:click="remove_product_cart(index)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: rgb(238, 77, 45);text-align: center;color: rgb(255, 255, 255);display: inline-block;border-radius: 4px;margin-left: 15px;">
+                                                -
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <!--</ul>-->
-                            <div v-if="productItems.length > 0" style="text-align: center;">
-                                <textarea id="comment" name="comment" v-model="comment" rows="3" style="width: 100%;"></textarea>
-                                <button class="btn btn-success" type="submit" v-on:click="add_order(), scrollToTop()">Đặt món</button>
+                                    </li>
+                                </ul>
+
+                                <div v-if="productItems.length > 0" style="text-align: center;" class="mt-4">
+                                    <textarea id="comment" name="comment" placeholder="Ghi chú thêm.." v-model="comment" rows="3" style="width: 100%; padding: 5px;"></textarea>
+                                    <button class="btn btn-success btn-xs" type="submit" v-on:click="add_order(), scrollToTop()">Đặt món</button>
+                                </div>
                             </div>
                         </div>                
                     </div>

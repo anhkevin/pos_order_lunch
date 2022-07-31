@@ -43,7 +43,12 @@
                                 <tr>
                                 @endif
                                     <td>{{ date_format($order->created_at ,"Y/m/d") }}</td>
-                                    <td>{{ $order->customer->name }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center width150" style="gap: 5px;">
+                                            <avatar-component size="sm" userid="{{ $order->customer->id }}" class="mr10"></avatar-component>
+                                            {{ $order->customer->name }}
+                                        </div>
+                                    </td>
                                     <td>{!! nl2br2(e($order->size)) !!}</td>
                                     <td>
                                         @if ($order->discount > 0)

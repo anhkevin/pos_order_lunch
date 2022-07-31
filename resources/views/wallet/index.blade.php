@@ -36,6 +36,51 @@
                     </div>
                 </div>
 
+                @if (auth()->user()->is_admin)
+                <div class="col-xl-12">
+                    @if (session('message'))
+                        <div class="alert alert-success">
+                            {{ session('message') }}
+                        </div>
+                    @endif
+                    <div class="card" style="padding:15px;">
+                        <div style="display: inline-block;">
+                            <form class="form-horizontal" method="post" action="{{ route('wallet.deposit', $user) }}" style="display: inline-block;">
+                                {{ csrf_field() }}
+                                
+                                <div class="input-group mb-3  input-info">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" style="min-width:85px;">Nạp tiền:</span>
+                                    </div>
+                                    <input type="text" name="money_deposit" class="form-control" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">đ</span>
+                                    </div>
+                                    <button type="submit" class="btn btn-info ml-3">Nạp tiền</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div style="display: inline-block;">
+                            <form class="form-horizontal" method="post" action="{{ route('wallet.withdrawal', $user) }}" style="display: inline-block;">
+                                {{ csrf_field() }}
+
+                                <div class="input-group mb-3  input-danger">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" style="min-width:85px;">Trừ tiền:</span>
+                                    </div>
+                                    <input type="text" name="money_paid" class="form-control" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">đ</span>
+                                    </div>
+                                    <input type="text" name="note" class="form-control ml-3" placeholder="ghi chú">
+                                    <button type="submit" class="btn btn-danger ml-3">Trừ tiền</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <div class="">
                     <transaction-history-component user_id="{{ $user->id }}"></transaction-history-component>
                 </div>
