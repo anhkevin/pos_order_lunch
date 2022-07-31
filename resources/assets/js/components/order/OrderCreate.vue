@@ -26,8 +26,8 @@
                         <li v-for="(dish, index) in filter_dish_by_menu" :key="index" class="list-group-item">
                             <h4>{{ dish.dish_type_name }}</h4>
                             <div v-for="(sub_dish, index) in dish.dishes" :key="index">
-                                <div class="row" style="margin-bottom: 10px;border: 1px solid #ccc;justify-content: center;align-items: center;">
-                                    <div class="col-md-2">
+                                <div class="row" style="margin-bottom: 10px;margin-left: 20px;border: 1px solid #ccc;justify-content: center;align-items: center;">
+                                    <div class="col-md-2" style="padding-left: 0;">
                                         <div style="width: 70px;">
                                             <img :src="sub_dish.dish_photo" alt="" style="width: 100%; border-radius: 5px;">
                                         </div>

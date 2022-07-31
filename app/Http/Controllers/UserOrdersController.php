@@ -65,7 +65,7 @@ class UserOrdersController extends Controller
                     $coffee_user = General::where('key', 'coffee_default_user')->first();
                     Order_type::create([
                         'order_date' => date("Y-m-d"),
-                        'order_name' => 'Cà phê sáng (Huy Dancer)',
+                        'order_name' => 'Cà phê sáng | Huy Dancer',
                         'shop_id' => $coffee_default->value,
                         'status_id' => 1,
                         'pay_type' => 1,
