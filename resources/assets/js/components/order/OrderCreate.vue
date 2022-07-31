@@ -65,7 +65,7 @@
                                        
                         </div>
                          <div class="card-body">
-                            <h3 class="card-title"><a :href="this.url_shopeefood" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
+                            <h3 class="card-title text-center"><a :href="this.url_shopeefood" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
 
                             <div style="display: none;">
                                 <div v-if="shop_infor.is_open" style="color: green">Opening</div>
