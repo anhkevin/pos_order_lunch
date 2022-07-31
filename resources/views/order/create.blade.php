@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@if ($message_order)
 <div class="alert alert-danger alert-dismissible fade show">
 Đơn hàng (<strong style="color: #3f51b5;">{{ $title }}</strong>) {{ $message_order }}
 </div>
+@endif
 
 <div class="form-head mb-4">
     <h1 class="text-black font-w600 mb-0">Đặt món @if ($title)<small>({{ $title }})</small>@endif</h1>

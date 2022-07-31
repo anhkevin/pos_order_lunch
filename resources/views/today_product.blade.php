@@ -3,7 +3,7 @@
 @section('content')
 <div class="">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-9 offset-md-1">
             <div class="card">
                 <div class="card-header">
                 <h2 class="text-black font-w600 mb-0">Danh sách món đã Order @if ($title)<small>({{ $title }})</small>@endif</h2></div>
