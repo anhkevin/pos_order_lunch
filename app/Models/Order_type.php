@@ -11,5 +11,5 @@ class Order_type extends Model
      *
      * @var array
      */
-    protected $fillable = ['order_date','order_name','shop_id','status_id','pay_type','is_default'];
+    protected $fillable = ['order_date','order_name','shop_id','status_id','pay_type','is_default', 'assign_user_id'];
 }

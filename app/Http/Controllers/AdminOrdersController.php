@@ -87,9 +87,7 @@ class AdminOrdersController extends Controller
     public function update(Request $request, Order $order)
     {
         $user_login = auth()->user();
-        if($user_login->is_admin != 1) {
-            return redirect('/');
-        }
+        
         $request->validate([
             'status_id' => 'required|numeric',
         ]);
@@ -106,6 +104,16 @@ class AdminOrdersController extends Controller
         }
 
         $shop_type = Order_type::where('id', $order->order_type)->first();
+
+        if (!empty($shop_type->assign_user_id)) {
+            if ($user_login->id == $shop_type->assign_user_id) {
+                $user_login->is_admin = 1;
+            }
+        }
+
+        if($user_login->is_admin != 1) {
+            return redirect('/');
+        }
 
         if (empty($shop_type) || empty($shop_type->pay_type)) {
             if($status_order->column_name != 'paid'
@@ -160,9 +168,6 @@ class AdminOrdersController extends Controller
     public function update_status_today(Request $request)
     {
         $user = auth()->user();
-        if($user->is_admin != 1) {
-            return back()->with('message', 'Access Denied!');
-        }
 
         if(empty($request->status_order) && empty($request->status_booked) && empty($request->status_unpaid)) {
             return back()->with('message', 'Null');
@@ -186,6 +191,16 @@ class AdminOrdersController extends Controller
         }
         if (!empty($shop_type)) {
             $shop_type_id = $shop_type->id;
+
+            if (!empty($shop_type->assign_user_id)) {
+                if ($user->id == $shop_type->assign_user_id) {
+                    $user->is_admin = 1;
+                }
+            }
+        }
+
+        if($user->is_admin != 1) {
+            return back()->with('message', 'Access Denied!');
         }
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')

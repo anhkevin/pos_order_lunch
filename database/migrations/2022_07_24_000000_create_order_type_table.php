@@ -21,6 +21,7 @@ class CreateOrderTypeTable extends Migration
             $table->integer('status_id')->unsigned();
             $table->integer('pay_type')->unsigned();
             $table->integer('is_default')->unsigned()->default(0);
+            $table->integer('assign_user_id')->unsigned()->default(0);
             $table->timestamps();
         });
     }

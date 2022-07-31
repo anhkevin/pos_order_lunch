@@ -48,9 +48,11 @@ class UserOrdersController extends Controller
         $shop_default = General::where('key', 'shop_default')->first();
         $shop_id = $shop_default->value;
         $title = 'Cơm trưa ngày: ' . date("Y-m-d");
+        $shop_type_id = 0;
+        $message_order = '';
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
-            if ($shop_type = Order_type::where('id', $order_type)->first()) {
+            if ($shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
                 $shop_id = $shop_type->shop_id;
                 $title = $shop_type->order_name;
             }
@@ -59,6 +61,18 @@ class UserOrdersController extends Controller
                 $shop_id = $shop_type->shop_id;
                 $title = $shop_type->order_name;
             } else {
+                if ($coffee_default = General::where('key', 'coffee_default')->first()) {
+                    $coffee_user = General::where('key', 'coffee_default_user')->first();
+                    Order_type::create([
+                        'order_date' => date("Y-m-d"),
+                        'order_name' => 'Cà phê sáng (Huy Dancer)',
+                        'shop_id' => $coffee_default->value,
+                        'status_id' => 1,
+                        'pay_type' => 1,
+                        'is_default' => 0,
+                        'assign_user_id' => $coffee_user->value,
+                    ]);
+                }
                 $shop_type = Order_type::create([
                     'order_date' => date("Y-m-d"),
                     'order_name' => $title,
@@ -92,7 +106,6 @@ class UserOrdersController extends Controller
             ->where('order_type', $shop_type_id)
             ->where('order_date', date("Y-m-d"))->first();
 
-            $message_order = '';
             if ($order_status) {
                 $message_order = 'đã đặt, không thể Order thêm !';
             }
@@ -211,6 +224,12 @@ class UserOrdersController extends Controller
         if(!empty($shop_type)) {
             $shop_type_id = $shop_type->id;
             $title = $shop_type->order_name;
+
+            if (!empty($shop_type->assign_user_id)) {
+                if ($user->id == $shop_type->assign_user_id) {
+                    $user->is_admin = 1;
+                }
+            }
         }
 
         $orders = Order::with('status')
