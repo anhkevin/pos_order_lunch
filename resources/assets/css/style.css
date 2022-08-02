@@ -30924,4 +30924,12 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     [data-theme-version="dark"] .footer .copyright p {
       color: #fff; }
 
-/*# sourceMappingURL=style.css.map */
+.cart-shop-overflow {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    margin-bottom: 0;
+    width: 350px;
+    height: auto;
+    z-index: 99;
+}

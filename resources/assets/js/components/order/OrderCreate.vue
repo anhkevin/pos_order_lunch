@@ -46,7 +46,7 @@
                                             {{ sub_dish.price_text }}
                                         </div>
                                         <div>
-                                            <div class="btn-adding" v-on:click="add_product_cart(sub_dish.id,sub_dish.name,sub_dish.price,sub_dish.discount_price,sub_dish.dish_type_name), scrollToTop()" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: #ee4d2d;text-align: center;color: #fff;display: inline-block;border-radius: 4px;">
+                                            <div class="btn-adding" v-on:click="add_product_cart(sub_dish.id,sub_dish.name,sub_dish.price,sub_dish.discount_price,sub_dish.dish_type_name)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: #ee4d2d;text-align: center;color: #fff;display: inline-block;border-radius: 4px;">
                                                 +
                                             </div>
                                         </div>
@@ -59,52 +59,32 @@
             </div>
             <div class="col-md-4">
                 <div v-if="shop_infor.name">
-                    <div class="card" v-if="shop_infor.name">
-                        <div class="card-img-top" style="text-align: center;">
-                            <img :src="shop_infor.photo" style="width: auto;max-height: 200px;" alt="" />   
-                                       
+
+                    <div class="card overflow-hidden cart-shop-overflow">
+                        <div class="text-center p-2 overlay-box" v-bind:style="{ 'background-image': 'url(' + shop_infor.photo + ')' }">
+                            <h3 class="mt-3 mb-1 text-white"><a :href="this.url_shopeefood" class="text-white" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
+                            <p class="text-white mb-0" v-if="shop_infor.address">{{ shop_infor.address }}</p>
                         </div>
-                         <div class="card-body">
-                            <h3 class="card-title text-center"><a :href="this.url_shopeefood" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
-
-                            <div style="display: none;">
-                                <div v-if="shop_infor.is_open" style="color: green">Opening</div>
-                                <div v-else style="color: red;">Close</div>
-                            </div>
-                            <div v-if="shop_infor.address">{{ shop_infor.address }}</div>
-                            <!-- <div><b>Ship:</b> {{ this.ship_fee }}</div>
-                            <div><b>Voucher:</b> {{ this.voucher }}</div> -->
-                        </div>    
-                    </div>
-                    <div>  
-                        <div class="card">
-                            <h3 class="card-header">
-                                <span class="card-title">Danh sách món đã chọn</span>
-                            </h3>
-
-                            <!--<ul>-->
-                            <div class="card-body">
-                                <ul style="margin: 0;">
-                                    <li v-for="(item, index) in productItems" :key="item.id" class="shodow list-group-item">
-                                        {{ item.name }}
-                                        <div >
-                                            <span style="font-weight: bold;min-width: 80px;display: inline-block;">Số lượng: {{ item.number }}</span> - 
-                                            <span v-if="item.discount_price" style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.discount_price)) }}</span>
-                                            <span v-else style="font-weight: bold;color: red;min-width: 80px;display: inline-block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.price)) }}</span>
-                                            <div class="btn-subtract" v-on:click="remove_product_cart(index)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: rgb(238, 77, 45);text-align: center;color: rgb(255, 255, 255);display: inline-block;border-radius: 4px;margin-left: 15px;">
-                                                -
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-
-                                <div v-if="productItems.length > 0" style="text-align: center;" class="mt-4">
-                                    <textarea id="comment" name="comment" placeholder="Ghi chú thêm.." v-model="comment" rows="3" style="width: 100%; padding: 5px;"></textarea>
-                                    <button class="btn btn-success btn-xs" type="submit" v-on:click="add_order(), scrollToTop()">Đặt món</button>
+                        <span class="card-title pl-3 pt-2">Danh sách món đã chọn</span>
+                        <ul v-if="productItems.length > 0" class="list-group list-group-flush">
+                            <li style="padding: 5px 15px;" v-for="(item, index) in productItems" :key="item.id" class="shodow list-group-item">
+                                <span class="mb-0" style="width: 180px !important;display: inline-block;">{{ item.name }}</span>
+                                <span class="mb-0" style="width: 30px !important;display: inline-block;">x{{ item.number }}</span>
+                                <strong v-if="item.discount_price" style="color: red;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.discount_price)) }}</strong>
+                                <strong v-else style="color: red;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(item.number) * parseFloat(item.price)) }}</strong>
+                                <div class="btn-subtract" v-on:click="remove_product_cart(index)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 13px;width: 15px;height: 15px;background-color: rgb(238, 77, 45);text-align: center;color: rgb(255, 255, 255);display: inline-block;border-radius: 10px;margin-left: 15px;">
+                                    -
                                 </div>
-                            </div>
-                        </div>                
+                            </li>
+                        </ul>
+                        <p v-else class="text-center">No Items Selected</p>
+                        <div class="card-footer border-0 mt-0" v-if="productItems.length > 0">
+                            <textarea id="comment" name="comment" placeholder="Ghi chú thêm.." v-model="comment" rows="1" style="width: 100%; padding: 5px;"></textarea>
+                            <button class="btn btn-primary btn-lg btn-block" v-on:click="add_order()">
+                                <i class="fa fa-cart-plus"></i> Đặt món</button>		
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -137,8 +117,6 @@ import axios from 'axios'
 
         created() {
             this.get_dish();
-            this.remove_old_localStorage()
-            console.log(this.key_storage)
 
             if (sessionStorage.length > 0) {
 
