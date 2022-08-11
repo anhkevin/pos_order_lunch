@@ -30,6 +30,7 @@ mix.js('resources/assets/js/app.js', 'public/js').vue()
    .copy('resources/assets/icons', 'public/icons')
    .copy('resources/assets/vendor', 'public/vendor')
    .copy('resources/assets/images', 'public/images')
+   .copy('resources/assets/images/icon.png', 'public/icon.png')
    .copy('resources/assets/images/favicon.ico', 'public/favicon.ico')
    .scripts([
       'resources/assets/vendor/global/global.min.js',

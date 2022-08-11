@@ -30932,4 +30932,5 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     width: 350px;
     height: auto;
     z-index: 99;
+    min-height: 500px;
 }

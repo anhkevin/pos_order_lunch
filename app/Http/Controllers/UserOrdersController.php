@@ -271,7 +271,7 @@ class UserOrdersController extends Controller
             $title = $shop_type->order_name;
         }
 
-        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('count(*) AS count_product'))
+        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('SUM(order_details.number) AS count_product'))
         // ->join('products', 'products.id', '=', 'order_details.product_id')
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')

@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#6777ef"/>
+    <link rel="apple-touch-icon" href="{{URL::asset('icon.png')}}">
+    <link rel="manifest" href="{{URL::asset('manifest.json')}}">
     <link rel="icon" type="image/x-icon" href="{{URL::asset('images/favicon.ico')}}">
 
     <!-- CSRF Token -->
@@ -291,6 +294,14 @@
 
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ mix('js/vendor.js') }}"></script>
+    <script src="{{ asset('/sw.js') }}"></script>
+    <script>
+        if (!navigator.serviceWorker.controller) {
+            navigator.serviceWorker.register("/sw.js").then(function (reg) {
+                console.log("Service worker has been registered for scope: " + reg.scope);
+            });
+        }
+    </script>
 
     @yield('extra-js')
 </body>
