@@ -77,10 +77,10 @@
                             @php($total_amount+=$order->amount)
                         @endif
                         <input type="hidden" name="order_id[]" value="{{ $order->id }}">
-                        @if ($total_amount > 0)
-                            <input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}">
-                        @endif
                     @endforeach
+                    @if ($total_amount > 0)
+                        <input type="hidden" name="discount" value="{{ ($shop_info->voucher-$shop_info->ship)/$total_amount }}">
+                    @endif
                     </form>
                     <div class="table-responsive">
                         <table class="table">

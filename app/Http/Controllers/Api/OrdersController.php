@@ -7,6 +7,7 @@ use App\Order;
 use App\Models\Shop;
 use App\Models\General;
 use App\Models\Order_status;
+use App\Models\Order_type;
 use App\Order_detail;
 use App\Product;
 use App\Status;
@@ -27,7 +28,12 @@ class OrdersController extends Controller
 
     public function api_add_order(Request $request)
     {
-        // die(Var_dump($request->token));
+        if(empty($request->shop_type_id)) {
+            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                $request->shop_type_id = $shop_type->id;
+            }
+        }
+
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereIn('statuses.column_name', ['booked','unpaid'])
         ->where('order_type', $request->shop_type_id)

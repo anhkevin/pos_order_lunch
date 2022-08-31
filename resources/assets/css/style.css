@@ -30929,12 +30929,13 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     right: 15px;
     bottom: 15px;
     margin-bottom: 0;
-    width: 350px;
+    width: 370px;
     height: auto;
     z-index: 99;
     min-height: 400px;
     max-height: 600px;
     border: 1px solid #1EAAE7;
+    border-top: 0;
 }
 
 .cart-shop-overflow > .overlay-box {
@@ -30986,4 +30987,14 @@ ul.box-select-product > li .box-order-image {
 ul.box-select-product > li .box-order-image img {
     width: 100%; 
     border-radius: 5px;
+}
+
+.box-select-product .btn-over {
+  font-size: 12px;
+  padding: 2px 10px;
+  background-color: #959595;
+  text-align: center;
+  color: #fff;
+  display: inline-block;
+  border-radius: 4px;
 }

@@ -124,7 +124,8 @@ class CollectionController extends Controller
                             ['value' => $value->dish_photo],
                             ['value' => $value->dish_photo],
                         ],
-                        'description' => ''
+                        'description' => '',
+                        'is_available' => true,
                     ];
                 }
 

@@ -55,6 +55,11 @@ class UserOrdersController extends Controller
             if ($shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
                 $shop_id = $shop_type->shop_id;
                 $title = $shop_type->order_name;
+            } else {
+                if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                    $shop_id = $shop_type->shop_id;
+                    $title = $shop_type->order_name;
+                }
             }
         } else {
             if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
@@ -158,7 +163,7 @@ class UserOrdersController extends Controller
                 array_push($product_id_array, $product_opt->id);
                 $amount += $product_opt->price;
             }
-        }
+        } 
 
         $order = Order::create([
             'user_id' => auth()->user()->id,
@@ -271,7 +276,7 @@ class UserOrdersController extends Controller
             $title = $shop_type->order_name;
         }
 
-        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('SUM(order_details.number) AS count_product'))
+        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('SUM(order_details.number) AS count_product'), DB::raw('SUM(orders.discount) AS total_discount'))
         // ->join('products', 'products.id', '=', 'order_details.product_id')
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')

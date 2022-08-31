@@ -3,13 +3,31 @@
         <div class="modal-backdrop fade show" v-if="alert || alert_success"></div>
         <div class="modal fade show" v-if="alert || alert_success" tabindex="-1" role="dialog" style="display: block; padding-right: 17px;" aria-modal="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" v-on:click="close_modal()"><span>×</span></button>
+                <div v-if="alert_success" class="modal-content alert alert-success left-icon-big alert-dismissible fade show">
+                    <button type="button" class="close" v-on:click="close_modal()" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
+                    </button>
+                    <div class="media">
+                    <div class="alert-left-icon-big">
+                        <span><i class="mdi mdi-check-circle-outline"></i></span>
                     </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger" v-if="alert" style="border: 0;background-color: rgb(255 255 255);text-align: center;font-weight: bold;font-size: 120%;">{{ this.alert }}</div>
-                        <div class="alert alert-success" v-if="alert_success" style="border: 0;background-color: rgb(255 255 255);text-align: center;font-weight: bold;font-size: 120%;">{{ this.alert_success }}</div>
+                    <div class="media-body">
+                        <h5 class="mt-1 mb-2">Congratulations!</h5>
+                        <p class="mb-0">{{ this.alert_success }}</p>
+                    </div>
+                    </div>
+                </div>
+
+                <div v-if="alert" class="modal-content alert alert-danger left-icon-big alert-dismissible fade show">
+                    <button type="button" class="close" v-on:click="close_modal()" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
+                    </button>
+                    <div class="media">
+                    <div class="alert-left-icon-big">
+                        <span><i class="mdi mdi-alert"></i></span>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="mt-1 mb-2">Failed!</h5>
+                        <p class="mb-0">{{ this.alert }}</p>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -37,19 +55,22 @@
                                         <h4><strong>{{ sub_dish.name }}</strong></h4>
                                         <p>{{ sub_dish.description }}</p>
                                     </div>
-                                    <div class="col-4" style="display: flex; gap: 10px; align-items: center;">                                        
+                                    <div v-if="sub_dish.is_available" class="col-4" style="display: flex; gap: 10px; align-items: center;">                                        
                                         <div v-if="sub_dish.discount_price" style="width: 100px;">
-                                            <span style="color: red; font-size: 18px;display: block;">{{ sub_dish.discount_price_text }}</span>
-                                            <del style="opacity: .7; font-size: 15px;display: block;">{{ sub_dish.price_text }}</del>
+                                            <span style="color: red; font-size: 18px;display: block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(sub_dish.discount_price) }}</span>
+                                            <del style="opacity: .7; font-size: 15px;display: block;">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(sub_dish.price) }}</del>
                                         </div>
                                         <div v-else style="color: red; font-size: 18px;width: 100px;">
-                                            {{ sub_dish.price_text }}
+                                            {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(sub_dish.price) }}
                                         </div>
                                         <div>
                                             <div class="btn-adding" v-on:click="add_product_cart(sub_dish.id,sub_dish.name,sub_dish.price,sub_dish.discount_price,sub_dish.dish_type_name)" style="font-size: 20px;cursor: pointer;font-weight: 700;line-height: 20px;width: 22px;height: 22px;background-color: #ee4d2d;text-align: center;color: #fff;display: inline-block;border-radius: 4px;">
                                                 +
                                             </div>
                                         </div>
+                                    </div>
+                                    <div v-else class="col-4 adding-food-cart txt-right">
+                                        <div class="btn-over">Hết hàng</div>
                                     </div>
                                 </div>
                             </div>
@@ -273,6 +294,7 @@ import axios from 'axios'
                             'discount_price_text': dish.discount_price ? dish.discount_price.text : 0,
                             'dish_photo': dish.photos[1].value,
                             'description': dish.description,
+                            'is_available': dish.is_available,
                         })
                     })
                 })
