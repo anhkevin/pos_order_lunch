@@ -22,22 +22,22 @@
                         <p v-if="loading">Loading...</p>
                     </div>
 
-                    <ul class="list-group">
+                    <ul class="list-group box-select-product">
                         <li v-for="(dish, index) in filter_dish_by_menu" :key="index" class="list-group-item">
                             <h4>{{ dish.dish_type_name }}</h4>
                             <div v-for="(sub_dish, index) in dish.dishes" :key="index">
-                                <div class="row" style="margin-bottom: 10px;margin-left: 20px;border: 1px solid #ccc;justify-content: center;align-items: center;">
-                                    <div class="col-md-2" style="padding-left: 0;">
-                                        <div style="width: 70px;">
-                                            <img :src="sub_dish.dish_photo" alt="" style="width: 100%; border-radius: 5px;">
+                                <div class="row">
+                                    <div class="col-2" style="padding-left: 0;">
+                                        <div class="box-order-image">
+                                            <img :src="sub_dish.dish_photo" alt="">
                                         </div>
                                     </div>
                                     
-                                    <div class="col-md-7">
+                                    <div class="col-6">
                                         <h4><strong>{{ sub_dish.name }}</strong></h4>
                                         <p>{{ sub_dish.description }}</p>
                                     </div>
-                                    <div class="col-md-3" style="display: flex; gap: 10px; align-items: center;">                                        
+                                    <div class="col-4" style="display: flex; gap: 10px; align-items: center;">                                        
                                         <div v-if="sub_dish.discount_price" style="width: 100px;">
                                             <span style="color: red; font-size: 18px;display: block;">{{ sub_dish.discount_price_text }}</span>
                                             <del style="opacity: .7; font-size: 15px;display: block;">{{ sub_dish.price_text }}</del>
@@ -61,9 +61,10 @@
                 <div v-if="shop_infor.name">
 
                     <div class="card overflow-hidden cart-shop-overflow">
-                        <div class="text-center p-2 overlay-box" v-bind:style="{ 'background-image': 'url(' + shop_infor.photo + ')' }">
+                        <div class="text-center p-2 overlay-box">
+                            <!-- <div class="accordion__header" style="position: absolute;right: 0;top: 0;border: 0;color: black;font-weight: 900;"><span class="accordion__header--indicator"></span></div> -->
                             <h3 class="mt-3 mb-1 text-white"><a :href="this.url_shopeefood" class="text-white" target="_blank"><strong>{{ shop_infor.name }}</strong></a></h3>
-                            <p class="text-white mb-0" v-if="shop_infor.address">{{ shop_infor.address }}</p>
+                            <p class="text-yellow mb-0" v-if="shop_infor.address">{{ shop_infor.address }}</p>
                         </div>
                         <span class="card-title pl-3 pt-2">Danh sách món đã chọn</span>
                         <ul v-if="productItems.length > 0" class="list-group list-group-flush">

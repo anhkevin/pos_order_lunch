@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#6777ef"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="green">
+    <meta name="apple-mobile-web-app-title" content="POS Food">
     <link rel="apple-touch-icon" href="{{URL::asset('icon.png')}}">
     <link rel="manifest" href="{{URL::asset('manifest.json')}}">
     <link rel="icon" type="image/x-icon" href="{{URL::asset('images/favicon.ico')}}">
@@ -46,15 +49,16 @@
                         <div class="collapse navbar-collapse justify-content-between">
                             <div class="header-left">
                                 <div class="dashboard_bar">
-                                    <div class="input-group search-area d-lg-inline-flex d-none">
+                                    <!-- <div class="input-group search-area d-lg-inline-flex d-none">
                                         <div class="input-group-append">
                                             <button class="input-group-text"><i class="flaticon-381-search-2"></i></button>
                                         </div>
                                         <input type="text" class="form-control" placeholder="Search here...">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <ul class="navbar-nav header-right">
+                                <li class="nav-item"><a href="javascript:void(0)" id="installApp" style="display:none" class="btn btn-outline-primary"><i class="las la-download scale5 mr-3"></i>Web APP</a></li>
                                 @auth
                                 <li class="nav-item">
                                     <div class="d-flex weather-detail">
@@ -301,6 +305,23 @@
                 console.log("Service worker has been registered for scope: " + reg.scope);
             });
         }
+        // let deferredPrompt;
+        // const installApp = document.getElementById('installApp');
+        // window.addEventListener('beforeinstallprompt', (e) => {
+        //     installApp.style.display = 'block';
+        //     deferredPrompt = e;
+        // });
+
+        // installApp.addEventListener('click', async () => {
+        //     if (deferredPrompt !== null) {
+        //         deferredPrompt.prompt();
+        //         const { outcome } = await deferredPrompt.userChoice;
+        //         if (outcome === 'accepted') {
+        //             deferredPrompt = null;
+        //             installApp.style.display = 'none';
+        //         }
+        //     }
+        // });
     </script>
 
     @yield('extra-js')

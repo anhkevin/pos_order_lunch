@@ -1,6 +1,6 @@
 {
     "name": "POS Food",
-    "short_name": "POF",
+    "short_name": "POS Food",
     "start_url": "/index.php",
     "background_color": "#6777ef",
     "description": "App of POS Food",
