@@ -58,20 +58,8 @@
                                             {{ number_format($order->amount, 0, ".", ",") . "đ" }}
                                         @endif
                                     </td>
-                                    <td>
-                                        @if ($order->status->column_name == 'order')
-                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
-                                        @elseif ($order->status->column_name == 'cancel')
-                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                        @elseif ($order->status->column_name == 'unpaid')
-                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                        @elseif ($order->status->column_name == 'paid')
-                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                        @else
-                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                        @endif
-                                    </td>
-                                    @if (auth()->user()->is_admin)
+                                    <td>{!! html_order_status($order->status->column_name, $order->status->name) !!}</td>
+                                    @if (auth()->user()->is_admin || auth()->user()->id == $order->assign_user_id)
                                     <td>
                                         <form class="form-horizontal" id="form-order-{{$order->id}}" method="post" action="{{ route('admin.orders.update', $order) }}">
                                             {{ csrf_field() }}

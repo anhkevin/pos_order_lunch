@@ -35,7 +35,6 @@
 
                     <order-alert user_id="{{ auth()->user()->id }}"></order-alert>
                     @php($total_amount=0)
-                    @php($total_discount=0)
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
@@ -54,7 +53,6 @@
                                 </tr>
                                 @foreach ($products as $product)
                                     @php($total_amount+=($product->count_product * $product->price))
-                                    @php($total_discount+=$product->total_discount)
                                     <tr style="color: black;font-weight: 600;">
                                         <td>{{ $product->product_name }}</td>
                                         <td>{{ $product->count_product }}</td>

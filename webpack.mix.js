@@ -25,6 +25,7 @@ mix.js('resources/assets/js/app.js', 'public/js').vue()
       'resources/assets/vendor/aos/css/aos.min.css',
       'resources/assets/vendor/perfect-scrollbar/css/perfect-scrollbar.css',
       'resources/assets/vendor/metismenu/css/metisMenu.min.css',
+      'resources/assets/vendor/sweetalert2/dist/sweetalert2.min.css',
       'resources/assets/css/style.css'
    ], 'public/css/app.css')
    .copy('resources/assets/icons', 'public/icons')
@@ -41,6 +42,7 @@ mix.js('resources/assets/js/app.js', 'public/js').vue()
       'resources/assets/vendor/apexchart/apexchart.js',
       'resources/assets/script/dashboard/dashboard-1.js',
       'resources/assets/script/custom.js',
-      'resources/assets/script/deznav-init.js'
+      'resources/assets/script/deznav-init.js',
+      'resources/assets/vendor/sweetalert2/dist/sweetalert2.min.js',
    ], 'public/js/vendor.js')
    .version();

@@ -294,7 +294,7 @@ class AdminOrdersController extends Controller
 
         if(!empty($request->order_id)) {
             Order::whereIn('id', $request->order_id)
-            ->update(['discount' => DB::raw('IF(orders.amount*'.$request->discount.'/500 >= 1,ROUND(orders.amount*'.$request->discount.'/500)*500,0)')]);
+            ->update(['discount' => DB::raw('IF(orders.amount*'.$request->discount.'/1000 > 1,ROUND(orders.amount*'.$request->discount.'/1000)*1000,0)')]);
         }
 
         return back()->with('message', 'Voucher updated successfully!');

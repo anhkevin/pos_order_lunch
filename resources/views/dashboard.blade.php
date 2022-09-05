@@ -225,19 +225,7 @@
                                                         @endif                            
                                                     </td>
                                                     <td width="150"><span>{{ Str::words($order->instructions, 50) }}</span></td>
-                                                    <td>
-                                                        @if ($order->status->column_name == 'order')
-                                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'cancel')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'unpaid')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'paid')
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @else
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @endif
-                                                    </td>
+                                                    <td>{!! html_order_status($order->status->column_name, $order->status->name) !!}</td>
                                                 </tr>
                                                 @endforeach
                                     </tbody>

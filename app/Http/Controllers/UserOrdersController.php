@@ -276,8 +276,7 @@ class UserOrdersController extends Controller
             $title = $shop_type->order_name;
         }
 
-        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('SUM(order_details.number) AS count_product'), DB::raw('SUM(orders.discount) AS total_discount'))
-        // ->join('products', 'products.id', '=', 'order_details.product_id')
+        $product_all = Order_detail::select('order_details.product_id','order_details.product_name','order_details.price','order_details.dish_type_name', DB::raw('SUM(order_details.number) AS count_product'))
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->whereNotIn('statuses.column_name', ['cancel'])
@@ -295,21 +294,18 @@ class UserOrdersController extends Controller
             }
         }
 
-        // $products_option = Order_detail::select('products.id','products.name','products.price', DB::raw('count(*) AS count_product'))
-        // ->join('products', 'products.id', '=', 'order_details.product_id')
-        // ->join('orders', 'orders.id', '=', 'order_details.order_id')
-        // ->join('statuses', 'statuses.id', '=', 'orders.status_id')
-        // ->whereNotIn('statuses.column_name', ['cancel'])
-        // ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
-        // ->where('products.type', 2)
-        // ->where('order_details.disabled', 0)
-        // ->orderBy('products.id', 'asc')
-        // ->groupBy('products.id','products.name','products.price')
-        // ->get();
+        // Discount
+        $discount = Order::select(DB::raw('SUM(orders.discount) AS total_discount'))
+        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        ->whereNotIn('statuses.column_name', ['cancel'])
+        ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
+        ->where('orders.order_type', $shop_type_id)
+        ->first();
+        $total_discount = !empty($discount->total_discount) ? $discount->total_discount : 0;
 
         $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
 
-        return view('today_product', compact('user', 'products_rice', 'list_order_type', 'title'));
+        return view('today_product', compact('user', 'products_rice', 'list_order_type', 'title', 'total_discount'));
     }
 
     /**
@@ -321,8 +317,9 @@ class UserOrdersController extends Controller
     {
         $user = auth()->user();
         $orders = Order::with('status')
-        ->select('orders.*')
+        ->select('orders.*', 'order_types.assign_user_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        ->join('order_types', 'order_types.id', '=', 'orders.order_type')
         ->whereNotIn('statuses.column_name', ['paid','cancel'])
         ->orderBy('orders.id', 'desc')->get();
 

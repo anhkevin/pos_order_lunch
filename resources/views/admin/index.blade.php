@@ -53,19 +53,7 @@
                                     </td>
                                     <td>{{ Str::words($order->instructions, 50) }}</td>
                                     <td></td>
-                                    <td><a href="{{ route('admin.orders.edit', $order) }}">
-                                    @if ($order->status->column_name == 'order')
-                                                        <span class="badge light badge-warning">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'cancel')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'unpaid')
-                                                        <span class="badge light badge-danger">{{ $order->status->name }}</span>
-                                                        @elseif ($order->status->column_name == 'paid')
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @else
-                                                        <span class="badge light badge-success">{{ $order->status->name }}</span>
-                                                        @endif
-                                    </a></td>
+                                    <td><a href="{{ route('admin.orders.edit', $order) }}">{!! html_order_status($order->status->column_name, $order->status->name) !!}</a></td>
                                 </tr>
                             @endforeach
                         </tbody>

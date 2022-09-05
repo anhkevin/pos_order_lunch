@@ -1,37 +1,5 @@
 <template>
     <div class="">
-        <div class="modal-backdrop fade show" v-if="alert || alert_success"></div>
-        <div class="modal fade show" v-if="alert || alert_success" tabindex="-1" role="dialog" style="display: block; padding-right: 17px;" aria-modal="true">
-            <div class="modal-dialog">
-                <div v-if="alert_success" class="modal-content alert alert-success left-icon-big alert-dismissible fade show">
-                    <button type="button" class="close" v-on:click="close_modal()" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
-                    </button>
-                    <div class="media">
-                    <div class="alert-left-icon-big">
-                        <span><i class="mdi mdi-check-circle-outline"></i></span>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-1 mb-2">Congratulations!</h5>
-                        <p class="mb-0">{{ this.alert_success }}</p>
-                    </div>
-                    </div>
-                </div>
-
-                <div v-if="alert" class="modal-content alert alert-danger left-icon-big alert-dismissible fade show">
-                    <button type="button" class="close" v-on:click="close_modal()" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
-                    </button>
-                    <div class="media">
-                    <div class="alert-left-icon-big">
-                        <span><i class="mdi mdi-alert"></i></span>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-1 mb-2">Failed!</h5>
-                        <p class="mb-0">{{ this.alert }}</p>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <h1 style="margin: 0;">{{ this.title }}</h1>
         <div class="row">
             <div class="col-md-8">
@@ -118,7 +86,7 @@ import axios from 'axios'
 
     export default {
 
-        props: ['url_shopeefood','ship_fee','voucher','title','alert','shop_type_id'],
+        props: ['url_shopeefood','ship_fee','voucher','title','shop_type_id'],
 
         data () {
             var today = new Date();
@@ -132,7 +100,6 @@ import axios from 'axios'
                 shop_infor: {},
                 productItems: [],
                 date_today: today.getFullYear()+"_"+(today.getMonth()+1)+"_"+today.getDate(),
-                alert_success: '',
                 key_storage: this.shop_type_id
             }
         },
@@ -154,10 +121,6 @@ import axios from 'axios'
         },
 
         methods: {
-            close_modal() {
-                this.alert = '';
-                this.alert_success = '';
-            },
             async add_order() {
                 let post_data = {
                     'products': this.productItems,
@@ -171,9 +134,9 @@ import axios from 'axios'
                     this.productItems = [];
                     sessionStorage.removeItem('stored_card_pos'+this.key_storage);
 
-                    this.alert_success = response.data.message;
+                    swal(response.data.message, "", "success");
                 } else {
-                    this.alert = response.data.message;
+                    swal(response.data.message, "", "error");
                 }
             },
             add_product_cart: function (id, name, price, discount_price, dish_type_name) {
