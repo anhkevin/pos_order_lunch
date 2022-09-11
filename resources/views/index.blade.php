@@ -56,7 +56,7 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        <td>{!! html_order_status($order->status->column_name, $order->status->name) !!}</td>
+                                        <td id="text_status_{{ $order->id }}">{!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}</td>
                                         <td>
                                             @if ($order->status->column_name == 'order')
                                                 <a class="btn btn-success" style="display:none" href="{{ route('user.orders.edit', $order) }}">Edit</a>
@@ -65,6 +65,9 @@
                                                     {!! method_field('patch') !!}
                                                     <button type="submit" name="btn_cancel" class="btn btn-danger">Cancel</button>
                                                 </form>
+                                            @endif
+                                            @if (isset($order->order_types) && auth()->user()->id != $order->order_types->assign_user_id && $order->order_types->pay_type == 1 && in_array($order->status->column_name, array('booked', 'unpaid')))
+                                                <pay-order-type order_id="{{ $order->id }}"></pay-order-type>
                                             @endif
                                         </td>
                                         <!-- <td>

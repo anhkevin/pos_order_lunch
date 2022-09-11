@@ -58,13 +58,16 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('api')->group(function () {
         Route::post('/order/add', 'App\Http\Controllers\Api\OrdersController@api_add_order');
+        Route::post('/order/pay_order_type', 'App\Http\Controllers\Api\OrdersController@pay_order_type');
+        Route::post('/order/get_stepper', 'App\Http\Controllers\Api\OrdersController@get_stepper_by_order');
+        Route::post('/order/update_status_order', 'App\Http\Controllers\Api\OrdersController@update_status_order');
+        Route::post('/layout/load_header', 'App\Http\Controllers\Api\LayoutController@load_header');
     });
 });
 
 // Admin Routes - Make sure you implement an auth layer here
 Route::prefix('admin')->group(function () {
     Route::get('/orders', 'App\Http\Controllers\AdminOrdersController@index')->name('admin.orders');
-    Route::patch('/orders/update_status_today', 'App\Http\Controllers\AdminOrdersController@update_status_today')->name('admin.orders.update_status_today');
     Route::patch('/orders/update_voucher', 'App\Http\Controllers\AdminOrdersController@update_voucher')->name('admin.orders.update_voucher');
     Route::get('/orders/edit/{order}', 'App\Http\Controllers\AdminOrdersController@edit')->name('admin.orders.edit');
     Route::patch('/orders/{order}', 'App\Http\Controllers\AdminOrdersController@update')->name('admin.orders.update');

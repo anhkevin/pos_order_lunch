@@ -60,11 +60,7 @@
                             <ul class="navbar-nav header-right">
                                 <li class="nav-item"><a href="javascript:void(0)" id="installApp" style="display:none" class="btn btn-outline-primary"><i class="las la-download scale5 mr-3"></i>Web APP</a></li>
                                 @auth
-                                <li class="nav-item">
-                                    <div class="d-flex weather-detail">
-                                        <span><i class="las la-wallet"></i>{{ number_format(Auth::user()->total_money, 0, ".", ",") . "đ" }}</span>
-                                    </div>
-                                </li>
+                                <header-money></header-money>
 
                                 
                                 <li class="nav-item dropdown notification_dropdown">
@@ -243,10 +239,10 @@
                                 <span class="nav-text">Thống kê</span>
                             </a>
                             <ul aria-expanded="false" class="mm-collapse">
-                                <li class="{{ url()->current() == route('user.orders.today') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.today') }}">Orders hôm nay</a></li>
-                                <li class="{{ url()->current() == route('user.orders.product') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.product') }}">Món đặt hôm nay</a></li>
-                                <li class="{{ url()->current() == route('user.orders.debt') ? 'mm-active' : ''}}"><a href="{{ route('user.orders.debt') }}">Công nợ</a></li>
-                                <li class="{{ url()->current() == route('wallet.show') ? 'mm-active' : ''}}"><a href="{{ route('wallet.show') }}">Danh sách Wallet</a></li>                
+                                <li class="{{ url()->current() == route('user.orders.today') ? 'mm-active' : ''}}"><a class="{{ url()->current() == route('user.orders.today') ? 'mm-active' : ''}}" href="{{ route('user.orders.today') }}">Orders hôm nay</a></li>
+                                <li class="{{ url()->current() == route('user.orders.product') ? 'mm-active' : ''}}"><a class="{{ url()->current() == route('user.orders.product') ? 'mm-active' : ''}}" href="{{ route('user.orders.product') }}">Món đặt hôm nay</a></li>
+                                <li class="{{ url()->current() == route('user.orders.debt') ? 'mm-active' : ''}}"><a class="{{ url()->current() == route('user.orders.debt') ? 'mm-active' : ''}}" href="{{ route('user.orders.debt') }}">Công nợ</a></li>
+                                <li class="{{ url()->current() == route('wallet.show') ? 'mm-active' : ''}}"><a class="{{ url()->current() == route('wallet.show') ? 'mm-active' : ''}}" href="{{ route('wallet.show') }}">Danh sách Wallet</a></li>                
                             </ul>
                         </li>
 

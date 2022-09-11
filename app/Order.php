@@ -28,4 +28,14 @@ class Order extends Model
     {
         return $this->belongsTo('App\Status');
     }
+
+    public function order_types()
+    {
+        return $this->belongsTo('App\Models\Order_type', 'order_type');
+    }
+
+    public function history_payments()
+    {
+        return $this->belongsTo('App\Models\History_payment', 'id', 'order_id');
+    }
 }

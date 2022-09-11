@@ -21,34 +21,7 @@
                 </div>
 
                 <div class="card-body">
-
-                    @if ($orders->count() > 0)
-                    <form class="form-horizontal" id="update-order-status-today" method="post" action="{{ route('admin.orders.update_status_today') }}">
-                        {{ csrf_field() }}
-                        {!! method_field('patch') !!}
-                        <strong style="margin-right:30px;">Tình trạng Order: </strong>
-                        @if (empty($order_status) || (isset($order_status->column_name) && $order_status->column_name == 'order'))
-                            <button type="submit" name="status_order" value="1" class="btn btn-danger btn-status-order btn-xs">Add Order</button>
-                        @else
-                            <button type="submit" name="status_order" value="1" class="btn btn-info btn-status-order btn-xs">Add Order</button>
-                        @endif
-                        @if (isset($order_status->column_name) && $order_status->column_name == 'booked')
-                            <button type="submit" name="status_booked" value="1" class="btn btn-danger btn-status-order btn-xs">Đã đặt</button>
-                        @else
-                            <button type="submit" name="status_booked" value="1" class="btn btn-info btn-status-order btn-xs">Đã đặt</button>
-                        @endif
-                        @if (isset($order_status->column_name) && $order_status->column_name == 'unpaid')
-                            <button type="submit" name="status_unpaid" value="1" class="btn btn-danger btn-status-order btn-xs">Thanh toán</button>
-                        @else
-                            <button type="submit" name="status_unpaid" value="1" class="btn btn-info btn-status-order btn-xs">Thanh toán</button>
-                        @endif
-
-                        @if (isset($_GET['order_type']))
-                        <input type="hidden" name="order_type" value="{{ $_GET['order_type'] }}">
-                        @endif
-                    </form>
-                    <br>
-                    @endif
+                    <stepper-order order_type="{{ isset($_GET['order_type']) ? $_GET['order_type'] : '' }}"></stepper-order>
 
                     @if (session('message'))
                         <div class="alert alert-success">
@@ -129,7 +102,7 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        <td>{!! html_order_status($order->status->column_name, $order->status->name) !!}</td>
+                                        <td>{!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}</td>
                                     @if ($user->is_admin)
                                     <td>
                                         @if ($order->status->column_name != 'paid')

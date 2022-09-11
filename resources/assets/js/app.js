@@ -23,6 +23,9 @@ Vue.component('show-wallet-component', require('./components/ListWallet.vue').de
 Vue.component('form-collection', require('./components/FormCollection.vue').default);
 Vue.component('order-create-component', require('./components/order/OrderCreate.vue').default);
 Vue.component('avatar-component', require('./components/avatarAuto.vue').default);
+Vue.component('pay-order-type', require('./components/order/PayOrderType.vue').default);
+Vue.component('header-money', require('./components/layout/HeaderMoney.vue').default);
+Vue.component('stepper-order', require('./components/order/StepperOrder.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

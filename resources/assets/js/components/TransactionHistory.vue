@@ -42,7 +42,7 @@
             return {
                 isFinished: false,
                 row: 0, // Record selction position
-                rowperpage: 5, // Number of records fetch at a time
+                rowperpage: 10, // Number of records fetch at a time
                 buttonText: 'Load More',
                 posts: ''
             }

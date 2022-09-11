@@ -73,8 +73,8 @@ class WalletController extends Controller
                 $response_arr[] = array(
                     'id'        =>  $value->id,
                     'date'      =>  !empty($value->created_at) ? date_format($value->created_at ,"Y/m/d") : '',
-                    'type'      => ($value->amount > 0) ? 'Deposit' : 'Paid',
-                    'note'      => $value->note,
+                    'type'      => ($value->amount > 0) ? 'Nạp tiền' : 'Trừ tiền',
+                    'note'      => str_replace(array("\n", "\r\n", "\\r\\n"), " - ", "$value->note"),
                     'amount'    =>number_format($value->amount, 0, ".", ",") . "đ"
                 );
             }

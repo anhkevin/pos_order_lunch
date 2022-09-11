@@ -33,7 +33,12 @@ class UserOrdersController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $orders = Order::with('status')->where('user_id', $user->id)->limit(10)->orderBy('id', 'desc')->get();
+        $orders = Order::with('status')
+        ->with('order_types')
+        ->with('history_payments')
+        ->where('orders.user_id', $user->id)
+        ->limit(20)
+        ->orderBy('orders.id', 'desc')->get();
 
         return view('index', compact('user', 'orders'));
     }
@@ -238,6 +243,7 @@ class UserOrdersController extends Controller
         }
 
         $orders = Order::with('status')
+        ->with('history_payments')
         ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
         ->where('order_type', $shop_type_id)
         ->orderBy('id', 'asc')->get();

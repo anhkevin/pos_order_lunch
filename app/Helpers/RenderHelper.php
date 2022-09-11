@@ -9,8 +9,11 @@ if (!function_exists('nl2br2')) {
 }
 
 if (!function_exists('html_order_status')) {
-    function html_order_status($status_column_name, $status_name)
+    function html_order_status($status_column_name, $status_name, $is_pay_from_wallet = false)
     {
+        if ($is_pay_from_wallet) {
+            $status_name .= '<br><i class="badge text-red badge-sm">(Trừ tiền từ Ví)</i>';
+        }
         switch ($status_column_name) {
             case 'order':
                 $string = '<span class="badge badge-rounded badge-outline-warning">'.$status_name.'</span>';
