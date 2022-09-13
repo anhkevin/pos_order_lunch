@@ -21,7 +21,9 @@
                 </div>
 
                 <div class="card-body">
-                    <stepper-order order_type="{{ isset($_GET['order_type']) ? $_GET['order_type'] : '' }}"></stepper-order>
+                    @if ($orders->count() > 0)
+                        <stepper-order order_type="{{ isset($_GET['order_type']) ? $_GET['order_type'] : '' }}"></stepper-order>
+                    @endif
 
                     @if (session('message'))
                         <div class="alert alert-success">
