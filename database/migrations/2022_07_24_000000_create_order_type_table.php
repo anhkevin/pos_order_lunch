@@ -17,6 +17,9 @@ class CreateOrderTypeTable extends Migration
             $table->increments('id');
             $table->date('order_date');
             $table->string('order_name');
+            $table->string('column_name');
+            $table->text('description');
+            $table->decimal('price_every_order', 10, 0);
             $table->integer('shop_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->integer('pay_type')->unsigned();

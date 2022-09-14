@@ -53,7 +53,7 @@ class HomeController extends Controller
         $value_shop = General::where('key', 'shop_default')->first();
         $shop_info = Shop::where('id', $value_shop->value)->first();
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
         return view('dashboard', compact('orders', 'shop_info', 'list_order_type', 'title'));
     }

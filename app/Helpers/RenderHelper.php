@@ -42,3 +42,39 @@ if (!function_exists('html_order_status')) {
         return $string;
     }
 }
+
+if (!function_exists('html_poll_status')) {
+    function html_poll_status($status_column_name, $status_name, $is_pay_from_wallet = false)
+    {
+        $status_name = '';
+        if ($is_pay_from_wallet) {
+            $status_name = '<br><i class="badge text-red badge-sm">(Trừ tiền từ Ví)</i>';
+        }
+        switch ($status_column_name) {
+            case 'order':
+                $string = '<span class="badge badge-rounded badge-outline-warning">Điểm danh'.$status_name.'</span>';
+                break;
+            
+            case 'booked':
+                $string = '<span class="badge badge-rounded badge-outline-info">Điểm danh'.$status_name.'</span>';
+                break;
+            
+            case 'unpaid':
+                $string = '<span class="badge badge-rounded badge-outline-danger">Chưa thanh toán'.$status_name.'</span>';
+                break;
+            
+            case 'paid':
+                $string = '<span class="badge badge-rounded badge-outline-success">Đã thanh toán'.$status_name.'</span>';
+                break;
+            
+            case 'cancel':
+                $string = '<span class="badge badge-rounded badge-outline-dark">Cancel'.$status_name.'</span>';
+                break;
+                                        
+            default:
+                $string = '';
+                break;
+        }
+        return $string;
+    }
+}

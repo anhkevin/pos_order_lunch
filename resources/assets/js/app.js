@@ -26,6 +26,7 @@ Vue.component('avatar-component', require('./components/avatarAuto.vue').default
 Vue.component('pay-order-type', require('./components/order/PayOrderType.vue').default);
 Vue.component('header-money', require('./components/layout/HeaderMoney.vue').default);
 Vue.component('stepper-order', require('./components/order/StepperOrder.vue').default);
+Vue.component('join-poll', require('./components/poll/JoinPoll.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

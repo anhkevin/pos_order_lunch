@@ -38,4 +38,9 @@ class Order extends Model
     {
         return $this->belongsTo('App\Models\History_payment', 'id', 'order_id');
     }
+
+    public function user_info()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 }

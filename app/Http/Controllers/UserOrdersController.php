@@ -121,7 +121,7 @@ class UserOrdersController extends Controller
             }
         }
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
         return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order'));
     }
@@ -254,7 +254,7 @@ class UserOrdersController extends Controller
         ->where('order_type', $shop_type_id)
         ->where('order_date', date("Y-m-d"))->first();
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
         return view('today_order', compact('user', 'orders', 'shop_info', 'order_status', 'list_order_type', 'title'));
     }
@@ -309,7 +309,7 @@ class UserOrdersController extends Controller
         ->first();
         $total_discount = !empty($discount->total_discount) ? $discount->total_discount : 0;
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
         return view('today_product', compact('user', 'products_rice', 'list_order_type', 'title', 'total_discount'));
     }
@@ -327,6 +327,7 @@ class UserOrdersController extends Controller
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->join('order_types', 'order_types.id', '=', 'orders.order_type')
         ->whereNotIn('statuses.column_name', ['paid','cancel'])
+        ->whereIn('order_types.pay_type', [0,1])
         ->orderBy('orders.id', 'desc')->get();
 
         return view('debt', compact('user', 'orders'));

@@ -15,7 +15,7 @@ use App\Status;
 use Illuminate\Http\Request;
 use DB;
 
-class OrdersController extends Controller
+class PollController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,75 +29,55 @@ class OrdersController extends Controller
 
     public function api_add_order(Request $request)
     {
-        if(empty($request->shop_type_id)) {
-            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
-                $request->shop_type_id = $shop_type->id;
-            }
-        }
-
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->whereIn('statuses.column_name', ['booked','unpaid'])
-        ->where('order_type', $request->shop_type_id)
-        ->where('order_date', date("Y-m-d"))->first();
-
-        if ($order_status) {
+        if(empty($request->poll_id)) {
             return response()->json([
                 'status'    => 0,
-                'message'    => 'Đơn hàng đã đặt, không thể Order thêm !'
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !'
             ]);
         }
 
-        if (empty($request->products)) {
+        $poll_id = base64_decode($request->poll_id);
+
+        if (!$poll_info = Order_type::with('status_type')->where('id', $poll_id)->where('pay_type', 2)->first()) {
             return response()->json([
                 'status'    => 0,
-                'message'    => 'Vui lòng chọn món !'
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !!'
+            ]);
+        }
+
+        if (isset($poll_info->status_type) && ($poll_info->status_type->column_name != 'order')) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Đã đóng, không thể join !!'
+            ]);
+        }
+
+        $order_by_user = Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
+            ->whereNotIn('statuses.column_name', ['cancel'])
+            ->where('orders.user_id', auth()->user()->id)
+            ->where('orders.order_type', $poll_info->id)
+            ->first();
+        if($order_by_user) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Bạn đã tham gia rồi !'
             ]);
         }
 
         // Add order
-        $product_rice_name = "";
-        $amount = 0;
-        foreach ($request->products as $key => $value) {
-            $value = (object)$value;
-            $product_rice_name .= $value->number . ' x ' . $value->name . '\r\n';
-
-            $price_product = $value->number * $value->price;
-            if(!empty($value->discount_price)) {
-                $price_product = $value->number * $value->discount_price;
-            }
-            $amount += $price_product;
-        }
-
         $order = Order::create([
             'user_id' => auth()->user()->id,
             'address' => auth()->user()->name,
-            'size' => rtrim($product_rice_name, '\r\n'),
+            'size' => 'đá banh',
             'toppings' => '',
-            'instructions' => $request->comment,
-            'amount' => $amount,
-            'order_type' => $request->shop_type_id,
+            'instructions' => '',
+            'amount' => $poll_info->price_every_order,
+            'order_type' => $poll_info->id,
         ]);
-
-        foreach ($request->products as $key => $value) {
-            $value = (object)$value;
-            $price_product = $value->price;
-            if(!empty($value->discount_price)) {
-                $price_product = $value->discount_price;
-            }
-
-            Order_detail::create([
-                'product_id' => $value->id,
-                'product_name' => $value->name,
-                'order_id' => $order->id,
-                'price' => $price_product,
-                'number' => $value->number,
-                'dish_type_name' => $value->dish_type_name
-            ]);
-        }
 
         return response()->json([
             'status'    => 1,
-            'message'    => 'Đặt món thành công !'
+            'message'    => 'Tham gia thành công !'
         ]);
     }
 
