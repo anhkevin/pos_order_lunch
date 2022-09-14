@@ -18,7 +18,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('hour:laka')
           ->weekdays()
-          ->timezone('Asia/Ho_Chi_Minh')
           ->hourly()
           ->between('08:00', '17:00');
     }
