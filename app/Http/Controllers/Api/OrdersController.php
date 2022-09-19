@@ -101,6 +101,96 @@ class OrdersController extends Controller
         ]);
     }
 
+    public function admin_pay_order(Request $request)
+    {
+        if(empty($request->order_id)) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Order_id không được để trống !'
+            ]);
+        }
+
+        $user = auth()->user();
+
+        $order_status = Order::select('orders.*',
+        'order_types.order_name', 'order_types.assign_user_id', 'statuses.column_name AS status_column')
+        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        ->join('order_types', 'order_types.id', '=', 'orders.order_type')
+        //->where('orders.user_id', $user->id)
+        ->where('orders.id', $request->order_id)
+        //->whereIn('statuses.column_name', ['booked','unpaid'])
+        ->whereIn('order_types.pay_type', [1,2])
+        ->first();
+
+        if (empty($order_status)) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !'
+            ]);
+        }
+
+        $is_admin = 0;
+
+        if ($user->is_admin == 1) {
+            $is_admin = 1;
+        }
+        if (!empty($order_status->assign_user_id)) {
+            if ($user->id == $order_status->assign_user_id) {
+                $is_admin = 1;
+            }
+        }
+
+        if($is_admin != 1) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Bạn không có quyền truy cập !'
+            ]);
+        }
+
+        if ($order_status->status_column == 'paid') {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Đơn hàng này đã thanh toán !'
+            ]);
+        }
+
+        if ($order_status->status_column == 'cancel') {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Đơn hàng này đã hủy !'
+            ]);
+        }
+
+        $status_paid = Status::where('column_name', 'paid')->first();
+
+        DB::beginTransaction();
+
+        try {
+
+            // update status orders
+            Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
+            //->whereIn('statuses.column_name', ['booked','unpaid'])
+            ->whereNotIn('statuses.column_name', ['paid','cancel'])
+            ->where('orders.id', $request->order_id)
+            ->update(['orders.status_id' => $status_paid->id]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !!'
+            ]);
+        }
+
+        return response()->json([
+            'status'    => 1,
+            'message'    => 'Cập nhật thanh toán OK !',
+            'html'      => html_order_status($status_paid->column_name, $status_paid->name)
+        ]);
+    }
+
     public function pay_order_type(Request $request)
     {
         if(empty($request->order_id)) {
@@ -182,6 +272,68 @@ class OrdersController extends Controller
             'status'    => 1,
             'message'    => 'Thanh toán thành công !',
             'html'      => html_order_status($status_paid->column_name, $status_paid->name)
+        ]);
+    }
+
+    public function cancel_order(Request $request)
+    {
+        if(empty($request->order_id)) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Order_id không được để trống !'
+            ]);
+        }
+
+        $user = auth()->user();
+
+        $order_status = Order::select('orders.*',
+        'order_types.order_name', 'order_types.assign_user_id')
+        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        ->join('order_types', 'order_types.id', '=', 'orders.order_type')
+        ->where('orders.id', $request->order_id)
+        ->whereIn('statuses.column_name', ['order'])
+        ->first();
+
+        if (empty($order_status)) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Trạng thái hiện tại không thể Hủy !'
+            ]);
+        }
+
+        // check user
+        if ($user->is_admin != 1) {
+            if ($user->id != $order_status->assign_user_id && $user->id != $order_status->user_id) {
+                return response()->json([
+                    'status'    => 0,
+                    'message'    => 'Bạn không có quyền Hủy !'
+                ]);
+            }
+        }
+
+        $status_cancel = Status::where('column_name', 'cancel')->first();
+
+        DB::beginTransaction();
+
+        try {
+
+            // update status orders
+            Order::where('id', $request->order_id)
+            ->update(['status_id' => $status_cancel->id]);
+            
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !!'
+            ]);
+        }
+
+        return response()->json([
+            'status'    => 1,
+            'message'    => 'Đã Hủy thành công !'
         ]);
     }
 

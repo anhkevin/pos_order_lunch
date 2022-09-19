@@ -1,6 +1,6 @@
 <template>
-    <a v-if="!is_pay" v-on:click="open_pay()" href="javascript:void(0)" class="btn btn-sm btn-outline-primary btn-rounded mr-3 mb-sm-0 mb-2">
-        <i class="las la la-dollar mr-1 scale5"></i>Pay
+    <a v-on:click="order_cancel()" href="javascript:void(0)" class="btn btn-sm btn-danger btn-rounded mr-3 mb-sm-0 mb-2">
+        <i class="las la la-trash mr-1 scale5"></i>Cancel
     </a>
 </template>
 
@@ -12,17 +12,12 @@
             order_id: {
                 type: String,
             },
-            is_pay: {
-                type: Boolean,
-                default: false,
-            }
-
         },
 
         methods: {
-            open_pay() {
+            order_cancel() {
                 Swal.fire({
-                    title: 'Bạn muốn trừ tiền từ Ví ?',
+                    title: 'Bấm đồng ý nếu muốn HỦY ?',
                     text: "",
                     type: "warning", 
                     showCancelButton: !0, 
@@ -35,11 +30,9 @@
                             'order_id': this.order_id,
                         }
 
-                        const response = await axios.post('/api/order/pay_order_type', post_data);
+                        const response = await axios.post('/api/order/cancel_order', post_data);
 
                         if (response.data.status) {
-                            this.is_pay = true;
-                            document.getElementById("text_status_"+this.order_id).innerHTML = response.data.html;
                             Swal.fire({
                                 title: response.data.message,
                                 type: 'success',

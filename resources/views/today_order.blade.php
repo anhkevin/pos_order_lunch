@@ -104,16 +104,11 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        <td>{!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}</td>
+                                        <td id="text_status_{{ $order->id }}">{!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}</td>
                                     @if ($user->is_admin)
                                     <td>
                                         @if ($order->status->column_name != 'paid')
-                                        <form class="form-horizontal" id="form-order-{{$order->id}}" method="post" action="{{ route('admin.orders.update', $order) }}">
-                                            {{ csrf_field() }}
-                                            {!! method_field('patch') !!}
-                                            <input type="hidden" name="status_id" value="4">
-                                            <button type="submit" id="update-order-{{$order->id}}" class="btn btn-danger">Thanh Toán</button>
-                                        </form>
+                                            <admin-pay-order order_id="{{ $order->id }}" order_name="{{ $order->address }}"></admin-pay-order>
                                         @endif
                                     </td>
                                     @endif

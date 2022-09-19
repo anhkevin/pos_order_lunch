@@ -26,14 +26,14 @@ Route::get('/fire', function () {
 
 Auth::routes();
 
-Route::middleware('throttle:30,1')->get('/', 'App\Http\Controllers\HomeController@index')->name('dashboard');
+Route::middleware('throttle:60,1')->get('/', 'App\Http\Controllers\HomeController@index')->name('dashboard');
 
 // User Routes
 Route::middleware('auth')->group(function () {
     Route::middleware('throttle:30,1')->get('/orders', 'App\Http\Controllers\UserOrdersController@index')->name('user.orders');
     // Route::middleware('throttle:30,1')->get('/home', 'App\Http\Controllers\UserOrdersController@index')->name('user.home');
     Route::middleware('throttle:30,1')->get('/orders/create', 'App\Http\Controllers\UserOrdersController@create')->name('user.orders.create');
-    Route::middleware('throttle:30,1')->get('/orders/today', 'App\Http\Controllers\UserOrdersController@today')->name('user.orders.today');
+    Route::middleware('throttle:60,1')->get('/orders/today', 'App\Http\Controllers\UserOrdersController@today')->name('user.orders.today');
     Route::middleware('throttle:30,1')->get('/orders/product', 'App\Http\Controllers\UserOrdersController@product')->name('user.orders.product');
     Route::middleware('throttle:30,1')->get('/orders/debt', 'App\Http\Controllers\UserOrdersController@debt')->name('user.orders.debt');
     Route::middleware('throttle:30,1')->patch('/orders/cancel/{order}', 'App\Http\Controllers\UserOrdersController@cancel')->name('user.orders.cancel');
@@ -59,15 +59,18 @@ Route::middleware('auth')->group(function () {
     Route::prefix('api')->group(function () {
         Route::middleware('throttle:30,1')->post('/order/add', 'App\Http\Controllers\Api\OrdersController@api_add_order');
         Route::middleware('throttle:30,1')->post('/order/pay_order_type', 'App\Http\Controllers\Api\OrdersController@pay_order_type');
+        Route::middleware('throttle:30,1')->post('/order/admin_pay_order', 'App\Http\Controllers\Api\OrdersController@admin_pay_order');
         Route::middleware('throttle:30,1')->post('/order/get_stepper', 'App\Http\Controllers\Api\OrdersController@get_stepper_by_order');
         Route::middleware('throttle:30,1')->post('/order/update_status_order', 'App\Http\Controllers\Api\OrdersController@update_status_order');
         Route::middleware('throttle:30,1')->post('/layout/load_header', 'App\Http\Controllers\Api\LayoutController@load_header');
+        Route::middleware('throttle:30,1')->post('/order/cancel_order', 'App\Http\Controllers\Api\OrdersController@cancel_order');
     });
 
-    Route::middleware('throttle:30,1')->get('/poll/{type}', 'App\Http\Controllers\PollController@type')->name('user.poll.type');
+    Route::middleware('throttle:60,1')->get('/poll/{type}', 'App\Http\Controllers\PollController@type')->name('user.poll.type');
 
     Route::prefix('api')->group(function () {
         Route::middleware('throttle:30,1')->post('/poll/add_order', 'App\Http\Controllers\Api\PollController@api_add_order');
+        Route::middleware('throttle:30,1')->post('/poll/edit', 'App\Http\Controllers\Api\PollController@edit');
     });
 });
 

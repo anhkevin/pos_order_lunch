@@ -233,6 +233,13 @@
                             </a>
                         </li>
 
+                        <li class="{{ Request::is('poll/*') ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="https://posdatcom.tk/poll/dabanh-20220921" aria-expanded="false">
+                                <i class="fa fa-soccer-ball-o"></i>
+                                <span class="nav-text">Đá banh</span>
+                            </a>
+                        </li>
+
                         <li>
                             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
                                 <i class="flaticon-381-television"></i>

@@ -15,14 +15,16 @@
             is_pay: {
                 type: Boolean,
                 default: false,
-            }
-
+            },
+            order_name: {
+                type: String,
+            },
         },
 
         methods: {
             open_pay() {
                 Swal.fire({
-                    title: 'Bạn muốn trừ tiền từ Ví ?',
+                    title: 'User: ' + this.order_name + ' đã thanh toán tiền ?',
                     text: "",
                     type: "warning", 
                     showCancelButton: !0, 
@@ -35,17 +37,17 @@
                             'order_id': this.order_id,
                         }
 
-                        const response = await axios.post('/api/order/pay_order_type', post_data);
+                        const response = await axios.post('/api/order/admin_pay_order', post_data);
 
                         if (response.data.status) {
+                            var order_id = this.order_id;
                             this.is_pay = true;
-                            document.getElementById("text_status_"+this.order_id).innerHTML = response.data.html;
                             Swal.fire({
                                 title: response.data.message,
                                 type: 'success',
                                 confirmButtonText: 'OK'
                             }).then(function(){
-                                window.location.reload();
+                                document.getElementById("text_status_"+order_id).innerHTML = response.data.html;
                             })
                         } else {
                             swal(response.data.message, "", "error");

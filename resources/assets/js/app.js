@@ -27,6 +27,9 @@ Vue.component('pay-order-type', require('./components/order/PayOrderType.vue').d
 Vue.component('header-money', require('./components/layout/HeaderMoney.vue').default);
 Vue.component('stepper-order', require('./components/order/StepperOrder.vue').default);
 Vue.component('join-poll', require('./components/poll/JoinPoll.vue').default);
+Vue.component('btn-edit-poll', require('./components/poll/EditPoll.vue').default);
+Vue.component('admin-pay-order', require('./components/order/AdminPayOrder.vue').default);
+Vue.component('btn-cancel-order', require('./components/order/ButtonCancelOrder.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

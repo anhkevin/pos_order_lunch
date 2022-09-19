@@ -56,7 +56,13 @@
                                             @endif
                                         </td>
                                         <td>{{ Str::words($order->instructions, 50) }}</td>
-                                        <td id="text_status_{{ $order->id }}">{!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}</td>
+                                        <td id="text_status_{{ $order->id }}">
+                                            @if ($order->order_types->pay_type == 2)
+                                                {!! html_poll_status($order->status->column_name, $order->status->name, isset($order->history_payments) ? 1 : 0) !!}
+                                            @else
+                                                {!! html_order_status($order->status->column_name, $order->status->name, (isset($order->order_types, $order->history_payments) && $order->order_types->pay_type == 1) ? 1 : 0) !!}
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($order->status->column_name == 'order')
                                                 <a class="btn btn-success" style="display:none" href="{{ route('user.orders.edit', $order) }}">Edit</a>

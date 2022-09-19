@@ -15,13 +15,16 @@
             poll_id: {
                 type: String,
             },
+            user_name: {
+                type: String,
+            },
         },
 
         methods: {
             join_poll() {
                 Swal.fire({
                     title: 'Bạn muốn tham gia ?',
-                    text: "",
+                    html: '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Họ tên điểm danh :</span></div><input type="text" name="user_name" id="user_name" value="'+this.user_name+'" class="form-control"></div>',
                     type: "warning", 
                     showCancelButton: !0, 
                     confirmButtonColor: "#DD6B55", 
@@ -31,6 +34,7 @@
                     if (result.value) {
                         let post_data = {
                             'poll_id': this.poll_id,
+                            'user_name': document.getElementById('user_name').value
                         }
 
                         const response = await axios.post('/api/poll/add_order', post_data);
