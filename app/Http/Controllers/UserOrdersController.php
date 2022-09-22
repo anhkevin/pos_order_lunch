@@ -55,6 +55,17 @@ class UserOrdersController extends Controller
         $title = 'Cơm trưa ngày: ' . date("Y-m-d");
         $shop_type_id = 0;
         $message_order = '';
+
+        // check column name
+        if(!empty($request->column_name)) {
+            if ($order_column = Order_type::where('column_name', $request->column_name)
+            ->where('order_date', date("Y-m-d"))
+            ->first()) {
+                $request->order_type = base64_encode($order_column->id);
+            }
+        }
+
+        // check order_type
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
             if ($shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
@@ -76,6 +87,7 @@ class UserOrdersController extends Controller
                     Order_type::create([
                         'order_date' => date("Y-m-d"),
                         'order_name' => 'Cà phê sáng | Huy Dancer',
+                        'column_name' => 'coffee',
                         'shop_id' => $coffee_default->value,
                         'status_id' => 1,
                         'pay_type' => 1,
@@ -86,6 +98,7 @@ class UserOrdersController extends Controller
                 $shop_type = Order_type::create([
                     'order_date' => date("Y-m-d"),
                     'order_name' => $title,
+                    'column_name' => 'food',
                     'shop_id' => $shop_id,
                     'status_id' => 1,
                     'pay_type' => 0,
@@ -112,7 +125,7 @@ class UserOrdersController extends Controller
 
         if (!empty($shop_type_id)) {
             $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-            ->whereIn('statuses.column_name', ['booked','unpaid'])
+            ->whereNotIn('statuses.column_name', ['order'])
             ->where('order_type', $shop_type_id)
             ->where('order_date', date("Y-m-d"))->first();
 
@@ -122,74 +135,9 @@ class UserOrdersController extends Controller
         }
 
         $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
+        $order_column = $request->column_name;
 
-        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->whereIn('statuses.column_name', ['booked','unpaid'])
-        ->where('order_date', date("Y-m-d"))->first();
-
-        if ($order_status) {
-            return back()->with('status', 'Đơn hàng đã đặt, không thể Order thêm !');
-        }
-
-        if (empty($request->product_rice) && empty($request->toppings)) {
-            return back()->with('status', 'Vui lòng chọn món !');
-        }
-
-        // $request->validate([
-        //     'product_rice' => 'required',
-        // ]);
-
-        $product_id_array = array();
-        $product_rice_name = "";
-        $amount = 0;
-        if (!empty($request->product_rice)) {
-            $product_rice = Product::where('id', $request->product_rice)->first();
-            $product_rice_name = $product_rice->name;
-            $amount += $product_rice->price;
-            array_push($product_id_array, $product_rice->id);
-        }
-
-        $toppings = array();
-        if (!empty($request->toppings)) {
-            foreach ($request->toppings as $key => $value) {
-                $product_opt = Product::where('id', $value)->first();
-                array_push($toppings, $product_opt->name);
-                array_push($product_id_array, $product_opt->id);
-                $amount += $product_opt->price;
-            }
-        } 
-
-        $order = Order::create([
-            'user_id' => auth()->user()->id,
-            'address' => auth()->user()->name,
-            'size' => $product_rice_name,
-            'toppings' => !empty($toppings) ? implode(', ', $toppings) : '',
-            'instructions' => $request->instructions,
-            'order_type' => $request->shop_type_id,
-            'amount' => $amount,
-        ]);
-
-        if(!empty($product_id_array)) {
-            foreach ($product_id_array as $key => $value) {
-                Order_detail::create([
-                    'product_id' => $value,
-                    'order_id' => $order->id,
-                ]);
-            }
-        }
-
-        return redirect()->route('user.orders.show', $order)->with('message', 'Order received!');
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column'));
     }
 
     /**

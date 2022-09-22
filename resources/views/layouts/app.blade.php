@@ -233,10 +233,10 @@
                             </a>
                         </li>
 
-                        <li class="{{ Request::is('poll/*') ? 'mm-active' : ''}}">
-                            <a class="ai-icon" href="https://posdatcom.tk/poll/dabanh-20220921" aria-expanded="false">
-                                <i class="fa fa-soccer-ball-o"></i>
-                                <span class="nav-text">Đá banh</span>
+                        <li class="{{ (url()->current() == route('user.poll.index') || Request::is('poll/*')) ? 'mm-active' : ''}}">
+                            <a class="ai-icon" href="{{ route('user.poll.index') }}" aria-expanded="false">
+                                <i class="flaticon-381-command"></i>
+                                <span class="nav-text">Poll Maker</span>
                             </a>
                         </li>
 

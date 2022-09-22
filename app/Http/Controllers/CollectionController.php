@@ -45,7 +45,7 @@ class CollectionController extends Controller
     
     public function get_api_shoppe(Request $request)
     {
-        if ($url_shoppe_food = $request->url && strpos($request->url, "shopeefood.vn")) {
+        if (($url_shoppe_food = $request->url) && strpos($request->url, "shopeefood.vn")) {
 
             $param_domain = str_replace('https://shopeefood.vn/', '', $url_shoppe_food);
 

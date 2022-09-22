@@ -20,4 +20,14 @@ class Order_type extends Model
     {
         return $this->belongsTo('App\Status', 'status_id', 'id');
     }
+
+    /**
+     * Get the status of the order.
+     */
+    public function orders()
+    {
+        return $this->belongsToMany('App\Models\Order_type', 'orders', 'order_type', 'order_type')
+        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+        ->whereNotIn('statuses.column_name', ['cancel']);
+    }
 }

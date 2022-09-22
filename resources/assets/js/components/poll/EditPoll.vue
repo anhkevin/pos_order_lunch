@@ -15,9 +15,9 @@
             open_edit_poll() {
                 Swal.fire({
                     title: 'Thay đổi thông tin:',
-                    html: '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 120px;">Name :</span></div><input type="text" name="poll_name" id="poll_name" value="'+this.poll_name+'" class="form-control"></div>' 
-                    + '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 120px;">Description :</span></div><textarea class="form-control" rows="4" name="poll_description" id="poll_description">'+this.poll_description+'</textarea></div>'
-                    + '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 120px;">Tiền phải đóng :</span></div><input type="number" name="poll_money" id="poll_money" value="'+this.poll_money+'" class="form-control"></div>',
+                    html: '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 125px;">Name :</span></div><input type="text" name="poll_name" id="poll_name" value="'+this.poll_name+'" class="form-control"></div>' 
+                    + '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 125px;">Description :</span></div><textarea class="form-control" rows="4" name="poll_description" id="poll_description">'+this.poll_description+'</textarea></div>'
+                    + '<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" style="min-width: 125px;">Tiền phải đóng :</span></div><input type="number" name="poll_money" id="poll_money" value="'+this.poll_money+'" class="form-control"></div>',
                     type: "", 
                     showCancelButton: !0, 
                     confirmButtonColor: "#DD6B55", 

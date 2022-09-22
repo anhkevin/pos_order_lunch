@@ -78,3 +78,29 @@ if (!function_exists('html_poll_status')) {
         return $string;
     }
 }
+
+if (!function_exists('label_poll_status')) {
+    function label_poll_status($status_column_name)
+    {
+        switch ($status_column_name) {
+            case 'order':
+            case 'booked':
+            case 'unpaid':
+                $string = 'Open';
+                break;
+            
+            case 'paid':
+                $string = 'End';
+                break;
+            
+            case 'cancel':
+                $string = 'Cancel';
+                break;
+                                        
+            default:
+                $string = '';
+                break;
+        }
+        return $string;
+    }
+}

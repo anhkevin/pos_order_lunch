@@ -9,7 +9,7 @@
     </h2>
   </div>
   <div class="row">
-    <div class="col-xl-8">
+    <div class="col-xl-9">
       <div class="row">
         <div class="col-xl-12">
         @if ($list_staff->count() == 0)
@@ -66,7 +66,7 @@
         </div>
       </div>
 
-    <div class="col-xl-4">
+    <div class="col-xl-3">
       <div class="row">
         <div class="col-xl-12">
           <div class="card">

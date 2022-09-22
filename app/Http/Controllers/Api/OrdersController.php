@@ -36,7 +36,7 @@ class OrdersController extends Controller
         }
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->whereIn('statuses.column_name', ['booked','unpaid'])
+        ->whereNotIn('statuses.column_name', ['order'])
         ->where('order_type', $request->shop_type_id)
         ->where('order_date', date("Y-m-d"))->first();
 

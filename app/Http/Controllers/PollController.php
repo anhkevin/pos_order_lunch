@@ -7,6 +7,7 @@ use App\Order;
 use App\Models\Shop;
 use App\Models\General;
 use App\Models\Order_type;
+use App\Status;
 use DB;
 
 class PollController extends Controller
@@ -19,6 +20,18 @@ class PollController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function index(Request $request)
+    {
+        $poll_list = Order_type::with('status_type')
+        ->with('orders')
+        ->where('pay_type', 2)
+        ->orderBy('order_date', 'desc')
+        ->limit(12)
+        ->get();
+
+        return view('poll.index', compact('poll_list'));
     }
 
     /**

@@ -45,7 +45,7 @@
                                     @else
                                     <tr>
                                     @endif
-                                        <td><a href="{{ route('user.orders.show', $order) }}">{{ date_format($order->created_at ,"Y/m/d") }}</a></td>
+                                        <td>{{ date_format($order->created_at ,"Y/m/d") }}</td>
                                         <td>{!! nl2br2(e($order->size)) !!}</td>
                                         <td>
                                             @if ($order->discount > 0)

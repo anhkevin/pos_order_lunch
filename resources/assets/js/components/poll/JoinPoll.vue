@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center p-5">
+    <div class="text-center pt-5 pb-5">
         <button v-on:click="join_poll()" type="button" class="btn btn-rounded btn-primary">
             <span class="btn-icon-left text-primary"><i class="fa fa-plus" aria-hidden="true"></i> </span>
             Tham Gia
