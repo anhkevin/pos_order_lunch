@@ -226,7 +226,7 @@
                             </a>
                         </li>
 
-                        <li class="{{ url()->current() == route('user.orders.create') ? 'mm-active' : ''}}">
+                        <li class="{{ (url()->current() == route('user.orders.create') || Request::is('add_order/*')) ? 'mm-active' : ''}}">
                             <a class="ai-icon" href="{{ route('user.orders.create') }}" aria-expanded="false">
                                 <i class="flaticon-381-notepad"></i>
                                 <span class="nav-text">Đặt món</span>
