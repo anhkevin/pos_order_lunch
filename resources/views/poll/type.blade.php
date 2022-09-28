@@ -41,29 +41,34 @@
                   @if ($poll_info->price_every_order > 0)
                   <td class="left">{{ number_format($staff->amount, 0, ".", ",") . " ₫" }}</td>
                   @endif
-                  <td class="center" id="text_status_{{ $staff->id }}">{!! html_poll_status($staff->status->column_name, $staff->status->name, isset($staff->history_payments) ? 1 : 0) !!}</td>
+                  <td class="center" id="text_status_{{ $staff->id }}">{!! html_poll_status($staff->status->column_name, $staff->status->name, isset($staff->history_payments) ? 1 : 0, $staff->is_join) !!}</td>
                   <td class="right">
-                     @if ($staff->is_join == 1)
-                    @if ($poll_info->price_every_order > 0 && (auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && $staff->status->column_name != 'paid')
-                      <admin-pay-order order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></admin-pay-order>
-                    @endif
+                    @if ($staff->is_join == 1)
 
-                    <div class="dropdown d-inline-block">
-                      <button type="button" class="btn btn-success light sharp" data-toggle="dropdown">
-                        <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-btn">
                         @if (auth()->user()->id == $staff->user_id && auth()->user()->id != $staff->assign_user_id && in_array($staff->status->column_name, array('booked', 'unpaid')))
-                          <pay-order-type order_id="{{ $staff->id }}"></pay-order-type>
+                            <pay-order-type order_id="{{ $staff->id }}"></pay-order-type>
                         @endif
-                        @if ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id || auth()->user()->id == $staff->user_id) && $staff->status->column_name == 'order')
-                          <btn-cancel-order order_id="{{ $staff->id }}"></btn-cancel-order>
+                        @if ($poll_info->price_every_order > 0 && (auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && $staff->status->column_name != 'paid')
+                            <admin-pay-order order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></admin-pay-order>
                         @endif
-                        @if ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && in_array($staff->status->column_name, array('booked', 'unpaid')))
-                          <btn-cancel-join order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></btn-cancel-join>
+
+                        @php($is_cancel_order = ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id || auth()->user()->id == $staff->user_id) && $staff->status->column_name == 'order') ? true : false)
+                        @php($is_cancel_join = ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && in_array($staff->status->column_name, array('booked', 'unpaid'))) ? true : false)
+                        @if ($is_cancel_order | $is_cancel_join)
+                            <div class="dropdown d-inline-block">
+                                <button type="button" class="btn btn-success light sharp" data-toggle="dropdown">
+                                <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-btn">
+                                @if ($is_cancel_order)
+                                    <btn-cancel-order order_id="{{ $staff->id }}"></btn-cancel-order>
+                                @endif
+                                @if ($is_cancel_join)
+                                    <btn-cancel-join order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></btn-cancel-join>
+                                @endif
+                                </div>
+                            </div>
                         @endif
-                      </div>
-                    </div>
                     @endif
                   </td>
                 </tr>

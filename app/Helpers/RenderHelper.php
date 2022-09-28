@@ -44,11 +44,14 @@ if (!function_exists('html_order_status')) {
 }
 
 if (!function_exists('html_poll_status')) {
-    function html_poll_status($status_column_name, $status_name, $is_pay_from_wallet = false)
+    function html_poll_status($status_column_name, $status_name, $is_pay_from_wallet = false, $is_join = '')
     {
         $status_name = '';
         if ($is_pay_from_wallet) {
             $status_name = '<br><i class="badge text-red badge-sm">(Trừ tiền từ Ví)</i>';
+        }
+        if (isset($is_join) && $is_join === 0) {
+            $status_name = '<br><i class="badge text-red badge-sm">(Vắng mặt)</i>';
         }
         switch ($status_column_name) {
             case 'order':
@@ -80,13 +83,16 @@ if (!function_exists('html_poll_status')) {
 }
 
 if (!function_exists('label_poll_status')) {
-    function label_poll_status($status_column_name)
+    function label_poll_status($status_column_name, $order_date)
     {
         switch ($status_column_name) {
             case 'order':
             case 'booked':
             case 'unpaid':
                 $string = 'Open';
+                if ($order_date < date("Y-m-d")) {
+                    $string = 'End';
+                }
                 break;
             
             case 'paid':
