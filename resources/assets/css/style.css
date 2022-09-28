@@ -31091,3 +31091,14 @@ ul.box-select-product > li .box-order-image img {
 .icon-order-order, .icon-order-paid, .icon-order-problem, .icon-order-rating, .icon-order-received, .icon-order-shipping {
   stroke: currentColor;
 }
+
+.dropdown-menu-btn.show {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.dropdown-menu-btn.show>a{
+  min-width: 100px;
+  margin: 0 0 10px !important;
+}

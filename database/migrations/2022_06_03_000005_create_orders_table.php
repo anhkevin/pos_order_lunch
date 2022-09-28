@@ -25,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('discount', 10, 0);
             $table->integer('status_id')->unsigned()->default(1);
             $table->integer('disabled')->unsigned()->default(0);
+            $table->integer('is_join')->unsigned()->default(1);
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->integer('order_type')->unsigned();
             $table->timestamps();

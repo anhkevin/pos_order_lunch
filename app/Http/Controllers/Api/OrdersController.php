@@ -286,13 +286,24 @@ class OrdersController extends Controller
 
         $user = auth()->user();
 
-        $order_status = Order::select('orders.*',
-        'order_types.order_name', 'order_types.assign_user_id')
-        ->join('statuses', 'statuses.id', '=', 'orders.status_id')
-        ->join('order_types', 'order_types.id', '=', 'orders.order_type')
-        ->where('orders.id', $request->order_id)
-        ->whereIn('statuses.column_name', ['order'])
-        ->first();
+        if (isset($request->is_not_join)) {
+            $order_status = Order::select('orders.*',
+            'order_types.order_name', 'order_types.assign_user_id')
+            ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+            ->join('order_types', 'order_types.id', '=', 'orders.order_type')
+            ->where('order_types.pay_type', 2)
+            ->where('orders.id', $request->order_id)
+            ->whereNotIn('statuses.column_name', ['paid'])
+            ->first();
+        } else {
+            $order_status = Order::select('orders.*',
+            'order_types.order_name', 'order_types.assign_user_id')
+            ->join('statuses', 'statuses.id', '=', 'orders.status_id')
+            ->join('order_types', 'order_types.id', '=', 'orders.order_type')
+            ->where('orders.id', $request->order_id)
+            ->whereIn('statuses.column_name', ['order'])
+            ->first();
+        }
 
         if (empty($order_status)) {
             return response()->json([
@@ -320,6 +331,11 @@ class OrdersController extends Controller
             // update status orders
             Order::where('id', $request->order_id)
             ->update(['status_id' => $status_cancel->id]);
+
+            if (isset($request->is_not_join)) {
+                Order::where('id', $request->order_id)
+                ->update(['is_join' => 0]);
+            }
             
             DB::commit();
         } catch (Exception $e) {

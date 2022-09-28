@@ -6,6 +6,7 @@
     @if (auth()->user()->is_admin || auth()->user()->id == $poll_info->assign_user_id)
       <btn-edit-poll poll_id="{{ $poll_info->id }}" poll_name="{{ $poll_info->order_name }}" poll_description="{{ $poll_info->description }}" poll_money="{{ $poll_info->price_every_order }}"></btn-edit-poll>
     @endif
+    <btn-copy-name cp_class="cp-join-poll" cp_title="Danh sách điểm danh đá banh" btn_name="Copy danh sách"></btn-copy-name>
     </h2>
   </div>
   <div class="row">
@@ -32,24 +33,37 @@
               <tbody>
               @php($stt=0)
               @foreach ($list_staff as $staff)
-              @if ($staff->status->column_name != 'cancel')
+              @if (($staff->status->column_name != 'cancel' && $staff->is_join == 1) || $staff->is_join == 0)
               @php($stt++)
                 <tr>
                   <td class="center">{{ $stt }}</td>
-                  <td class="left strong">{{ $staff->address }}</td>
+                  <td class="left strong cp-join-poll">{{ $staff->address }}</td>
                   @if ($poll_info->price_every_order > 0)
                   <td class="left">{{ number_format($staff->amount, 0, ".", ",") . " ₫" }}</td>
                   @endif
                   <td class="center" id="text_status_{{ $staff->id }}">{!! html_poll_status($staff->status->column_name, $staff->status->name, isset($staff->history_payments) ? 1 : 0) !!}</td>
                   <td class="right">
-                    @if (auth()->user()->id == $staff->user_id && auth()->user()->id != $staff->assign_user_id && in_array($staff->status->column_name, array('booked', 'unpaid')))
-                      <pay-order-type order_id="{{ $staff->id }}"></pay-order-type>
-                    @endif
+                     @if ($staff->is_join == 1)
                     @if ($poll_info->price_every_order > 0 && (auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && $staff->status->column_name != 'paid')
                       <admin-pay-order order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></admin-pay-order>
                     @endif
-                    @if ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id || auth()->user()->id == $staff->user_id) && $staff->status->column_name == 'order')
-                      <btn-cancel-order order_id="{{ $staff->id }}"></btn-cancel-order>
+
+                    <div class="dropdown d-inline-block">
+                      <button type="button" class="btn btn-success light sharp" data-toggle="dropdown">
+                        <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-btn">
+                        @if (auth()->user()->id == $staff->user_id && auth()->user()->id != $staff->assign_user_id && in_array($staff->status->column_name, array('booked', 'unpaid')))
+                          <pay-order-type order_id="{{ $staff->id }}"></pay-order-type>
+                        @endif
+                        @if ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id || auth()->user()->id == $staff->user_id) && $staff->status->column_name == 'order')
+                          <btn-cancel-order order_id="{{ $staff->id }}"></btn-cancel-order>
+                        @endif
+                        @if ((auth()->user()->is_admin || auth()->user()->id == $staff->assign_user_id) && in_array($staff->status->column_name, array('booked', 'unpaid')))
+                          <btn-cancel-join order_id="{{ $staff->id }}" order_name="{{ $staff->address }}"></btn-cancel-join>
+                        @endif
+                      </div>
+                    </div>
                     @endif
                   </td>
                 </tr>

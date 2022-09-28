@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('api')->group(function () {
         Route::middleware('throttle:60,1')->post('/poll/add_order', 'App\Http\Controllers\Api\PollController@api_add_order');
         Route::middleware('throttle:60,1')->post('/poll/edit', 'App\Http\Controllers\Api\PollController@edit');
+        Route::middleware('throttle:60,1')->post('/poll/get_cancel', 'App\Http\Controllers\Api\PollController@get_cancel');
     });
 });
 

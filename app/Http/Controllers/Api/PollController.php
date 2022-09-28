@@ -111,12 +111,12 @@ class PollController extends Controller
             ]);
         }
 
-        if (isset($poll_info->status_type) && ($poll_info->status_type->column_name != 'order')) {
-            return response()->json([
-                'status'    => 0,
-                'message'    => 'Trạng thái không thể update !!'
-            ]);
-        }
+        // if (isset($poll_info->status_type) && ($poll_info->status_type->column_name != 'order')) {
+        //     return response()->json([
+        //         'status'    => 0,
+        //         'message'    => 'Trạng thái không thể update !!'
+        //     ]);
+        // }
 
         $user = auth()->user();
 
@@ -129,6 +129,8 @@ class PollController extends Controller
             }
         }
 
+        $status_order = Status::where('column_name', 'order')->first();
+        $status_unpaid = Status::where('column_name', 'unpaid')->first();
         $status_paid = Status::where('column_name', 'paid')->first();
         $status_cancel = Status::where('column_name', 'cancel')->first();
 
@@ -146,6 +148,23 @@ class PollController extends Controller
                 ->whereNotIn('status_id', [$status_paid->id,$status_cancel->id])
                 ->update(['amount' => $request->poll_money]);
             }
+
+            // update status
+            if(!empty($request->poll_money) && $request->poll_money > 0) {
+                Order_type::where('id', $request->poll_id)
+                ->update(['status_id' => $status_unpaid->id]);
+
+                Order::where('order_type', $request->poll_id)
+                ->whereNotIn('status_id', [$status_paid->id,$status_cancel->id])
+                ->update(['status_id' => $status_unpaid->id]);
+            } else {
+                Order_type::where('id', $request->poll_id)
+                ->update(['status_id' => $status_order->id]);
+
+                Order::where('order_type', $request->poll_id)
+                ->whereNotIn('status_id', [$status_paid->id,$status_cancel->id])
+                ->update(['status_id' => $status_order->id]);
+            }
             
             DB::commit();
         } catch (Exception $e) {
@@ -161,5 +180,58 @@ class PollController extends Controller
             'status'    => 1,
             'message'    => 'Update thành công !'
         ]);
+    }
+
+    public function get_cancel(Request $request)
+    {
+        if(empty($request->order_type)) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !'
+            ]);
+        }
+
+        $order_type_id = base64_decode($request->order_type);
+
+        if (!$poll_info = Order_type::with('status_type')->where('id', $order_type_id)->where('pay_type', 2)->first()) {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Có lỗi xảy ra, vui lòng thử lại !!'
+            ]);
+        }
+
+        $status_cancel = Status::where('column_name', 'cancel')->first();
+
+        $list_user_ok = array();
+
+        if ($request->is_join == 1) {
+            $order_ok = Order::where('order_type', $order_type_id)
+            ->where('status_id', '<>', $status_cancel->id)
+            ->orderBy('id', 'asc')->get();
+            if ($order_ok) {
+                foreach ($order_ok as $key => $value) {
+                    $list_user_ok[] = $value->address;
+                }
+            }
+        }
+
+        $orders = Order::where('order_type', $order_type_id)
+        ->where('status_id', $status_cancel->id)
+        ->where('is_join', $request->is_join)
+        ->whereNotIn('address', $list_user_ok)
+        ->orderBy('id', 'asc')->get();
+        
+        if ($orders && $orders->count() > 0) {
+            return response()->json([
+                'status'    => 1,
+                'message'    => 'Get thành công !',
+                'orders'    => $orders
+            ]);
+        } else {
+            return response()->json([
+                'status'    => 0,
+                'message'    => 'Không có dữ liệu !'
+            ]);
+        }
     }
 }

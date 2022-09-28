@@ -30,6 +30,8 @@ Vue.component('join-poll', require('./components/poll/JoinPoll.vue').default);
 Vue.component('btn-edit-poll', require('./components/poll/EditPoll.vue').default);
 Vue.component('admin-pay-order', require('./components/order/AdminPayOrder.vue').default);
 Vue.component('btn-cancel-order', require('./components/order/ButtonCancelOrder.vue').default);
+Vue.component('btn-copy-name', require('./components/layout/BtnCopyName.vue').default);
+Vue.component('btn-cancel-join', require('./components/order/ButtonJoinOrder.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

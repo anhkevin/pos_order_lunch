@@ -11,7 +11,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'address', 'size', 'toppings', 'instructions', 'amount', 'discount', 'status_id','order_type','disabled'];
+    protected $fillable = ['user_id', 'address', 'size', 'toppings', 'instructions', 'amount', 'discount', 'status_id','order_type','disabled', 'is_join'];
 
     /**
      * Get the customer that placed the order.
