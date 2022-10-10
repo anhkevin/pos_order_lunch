@@ -30,7 +30,7 @@ class OrdersController extends Controller
     public function api_add_order(Request $request)
     {
         if(empty($request->shop_type_id)) {
-            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+            if ($shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first()) {
                 $request->shop_type_id = $shop_type->id;
             }
         }
@@ -38,7 +38,7 @@ class OrdersController extends Controller
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->whereNotIn('statuses.column_name', ['order'])
         ->where('order_type', $request->shop_type_id)
-        ->where('order_date', date("Y-m-d"))->first();
+        ->where('order_date', '>=', date("Y-m-d"))->first();
 
         if ($order_status) {
             return response()->json([
@@ -358,11 +358,11 @@ class OrdersController extends Controller
         $shop_type_id = 0;
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
-            if (!$shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
-                $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+            if (!$shop_type = Order_type::where('id', $order_type)->where('order_date', '>=', date("Y-m-d"))->first()) {
+                $shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first();
             }
         } else {
-            $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+            $shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first();
         }
         if (!empty($shop_type)) {
             $shop_type_id = $shop_type->id;
@@ -370,7 +370,7 @@ class OrdersController extends Controller
 
         $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
         ->where('order_type', $shop_type_id)
-        ->where('order_date', date("Y-m-d"))->first();
+        ->where('order_date', '>=', date("Y-m-d"))->first();
 
         $is_select_product = true;
         $is_ordered = false;
@@ -419,11 +419,11 @@ class OrdersController extends Controller
         $shop_type_id = 0;
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
-            if (!$shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
-                $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+            if (!$shop_type = Order_type::where('id', $order_type)->where('order_date', '>=', date("Y-m-d"))->first()) {
+                $shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first();
             }
         } else {
-            $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+            $shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first();
         }
         if (!empty($shop_type)) {
             $shop_type_id = $shop_type->id;
@@ -466,11 +466,11 @@ class OrdersController extends Controller
         try {
 
             $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-            ->where('order_date', date("Y-m-d"))
+            ->where('order_date', '>=', date("Y-m-d"))
             ->where('order_type', $shop_type_id)
             ->first();
             if($order_status) {
-                Order_status::where('order_date', date("Y-m-d"))
+                Order_status::where('order_date', '>=', date("Y-m-d"))
                 ->where('order_type', $shop_type_id)
                 ->update(['status_id' => $status->id]);
             } else {

@@ -25,6 +25,9 @@ Route::get('/fire', function () {
 });
 
 Auth::routes();
+Route::get('/push-notificaiton', 'App\Http\Controllers\WebNotificationController@index')->name('push-notificaiton');
+Route::post('/store-token', 'App\Http\Controllers\WebNotificationController@storeToken')->name('store.token');
+Route::post('/send-web-notification', 'App\Http\Controllers\WebNotificationController@sendWebNotification')->name('send.web-notification');
 
 Route::middleware('throttle:120,1')->get('/', 'App\Http\Controllers\HomeController@index')->name('dashboard');
 

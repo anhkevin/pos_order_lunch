@@ -29,7 +29,9 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@firebase/messaging": "^0.9.17",
         "bootstrap-sass": "^3.4.0",
+        "firebase": "^8.10.0",
         "jquery": "^3.4.1"
     }
 }

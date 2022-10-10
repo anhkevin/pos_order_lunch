@@ -9,7 +9,7 @@
                 <h2 class="text-black font-w600 mb-0">Danh sách món Order @if ($title)<small>({{ $title }})</small>@endif</h2></div>
                 
                 <div class="card-body bootstrap-badge" style="padding-top: 0;">
-                    @if ($list_order_type->count() > 1)
+                    @if ($list_order_type->count() > 0)
                         @foreach ($list_order_type as $order_type)
                             @if ((empty($_GET['order_type']) && $order_type->is_default == 1) || (!empty($_GET['order_type']) && $_GET['order_type'] == base64_encode($order_type->id)))
                                 <a href="{{ route('user.orders.today') }}?order_type={{ base64_encode($order_type->id) }}" class="badge badge-primary">{{ $order_type->order_name }}</a>

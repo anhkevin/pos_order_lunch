@@ -297,34 +297,17 @@
             </div>
         </div>
         
+        <btn-notification user_token="{{ Auth::user()->device_key }}"></btn-notification>
     </div>
 
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ mix('js/vendor.js') }}"></script>
-    <script src="{{ asset('/sw.js') }}"></script>
     <script>
         if (!navigator.serviceWorker.controller) {
             navigator.serviceWorker.register("/sw.js").then(function (reg) {
                 console.log("Service worker has been registered for scope: " + reg.scope);
             });
         }
-        // let deferredPrompt;
-        // const installApp = document.getElementById('installApp');
-        // window.addEventListener('beforeinstallprompt', (e) => {
-        //     installApp.style.display = 'block';
-        //     deferredPrompt = e;
-        // });
-
-        // installApp.addEventListener('click', async () => {
-        //     if (deferredPrompt !== null) {
-        //         deferredPrompt.prompt();
-        //         const { outcome } = await deferredPrompt.userChoice;
-        //         if (outcome === 'accepted') {
-        //             deferredPrompt = null;
-        //             installApp.style.display = 'none';
-        //         }
-        //     }
-        // });
     </script>
 
     @yield('extra-js')

@@ -97,7 +97,7 @@ class CollectionController extends Controller
 
         $shop_type = Order_type::join('shops', 'shops.id', '=', 'order_types.shop_id')
         ->where('order_types.id', $shop_type_id)
-        ->where('order_types.order_date', date("Y-m-d"))
+        ->where('order_types.order_date', '>=', date("Y-m-d"))
         ->first();
         if ($shop_type) {
             $response_detail['reply']['delivery_detail']['name'] = $shop_type->name;

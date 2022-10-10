@@ -32,6 +32,7 @@ Vue.component('admin-pay-order', require('./components/order/AdminPayOrder.vue')
 Vue.component('btn-cancel-order', require('./components/order/ButtonCancelOrder.vue').default);
 Vue.component('btn-copy-name', require('./components/layout/BtnCopyName.vue').default);
 Vue.component('btn-cancel-join', require('./components/order/ButtonJoinOrder.vue').default);
+Vue.component('btn-notification', require('./components/layout/ButtonNotification.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

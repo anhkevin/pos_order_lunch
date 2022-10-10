@@ -59,7 +59,7 @@ class UserOrdersController extends Controller
         // check column name
         if(!empty($request->column_name)) {
             if ($order_column = Order_type::where('column_name', $request->column_name)
-            ->where('order_date', date("Y-m-d"))
+            ->where('order_date', '>=', date("Y-m-d"))
             ->first()) {
                 $request->order_type = base64_encode($order_column->id);
             }
@@ -68,17 +68,17 @@ class UserOrdersController extends Controller
         // check order_type
         if(!empty($request->order_type)) {
             $order_type = base64_decode($request->order_type);
-            if ($shop_type = Order_type::where('id', $order_type)->where('order_date', date("Y-m-d"))->first()) {
+            if ($shop_type = Order_type::where('id', $order_type)->where('order_date', '>=', date("Y-m-d"))->first()) {
                 $shop_id = $shop_type->shop_id;
                 $title = $shop_type->order_name;
             } else {
-                if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+                if ($shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first()) {
                     $shop_id = $shop_type->shop_id;
                     $title = $shop_type->order_name;
                 }
             }
         } else {
-            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+            if ($shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first()) {
                 $shop_id = $shop_type->shop_id;
                 $title = $shop_type->order_name;
             } else {
@@ -127,14 +127,14 @@ class UserOrdersController extends Controller
             $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
             ->whereNotIn('statuses.column_name', ['order'])
             ->where('order_type', $shop_type_id)
-            ->where('order_date', date("Y-m-d"))->first();
+            ->where('order_date', '>=', date("Y-m-d"))->first();
 
             if ($order_status) {
                 $message_order = 'đã đặt, không thể Order thêm !';
             }
         }
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
         $order_column = $request->column_name;
 
         return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column'));
@@ -175,7 +175,7 @@ class UserOrdersController extends Controller
                 $shop_id = $shop_type->shop_id;
             }
         } else {
-            if ($shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first()) {
+            if ($shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first()) {
                 $shop_id = $shop_type->shop_id;
             }
         }
@@ -192,19 +192,15 @@ class UserOrdersController extends Controller
 
         $orders = Order::with('status')
         ->with('history_payments')
-        ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
+//        ->where(DB::raw('DATE(`created_at`)'), date("Y-m-d"))
         ->where('order_type', $shop_type_id)
         ->orderBy('id', 'asc')->get();
 
         $shop_info = Shop::where('id', $shop_id)->first();
 
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->where('order_type', $shop_type_id)
-        ->where('order_date', date("Y-m-d"))->first();
+        $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
-
-        return view('today_order', compact('user', 'orders', 'shop_info', 'order_status', 'list_order_type', 'title'));
+        return view('today_order', compact('user', 'orders', 'shop_info', 'list_order_type', 'title'));
     }
 
 
@@ -223,7 +219,7 @@ class UserOrdersController extends Controller
             $order_type = base64_decode($request->order_type);
             $shop_type = Order_type::where('id', $order_type)->first();
         } else {
-            $shop_type = Order_type::where('order_date', date("Y-m-d"))->where('is_default', 1)->first();
+            $shop_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('is_default', 1)->first();
         }
         if(!empty($shop_type)) {
             $shop_type_id = $shop_type->id;
@@ -234,7 +230,7 @@ class UserOrdersController extends Controller
         ->join('orders', 'orders.id', '=', 'order_details.order_id')
         ->join('statuses', 'statuses.id', '=', 'orders.status_id')
         ->whereNotIn('statuses.column_name', ['cancel'])
-        ->where(DB::raw('DATE(order_details.`created_at`)'), date("Y-m-d"))
+//        ->where(DB::raw('DATE(order_details.`created_at`)'), '>=', date("Y-m-d"))
         ->where('orders.order_type', $shop_type_id)
         ->where('order_details.disabled', 0)
         ->orderBy('order_details.product_id', 'asc')
@@ -257,7 +253,7 @@ class UserOrdersController extends Controller
         ->first();
         $total_discount = !empty($discount->total_discount) ? $discount->total_discount : 0;
 
-        $list_order_type = Order_type::where('order_date', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
+        $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
 
         return view('today_product', compact('user', 'products_rice', 'list_order_type', 'title', 'total_discount'));
     }
