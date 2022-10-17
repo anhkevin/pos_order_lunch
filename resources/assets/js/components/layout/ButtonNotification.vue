@@ -147,9 +147,35 @@
                 }
 
                 if (this.isPushEnabled) {
-                    this.unsubscribe();
+                    Swal.fire({
+                        title: 'Bạn không muốn nhận thông báo ?',
+                        text: "",
+                        type: "warning", 
+                        showCancelButton: !0, 
+                        confirmButtonColor: "#DD6B55", 
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false
+                    }).then(async (result) => {
+                        if (result.value) {
+                            this.isPushEnabled = false
+                            this.unsubscribe();
+                        }
+                    })
                 } else {
-                    this.subscribe();
+                    Swal.fire({
+                        title: 'Bạn muốn nhận thông báo ?',
+                        text: "",
+                        type: "warning", 
+                        showCancelButton: !0, 
+                        confirmButtonColor: "#DD6B55", 
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false
+                    }).then(async (result) => {
+                        if (result.value) {
+                            this.isPushEnabled = true
+                            this.subscribe();
+                        }
+                    })
                 }
             },
             unsubscribe() {

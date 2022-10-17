@@ -444,3 +444,20 @@ jQuery(window).on('resize',function () {
 	Mophy.resize();
 });
 /*  Window Resize END */
+
+jQuery(document).on('keypress',function(e) {
+	'use strict';
+
+    if(e.which == 13) {
+        if ($('.swal2-confirm').length > 0) {
+			$('.swal2-confirm').click();
+		}
+    }
+});
+
+function select_text(element) {
+	if(element) {
+		element.focus();
+		element.select();
+	}
+}
