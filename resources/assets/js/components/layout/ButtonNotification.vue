@@ -19,7 +19,7 @@
         data() {
             return {
                 isPushEnabled: false,
-                vapid_key: process.env.MIX_FIREBASE_SERVER_KEY,
+                vapid_key: process.env.MIX_FIREBASE_VAPID_KEY,
                 fcmToken: '',
                 messaging: {},
             }

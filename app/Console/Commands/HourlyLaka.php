@@ -47,6 +47,7 @@ class HourlyLaka extends Command
 
         $list_crontab = Crontab::select('set_group_laka', 'set_content')
         ->where('disabled', 0)
+        ->where('set_group_laka', '>', 0)
         ->where('set_hour', '>=', Carbon::now()->subMinute(5)->toTimeString())
         ->where('set_hour', '<=', Carbon::now()->addMinute(5)->toTimeString())
         ->where('set_day', 'like', '%'.Carbon::now()->format('N').'%')

@@ -13,7 +13,7 @@
                             {{ csrf_field() }}
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                                 <label class="mb-1 text-white"><strong>Email</strong></label>
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ !empty($_GET['email']) ? $_GET['email'] : old('email') }}" required autofocus>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -23,7 +23,7 @@
                             </div>
                             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                                 <label class="mb-1 text-white"><strong>Password</strong></label>
-                                <input id="password" type="password" class="form-control" name="password" required>
+                                <input id="password" type="password" value="{{ !empty($_GET['password']) ? $_GET['password'] : '' }}" class="form-control" name="password" required>
 
                                 @if ($errors->has('password'))
                                     <span class="help-block">
@@ -34,7 +34,7 @@
                             <div class="form-row d-flex justify-content-between mt-4 mb-2">
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox ml-1 text-white">
-                                        <input type="checkbox" class="custom-control-input" id="basic_checkbox_1" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                        <input type="checkbox" class="custom-control-input" id="basic_checkbox_1" name="remember" {{ old('remember') ? 'checked' : 'checked' }}>
                                         <label class="custom-control-label" for="basic_checkbox_1"> Remember Me</label>
                                     </div>
                                 </div>

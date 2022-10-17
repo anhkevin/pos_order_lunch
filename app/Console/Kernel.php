@@ -15,10 +15,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Laka
         $schedule->command('hour:laka')
           ->weekdays()
           ->hourly()
+          ->between('08:00', '17:00');
+
+        // Notification
+        $schedule->command('notify:browser')
+          ->weekdays()
+          ->everyFiveMinutes()
           ->between('08:00', '17:00');
     }
 

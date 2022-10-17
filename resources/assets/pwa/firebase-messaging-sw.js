@@ -4,6 +4,10 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js');
 
+self.addEventListener('notificationclick', (event) => {
+  clients.openWindow('https://lapos.online/add_order/food')
+});
+
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
 // https://firebase.google.com/docs/web/setup#config-object
@@ -21,7 +25,7 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
+/*messaging.onBackgroundMessage((payload) => {
     // Customize notification here
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
@@ -30,4 +34,4 @@ messaging.onBackgroundMessage((payload) => {
     };
   
     self.registration.showNotification(notificationTitle, notificationOptions);
-});
+});*/

@@ -112,7 +112,7 @@
 </head>
 <body>
 <div class="container">
-    <h1 id="headline">Bạn bị giới hạn truy cập (♥_♥) <br> vui lòng chờ trong giây lát !!!</h1>
+    <h1 id="headline">Phát hiện lượng truy cập bất thường (♥_♥) <br> vui lòng chờ trong giây lát !!!</h1>
     <div id="app"></div>
 </div>
 <script>

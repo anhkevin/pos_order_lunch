@@ -297,7 +297,9 @@
             </div>
         </div>
         
+        @auth
         <btn-notification user_token="{{ Auth::user()->device_key }}"></btn-notification>
+        @endauth
     </div>
 
     <script src="{{ mix('js/app.js') }}"></script>
