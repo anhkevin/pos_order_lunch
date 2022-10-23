@@ -27,12 +27,14 @@ Vue.component('pay-order-type', require('./components/order/PayOrderType.vue').d
 Vue.component('header-money', require('./components/layout/HeaderMoney.vue').default);
 Vue.component('stepper-order', require('./components/order/StepperOrder.vue').default);
 Vue.component('join-poll', require('./components/poll/JoinPoll.vue').default);
+Vue.component('join-poll-login', require('./components/poll/JoinPollLogin.vue').default);
 Vue.component('btn-edit-poll', require('./components/poll/EditPoll.vue').default);
 Vue.component('admin-pay-order', require('./components/order/AdminPayOrder.vue').default);
 Vue.component('btn-cancel-order', require('./components/order/ButtonCancelOrder.vue').default);
 Vue.component('btn-copy-name', require('./components/layout/BtnCopyName.vue').default);
 Vue.component('btn-cancel-join', require('./components/order/ButtonJoinOrder.vue').default);
 Vue.component('btn-notification', require('./components/layout/ButtonNotification.vue').default);
+Vue.component('shop_update_status', require('./components/shop/FormUpdateClose.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

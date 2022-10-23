@@ -49,6 +49,11 @@ class WalletController extends Controller
         return view('wallet.show');
     }
 
+    public function wallets()
+    {
+        return view('wallet.wallets');
+    }
+
     public function history(Request $request)
     {
         $user = auth()->user();

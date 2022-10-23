@@ -27499,11 +27499,11 @@ table.dataTable thead .sorting {
   margin-left: 10px; }
 
 .error-page .error-text {
-  font-size: 150px;
-  line-height: 1; }
+  font-size: 48px;
+  line-height: 2; }
   @media only screen and (max-width: 575px) {
     .error-page .error-text {
-      font-size: 80px; } }
+      font-size: 32px; } }
 .error-page h4 {
   font-size: 40px;
   margin-bottom: 5px; }
@@ -31103,9 +31103,8 @@ ul.box-select-product > li .box-order-image img {
   margin: 0 0 10px !important;
 }
 
-.btn-notification {
+.btn-theme {
   border-radius: 40px;
-  bottom: 50px;
   color: #fff;
   height: 50px;
   right: 20px;
@@ -31117,17 +31116,54 @@ ul.box-select-product > li .box-order-image img {
   align-items: center;
   justify-content: center;
   background: #1fdf61;
+}
+.btn-theme > svg, .btn-theme > svg > path {
+  fill: #fff;
+  width: 26px;
+  height: 26px;
+}
+
+.btn-theme span {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 16px;
+  letter-spacing: -15px;
+  opacity: 0;
+  line-height: 50px;
+  -webkit-transition: all 1s;
+  -ms-transition: all 1s;
+  transition: all 1s;
+  text-transform: uppercase;
+}
+
+.btn-theme:hover {
+  color: #fff;
+  padding: 0 20px;
+}
+
+.btn-theme:hover span {
+  opacity: 1;
+  letter-spacing: 0.02em;
+  padding-left: 10px;
+}
+
+.btn-notification {
+  bottom: 50px;
   background: -moz-linear-gradient(top,#a3d179 0,#88ba46 100%);
   background: -webkit-linear-gradient(top,#a3d179 0,#88ba46 100%);
   background: linear-gradient(to bottom,#a3d179 0,#88ba46 100%);
+}
+.btn-wallet {
+  bottom: 110px;
+  background: -moz-linear-gradient(top,#5cbbe4 0,#0e7baa 100%);
+  background: -webkit-linear-gradient(top,#5cbbe4 0,#0e7baa 100%);
+  background: linear-gradient(to bottom,#5cbbe4 0,#0e7baa 100%);
 }
 .btn-notification-off {
   background: -moz-linear-gradient(top,#6e706c 0,#7e7e7e 100%);
   background: -webkit-linear-gradient(top,#6e706c 0,#7e7e7e 100%);
   background: linear-gradient(to bottom,#6e706c 0,#7e7e7e 100%);
 }
-.btn-notification > svg, .btn-notification > svg > path {
-  fill: #fff;
-  width: 26px;
-  height: 26px;
+.inline-block {
+  display: inline-block !important;
 }

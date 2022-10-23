@@ -35,12 +35,9 @@ class OrdersController extends Controller
             }
         }
 
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->whereNotIn('statuses.column_name', ['order'])
-        ->where('order_type', $request->shop_type_id)
-        ->where('order_date', '>=', date("Y-m-d"))->first();
+        $order_status = Order_type::with('status_type')->where('id', $request->shop_type_id)->first();
 
-        if ($order_status) {
+        if (isset($order_status->status_type->column_name) && $order_status->status_type->column_name != 'order') {
             return response()->json([
                 'status'    => 0,
                 'message'    => 'Đơn hàng đã đặt, không thể Order thêm !'
@@ -368,22 +365,21 @@ class OrdersController extends Controller
             $shop_type_id = $shop_type->id;
         }
 
-        $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-        ->where('order_type', $shop_type_id)
-        ->where('order_date', '>=', date("Y-m-d"))->first();
+
+        $order_status = Order_type::with('status_type')->where('id', $shop_type_id)->first();
 
         $is_select_product = true;
         $is_ordered = false;
         $is_request_pay = false;
         $is_auto_pay = false;
 
-        if (isset($order_status->column_name)) {
-            if ($order_status->column_name == 'booked') {
+        if (isset($order_status->status_type->column_name)) {
+            if ($order_status->status_type->column_name == 'booked') {
                 $is_ordered = true;
-            } elseif ($order_status->column_name == 'unpaid') {
+            } elseif ($order_status->status_type->column_name == 'unpaid') {
                 $is_ordered = true;
                 $is_request_pay = true;
-            } elseif ($order_status->column_name == 'paid') {
+            } elseif ($order_status->status_type->column_name == 'paid') {
                 $is_ordered = true;
                 $is_request_pay = true;
                 $is_auto_pay = true;
@@ -465,27 +461,13 @@ class OrdersController extends Controller
 
         try {
 
-            $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-            ->where('order_date', '>=', date("Y-m-d"))
-            ->where('order_type', $shop_type_id)
-            ->first();
-            if($order_status) {
-                Order_status::where('order_date', '>=', date("Y-m-d"))
-                ->where('order_type', $shop_type_id)
+            Order_type::where('id', $shop_type_id)
                 ->update(['status_id' => $status->id]);
-            } else {
-                Order_status::create([
-                    'order_date' => date("Y-m-d"),
-                    'status_id' => $status->id,
-                    'order_type' => $shop_type_id,
-                ]);
-            }
 
             if($status->column_name != 'paid' && $status->column_name != 'cancel') {
 
                 Order::join('statuses', 'statuses.id', '=', 'orders.status_id')
                 ->whereNotIn('statuses.column_name', ['paid','cancel'])
-                ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
                 ->where('order_type', $shop_type_id)
                 ->update(['orders.status_id' => $status->id]);
             }
@@ -497,7 +479,6 @@ class OrdersController extends Controller
                     ->join('statuses', 'statuses.id', '=', 'orders.status_id')
                     ->join('users', 'users.id', '=', 'orders.user_id')
                     ->whereNotIn('statuses.column_name', ['paid','cancel'])
-                    ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
                     ->where('users.total_money','>', 0)
                     ->where('order_type', $shop_type_id)
                     ->get();
@@ -508,7 +489,6 @@ class OrdersController extends Controller
                         ->leftJoin('order_types', 'order_types.id', '=', 'orders.order_type')
                         ->whereNotIn('statuses.column_name', ['paid','cancel'])
                         ->where('orders.user_id', $value->user_id)
-                        ->where(DB::raw('DATE(orders.`created_at`)'), date("Y-m-d"))
                         ->where('order_type', $shop_type_id)
                         ->groupBy('orders.user_id','order_types.pay_type')
                         ->first();

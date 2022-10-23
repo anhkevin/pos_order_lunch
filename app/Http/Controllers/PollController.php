@@ -19,7 +19,9 @@ class PollController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        if ((request()->route()->getName() != 'user.poll.type')) {
+            $this->middleware('auth');
+        }
     }
 
     public function index(Request $request)
@@ -41,9 +43,14 @@ class PollController extends Controller
      */
     public function type(Request $request)
     {
-
         if(empty($request->type)) {
             return redirect('poll');
+        }
+
+        if ($request->type == 'dabanh') {
+            if ($poll_last = Order_type::where('column_name', 'like','dabanh%')->where('pay_type', 2)->orderBy('id', 'desc')->first()) {
+                $request->type = $poll_last->column_name;
+            }
         }
 
         if (!$poll_info = Order_type::where('column_name', $request->type)->where('pay_type', 2)->first()) {

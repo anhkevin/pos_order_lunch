@@ -11,5 +11,5 @@ class Shop extends Model
      *
      * @var array
      */
-    protected $fillable = ['id','name','address','ship','voucher', 'delivery_id'];
+    protected $fillable = ['id','name','address','ship','voucher', 'delivery_id', 'is_close'];
 }

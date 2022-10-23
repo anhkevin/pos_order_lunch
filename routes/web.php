@@ -30,6 +30,7 @@ Route::post('/store-token', 'App\Http\Controllers\WebNotificationController@stor
 Route::post('/send-web-notification', 'App\Http\Controllers\WebNotificationController@sendWebNotification')->name('send.web-notification');
 
 Route::middleware('throttle:120,1')->get('/', 'App\Http\Controllers\HomeController@index')->name('dashboard');
+Route::middleware('throttle:120,1')->get('/poll/{type}', 'App\Http\Controllers\PollController@type')->name('user.poll.type');
 
 // User Routes
 Route::middleware('auth')->group(function () {
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('throttle:60,1')->get('/momo/ipn_url', 'App\Http\Controllers\MomoController@ipn_url')->name('user.momo.ipn_url');
     Route::middleware('throttle:60,1')->get('/momo/create/{order}', 'App\Http\Controllers\MomoController@create')->name('user.momo.create');
 
+    Route::middleware('throttle:60,1')->get('/wallets', 'App\Http\Controllers\WalletController@wallets')->name('wallet.wallets');
     Route::middleware('throttle:60,1')->get('/my-wallet', 'App\Http\Controllers\WalletController@index')->name('wallet.index');
     Route::middleware('throttle:60,1')->post('/my-wallet/load-history', 'App\Http\Controllers\WalletController@history')->name('wallet.history');
     Route::middleware('throttle:60,1')->get('/my-wallet/show', 'App\Http\Controllers\WalletController@show')->name('wallet.show');
@@ -68,9 +70,10 @@ Route::middleware('auth')->group(function () {
         Route::middleware('throttle:60,1')->post('/order/update_status_order', 'App\Http\Controllers\Api\OrdersController@update_status_order');
         Route::middleware('throttle:60,1')->post('/layout/load_header', 'App\Http\Controllers\Api\LayoutController@load_header');
         Route::middleware('throttle:60,1')->post('/order/cancel_order', 'App\Http\Controllers\Api\OrdersController@cancel_order');
+
+        Route::middleware('throttle:60,1')->post('/shop/update_status', 'App\Http\Controllers\Api\ShopController@update_status');
     });
 
-    Route::middleware('throttle:120,1')->get('/poll/{type}', 'App\Http\Controllers\PollController@type')->name('user.poll.type');
     Route::middleware('throttle:120,1')->get('/poll', 'App\Http\Controllers\PollController@index')->name('user.poll.index');
 
     Route::prefix('api')->group(function () {

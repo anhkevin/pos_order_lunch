@@ -124,14 +124,15 @@ class UserOrdersController extends Controller
         $product_first = Product::where('shop_id', $shop_id)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
 
         if (!empty($shop_type_id)) {
-            $order_status = Order_status::join('statuses', 'statuses.id', '=', 'order_statuses.status_id')
-            ->whereNotIn('statuses.column_name', ['order'])
-            ->where('order_type', $shop_type_id)
-            ->where('order_date', '>=', date("Y-m-d"))->first();
+            $order_status = Order_type::with('status_type')->where('id', $shop_type_id)->first();
 
-            if ($order_status) {
-                $message_order = 'đã đặt, không thể Order thêm !';
+            if (isset($order_status->status_type->column_name) && $order_status->status_type->column_name != 'order') {
+                $message_order = 'Đơn hàng này đã đặt xong !';
             }
+        }
+
+        if (!empty($shop) && $shop->is_close == 1) {
+            $message_order = 'Đơn hàng này chưa Open !';
         }
 
         $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();

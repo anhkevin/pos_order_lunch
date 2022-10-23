@@ -12,8 +12,12 @@
 
     <div class="row">
         @if ($poll_list->count() > 0)
-            @foreach ($poll_list as $poll)
+            @foreach ($poll_list as $key => $poll)
+            @if ($key == 0 && strpos($poll->column_name, 'dabanh') !== false)
+            <a href="{{ route('user.poll.type', 'dabanh') }}" target="_blank" class="col-xl-3 col-xxl-4 col-lg-6 col-sm-6">
+            @else
             <a href="{{ route('user.poll.type', $poll->column_name) }}" target="_blank" class="col-xl-3 col-xxl-4 col-lg-6 col-sm-6">
+            @endif
                 @if ($poll->status_type->column_name == 'cancel' || $poll->order_date < date("Y-m-d"))
                 <div class="widget-stat card bg-dark">
                 @else
