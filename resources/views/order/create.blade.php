@@ -5,7 +5,9 @@
 <div class="form-head mb-4">
     <h1 class="text-black font-w600 mb-0 inline-block">Đặt món @if ($title)<small>({{ $title }})</small>@endif</h1>
 
+    @if ($user->is_admin)
     <shop_update_status shop_id="{{ $shop->id }}" is_close="{{ $shop->is_close }}"></shop_update_status>
+    @endif
 </div>
 <div class="bootstrap-badge pl-3 pt-3">
     @if ($list_order_type->count() > 1)

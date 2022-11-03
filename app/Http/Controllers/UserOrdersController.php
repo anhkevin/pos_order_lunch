@@ -55,6 +55,7 @@ class UserOrdersController extends Controller
         $title = 'Cơm trưa ngày: ' . date("Y-m-d");
         $shop_type_id = 0;
         $message_order = '';
+        $user = auth()->user();
 
         // check column name
         if(!empty($request->column_name)) {
@@ -110,6 +111,12 @@ class UserOrdersController extends Controller
             $shop_id = $shop_type->shop_id;
             $title = $shop_type->order_name;
             $shop_type_id = $shop_type->id;
+
+            if (!empty($shop_type->assign_user_id)) {
+                if ($user->id == $shop_type->assign_user_id) {
+                    $user->is_admin = 1;
+                }
+            }
         }
         $shop = Shop::where('id', $shop_id)->first();
 
@@ -138,7 +145,7 @@ class UserOrdersController extends Controller
         $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
         $order_column = $request->column_name;
 
-        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column'));
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column', 'user'));
     }
 
     /**
