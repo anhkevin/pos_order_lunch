@@ -35,6 +35,8 @@ Vue.component('btn-copy-name', require('./components/layout/BtnCopyName.vue').de
 Vue.component('btn-cancel-join', require('./components/order/ButtonJoinOrder.vue').default);
 Vue.component('btn-notification', require('./components/layout/ButtonNotification.vue').default);
 Vue.component('shop_update_status', require('./components/shop/FormUpdateClose.vue').default);
+Vue.component('add-order-type', require('./components/order/AddOrderType.vue').default);
+Vue.component('profile-shop-type', require('./components/order/ProfileOrder.vue').default);
 
 // const app = new Vue({
 //     el: '#app',

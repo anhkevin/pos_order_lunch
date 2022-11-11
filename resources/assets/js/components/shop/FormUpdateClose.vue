@@ -9,7 +9,13 @@
     import axios from 'axios'
 
     export default {
-        props: ['shop_id', 'is_close'],
+        props: ['shop_type_id', 'shop_is_close'],
+
+        data () {
+            return {
+                is_close: this.shop_is_close,
+            }
+        },
 
         created() {
 
@@ -33,9 +39,10 @@
                     confirmButtonText: "Đồng Ý",
                     allowOutsideClick: false
                 }).then(async (result) => {
+
                     if (result.value) {
                         let post_data = {
-                            'shop_id': this.shop_id,
+                            'shop_type_id': this.shop_type_id,
                             'is_close': this.is_close,
                         }
 
@@ -50,7 +57,19 @@
                                 window.location.reload();
                             })
                         } else {
+                            if (this.is_close) {
+                                this.is_close = false;
+                            } else {
+                                this.is_close = true;
+                            }
+
                             swal(response.data.message, "", "error");
+                        }
+                    } else {
+                        if (this.is_close) {
+                            this.is_close = false;
+                        } else {
+                            this.is_close = true;
                         }
                     }
                 })

@@ -52,17 +52,18 @@ class UserOrdersController extends Controller
     {
         $shop_default = General::where('key', 'shop_default')->first();
         $shop_id = $shop_default->value;
-        $title = 'Cơm trưa ngày: ' . date("Y-m-d");
+        $title = 'Cơm Trưa';
         $shop_type_id = 0;
         $message_order = '';
         $user = auth()->user();
+        $order_column = $request->column_name;
 
         // check column name
         if(!empty($request->column_name)) {
-            if ($order_column = Order_type::where('column_name', $request->column_name)
+            if ($order_type_column = Order_type::where('column_name', $request->column_name)
             ->where('order_date', '>=', date("Y-m-d"))
             ->first()) {
-                $request->order_type = base64_encode($order_column->id);
+                $request->order_type = base64_encode($order_type_column->id);
             }
         }
 
@@ -85,14 +86,16 @@ class UserOrdersController extends Controller
             } else {
                 if ($coffee_default = General::where('key', 'coffee_default')->first()) {
                     $coffee_user = General::where('key', 'coffee_default_user')->first();
+                    $coffee_is_close = General::where('key', 'coffee_default_is_close')->first();
                     Order_type::create([
                         'order_date' => date("Y-m-d"),
-                        'order_name' => 'Cà phê sáng | Huy Dancer',
+                        'order_name' => 'Cà Phê Dancer',
                         'column_name' => 'coffee',
                         'shop_id' => $coffee_default->value,
                         'status_id' => 1,
                         'pay_type' => 1,
                         'is_default' => 0,
+                        'is_close' => $coffee_is_close->value,
                         'assign_user_id' => $coffee_user->value,
                     ]);
                 }
@@ -117,6 +120,7 @@ class UserOrdersController extends Controller
                     $user->is_admin = 1;
                 }
             }
+            $order_column = $shop_type->column_name;
         }
         $shop = Shop::where('id', $shop_id)->first();
 
@@ -130,22 +134,23 @@ class UserOrdersController extends Controller
 
         $product_first = Product::where('shop_id', $shop_id)->where('dish_type_name', 'like','cơm%')->orderBy('id')->first();
 
+        $is_close_order = 0;
         if (!empty($shop_type_id)) {
             $order_status = Order_type::with('status_type')->where('id', $shop_type_id)->first();
 
             if (isset($order_status->status_type->column_name) && $order_status->status_type->column_name != 'order') {
                 $message_order = 'Đơn hàng này đã đặt xong !';
             }
-        }
 
-        if (!empty($shop) && $shop->is_close == 1) {
-            $message_order = 'Đơn hàng này chưa Open !';
+            if (!empty($order_status->is_close) && $order_status->is_close == 1) {
+                $is_close_order = $order_status->is_close;
+                $message_order = 'Đơn hàng này chưa Open !';
+            }
         }
 
         $list_order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->whereIn('pay_type', [0,1])->orderBy('id')->get();
-        $order_column = $request->column_name;
 
-        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column', 'user'));
+        return view('order.create', compact('product_rice', 'product_first', 'shop', 'title', 'list_order_type', 'shop_type_id', 'message_order', 'order_column', 'user', 'is_close_order'));
     }
 
     /**

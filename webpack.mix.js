@@ -26,6 +26,7 @@ mix.js('resources/assets/js/app.js', 'public/js').vue()
       'resources/assets/vendor/perfect-scrollbar/css/perfect-scrollbar.css',
       'resources/assets/vendor/metismenu/css/metisMenu.min.css',
       'resources/assets/vendor/sweetalert2/dist/sweetalert2.min.css',
+      'resources/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css',
       'resources/assets/css/style.css'
    ], 'public/css/app.css')
    .copy('resources/assets/icons', 'public/icons')
@@ -36,11 +37,11 @@ mix.js('resources/assets/js/app.js', 'public/js').vue()
    .scripts([
       'resources/assets/vendor/global/global.min.js',
       'resources/assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js',
-      'resources/assets/vendor/chart.js/Chart.bundle.min.js', 
-      'resources/assets/vendor/owl-carousel/owl.carousel.js',
-      'resources/assets/vendor/peity/jquery.peity.min.js',
-      'resources/assets/vendor/apexchart/apexchart.js',
-      'resources/assets/script/dashboard/dashboard-1.js',
+      // 'resources/assets/vendor/chart.js/Chart.bundle.min.js', 
+      // 'resources/assets/vendor/owl-carousel/owl.carousel.js',
+      // 'resources/assets/vendor/peity/jquery.peity.min.js',
+      // 'resources/assets/vendor/apexchart/apexchart.js',
+      // 'resources/assets/script/dashboard/dashboard-1.js',
       'resources/assets/script/custom.js',
       'resources/assets/script/deznav-init.js',
       'resources/assets/vendor/sweetalert2/dist/sweetalert2.min.js',

@@ -503,19 +503,19 @@
 	
 	}();
 
-	jQuery(document).ready(function(){
-	});
+	// jQuery(document).ready(function(){
+	// });
 		
-	jQuery(window).on('load',function(){
-		setTimeout(function(){
-			dzChartlist.load();
-		}, 1000); 
+	// jQuery(window).on('load',function(){
+	// 	setTimeout(function(){
+	// 		dzChartlist.load();
+	// 	}, 1000); 
 		
-	});
+	// });
 
-	jQuery(window).on('resize',function(){
+	// jQuery(window).on('resize',function(){
 		
 		
-	});     
+	// });     
 
 })(jQuery);

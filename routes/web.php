@@ -65,13 +65,19 @@ Route::middleware('auth')->group(function () {
     Route::prefix('api')->group(function () {
         Route::middleware('throttle:60,1')->post('/order/add', 'App\Http\Controllers\Api\OrdersController@api_add_order');
         Route::middleware('throttle:60,1')->post('/order/pay_order_type', 'App\Http\Controllers\Api\OrdersController@pay_order_type');
+        Route::middleware('throttle:60,1')->post('/order/add_order_type', 'App\Http\Controllers\Api\OrdersController@add_order_type');
         Route::middleware('throttle:60,1')->post('/order/admin_pay_order', 'App\Http\Controllers\Api\OrdersController@admin_pay_order');
         Route::middleware('throttle:60,1')->post('/order/get_stepper', 'App\Http\Controllers\Api\OrdersController@get_stepper_by_order');
         Route::middleware('throttle:60,1')->post('/order/update_status_order', 'App\Http\Controllers\Api\OrdersController@update_status_order');
         Route::middleware('throttle:60,1')->post('/layout/load_header', 'App\Http\Controllers\Api\LayoutController@load_header');
         Route::middleware('throttle:60,1')->post('/order/cancel_order', 'App\Http\Controllers\Api\OrdersController@cancel_order');
+        Route::middleware('throttle:60,1')->post('/order/get_list_orders', 'App\Http\Controllers\Api\OrdersController@get_list_orders');
+        Route::middleware('throttle:60,1')->post('/order/get_list_products', 'App\Http\Controllers\Api\OrdersController@get_list_products');
+        Route::middleware('throttle:60,1')->post('/order/get_order_type_infor', 'App\Http\Controllers\Api\OrdersController@get_order_type_infor');
+        Route::middleware('throttle:60,1')->post('/order/delete_order_type', 'App\Http\Controllers\Api\OrdersController@delete_order_type');
 
         Route::middleware('throttle:60,1')->post('/shop/update_status', 'App\Http\Controllers\Api\ShopController@update_status');
+        Route::middleware('throttle:60,1')->post('/shop/list_shops', 'App\Http\Controllers\Api\ShopController@list_shops');
     });
 
     Route::middleware('throttle:120,1')->get('/poll', 'App\Http\Controllers\PollController@index')->name('user.poll.index');

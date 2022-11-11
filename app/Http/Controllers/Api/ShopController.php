@@ -29,10 +29,10 @@ class ShopController extends Controller
 
     public function update_status(Request $request)
     {
-        if(empty($request->shop_id)) {
+        if(empty($request->shop_type_id)) {
             return response()->json([
                 'status'    => 0,
-                'message'    => 'shop_id không được để trống !'
+                'message'    => 'shop_type_id không được để trống !'
             ]);
         }
 
@@ -43,7 +43,7 @@ class ShopController extends Controller
             ]);
         }
 
-        $order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('shop_id', $request->shop_id)->first();
+        $order_type = Order_type::where('order_date', '>=', date("Y-m-d"))->where('id', $request->shop_type_id)->first();
 
         if (empty($order_type)) {
             return response()->json([
@@ -81,8 +81,13 @@ class ShopController extends Controller
                 $is_close = 1;
             }
 
-            Shop::where('id', $request->shop_id)
+            Order_type::where('id', $request->shop_type_id)
             ->update(['is_close' => $is_close]);
+
+            if ($order_type->column_name == 'coffee') {
+                General::where('key', 'coffee_default_is_close')
+                ->update(['value' => $is_close]);
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -99,5 +104,26 @@ class ShopController extends Controller
             'message'    => 'Cập nhật thành công !',
         ]);
 
+    }
+
+    public function list_shops(Request $request)
+    {
+        $shops = array();
+
+        $list_shops = Shop::where('delivery_id', $request->delivery_id)->get();
+
+        if (!empty($list_shops)) {
+            foreach ($list_shops as $key => $value) {
+                $shops[] = array(
+                    'id' => $value['id'],
+                    'name' => $value['name'],
+                );
+            }
+        }
+
+        return response()->json([
+            'status'    => 1,
+            'shops'    => $shops,
+        ]);
     }
 }

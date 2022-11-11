@@ -39,7 +39,7 @@
                     </g>
                 </svg>
             </button>
-            <div class="stepper__step-text">Yêu cầu thanh toán</div>
+            <div class="stepper__step-text">Yêu Cầu Thanh Toán</div>
         </div>
         
         <div class="stepper__step stepper__step--finish">
@@ -54,7 +54,7 @@
                     </g>
                 </svg>
             </button>
-            <div class="stepper__step-text">Chốt Đơn <br>(trừ tiền từ Ví)</div>
+            <div class="stepper__step-text">Chốt Đơn <br>(<i style="color:red">Đã Thanh Toán</i>)</div>
         </div>
         
         <div class="stepper__line">
@@ -69,7 +69,7 @@
 
     export default {
 
-        props: ['order_type'],
+        props: ['order_column'],
 
         data () {
             
@@ -85,7 +85,7 @@
         methods: {
             async load_stepper() {
                 let post_data = {
-                    'order_type': this.order_type,
+                    'order_column': this.order_column,
                 }
 
                 const response = await axios.post('/api/order/get_stepper', post_data);
@@ -117,7 +117,7 @@
 
             async update_status_order(status_order) {
                 let post_data = {
-                    'order_type': this.order_type,
+                    'order_column': this.order_column,
                     'status_order': status_order,
                 }
 
